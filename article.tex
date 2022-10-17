@@ -5,6 +5,9 @@
 \usepackage{comment}
 \usepackage[normalem]{ulem}
 \usepackage{booktabs}
+
+\renewcommand{\arraystretch}{1.2}
+\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
 \begin{document}
 
 \input{header.tex}
@@ -13,9 +16,8 @@
 \hypersetup{linkcolor=black,urlcolor=darkgray}
 \renewcommand\emph[1]{{\bfseries #1}}
 
-\renewcommand{\arraystretch}{1.2}
-\newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
+
 %\newpage
-\setlength\bibitemsep{0pt}
-\printbibliography
+%\setlength\bibitemsep{0pt}
+%\printbibliography
 \end{document}

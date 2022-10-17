@@ -186,29 +186,29 @@ We can see that if $\Delta = 0$ then $w=0$ and the projected embedding is the sa
 
 The goal of the \texttt{t-batch} algorithm is to be able to separate temporal data in batches. We work on datasets that are indexed by time, so we cannot separate data in a classical batches. Indeed, we cannot update an embedding of a user who arrives at time $t+1$ before an embedding of a user who arrives at time $t$. To do this, we must take into account several constraints. First, the same batch cannot contain the same entity several times. Second, the batches must keep temporal dependencies, i.e. we process the interactions in the order. \amel{Third, each batch is parallelizable?. }From an algorithmic point of view, those constraint are satisfied while using the following algorithm.\\
 
-\begin{comment}
-\begin{algorithm}[H]
-    \caption{t-Batch}
-    \begin{algorithmic} 
-        \STATE \textbf{Input} : Sequence of interactions ordered by time S : $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
-        \STATE \textbf{Output} : Sequence of batches B : $B_k = \{S_{k,1},\,...,\,S_{k,n} \}$
-        \STATE \textbf{Initialize} : 
-        \STATE \quad $\text{tbatch\_id\_u[u]} \leftarrow 0 \; \forall \; u \in \mathcal{U}$
-        \STATE \quad $\text{tbatch\_id\_i[i]} \leftarrow 0 \; \forall \; i \in \mathcal{I}$
-        \STATE \quad $B_k \leftarrow \{ \},\; \forall \; k \in [1,\;\text{Card}(S)]$
-        \STATE \quad $C \leftarrow 0$
-        \FOR{$j \in$ 1 à Card$(S)$}
-            \STATE Extraction $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
-            \STATE idx $\leftarrow$ $\max$(tbatch\_id\_u[$u_j$], tbatch\_id\_i[$i_j$]) + 1
-            \STATE $B_\text{idx} \leftarrow B_\text{idx} \cup \{ S_j \}$
-            \STATE tbatch\_id\_u[$u_j$] = idx
-            \STATE tbatch\_id\_i[$i_j$] = idx
-            \STATE $C \leftarrow \max(C,\,$idx)
-        \ENDFOR
-        \RETURN $\{ B_1,\,...,\,B_C \}$
-    \end{algorithmic}
-\end{algorithm}
-\end{comment}
+% \begin{comment}
+% \begin{algorithm}[H]
+%     \caption{t-Batch}
+%     \begin{algorithmic} 
+%         \STATE \textbf{Input} : Sequence of interactions ordered by time S : $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
+%         \STATE \textbf{Output} : Sequence of batches B : $B_k = \{S_{k,1},\,...,\,S_{k,n} \}$
+%         \STATE \textbf{Initialize} : 
+%         \STATE \quad $\text{tbatch\_id\_u[u]} \leftarrow 0 \; \forall \; u \in \mathcal{U}$
+%         \STATE \quad $\text{tbatch\_id\_i[i]} \leftarrow 0 \; \forall \; i \in \mathcal{I}$
+%         \STATE \quad $B_k \leftarrow \{ \},\; \forall \; k \in [1,\;\text{Card}(S)]$
+%         \STATE \quad $C \leftarrow 0$
+%         \FOR{$j \in$ 1 à Card$(S)$}
+%             \STATE Extraction $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
+%             \STATE idx $\leftarrow$ $\max$(tbatch\_id\_u[$u_j$], tbatch\_id\_i[$i_j$]) + 1
+%             \STATE $B_\text{idx} \leftarrow B_\text{idx} \cup \{ S_j \}$
+%             \STATE tbatch\_id\_u[$u_j$] = idx
+%             \STATE tbatch\_id\_i[$i_j$] = idx
+%             \STATE $C \leftarrow \max(C,\,$idx)
+%         \ENDFOR
+%         \RETURN $\{ B_1,\,...,\,B_C \}$
+%     \end{algorithmic}
+% \end{algorithm}
+% \end{comment}
 
 
 \begin{algorithm}[H]
@@ -307,39 +307,39 @@ We detail the learning steps and the specificity of JODIE model. More precisely,
     \item Once all the time periods are covered, we go to the second epoch.
 \end{enumerate}
 The algorithm of our model is presented below.
-\begin{comment}
-    \begin{algorithm}[H]
-        \caption{JODIE}
-        \begin{algorithmic} 
-            \STATE \textbf{Input}: Sequence of interactions ordered by time S : $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
-            \STATE \quad \hspace{0.73cm}Initial user embedding $u_t$
-            \STATE \quad \hspace{0.73cm}Initial item embedding $i_t$
-            \STATE \quad \hspace{0.73cm}Current model parameters: $\Theta_{proj}$, $\Theta_{pred}$, $\Theta_{state}$, \textbf{RNN}$_U$, \textbf{RNN}$_I$
-            \STATE \textbf{Output}: Dynamic user and item embeddings, updated model parameters
-            \STATE \textbf{Initialize}: $\ell \leftarrow 0$
-            \STATE \quad \hspace{1.1cm} prev $\leftarrow$ $\{\}$
-            \STATE \quad \hspace{1.1cm} prev$_{state}$ $\leftarrow$ $\{\}$
-            \FOR{$j \in$ 1 à Card$(S)$}
-                \STATE Preprocessing $S_j$
-                \STATE $\widehat u_t$ $\; \leftarrow \; \Theta_{proj}(u_t^-, \, \Delta_u)$
-                \STATE $k \leftarrow$ prev[$u$]
-                \STATE $\overset{\sim}{i_t} \leftarrow \Theta_{pred}(\widehat u_t, \, \Bar{u}, \, i^-, \,\Bar{i})$
-                \STATE $\ell \leftarrow \ell + \| \overset{\sim}{i_t} - [ \Bar{i}, \, i_t^-] \|_2$
-                \STATE $u_t \leftarrow \textbf{RNN}_U(u_t^-,\,i_t^-,\,\Delta_u,\,f)$
-                \STATE $i_t \leftarrow \textbf{RNN}_I(i_t^-,\,u_t^-,\,\Delta_i,\,f)$
-                \STATE prev[$u$] $\leftarrow i$
-                \STATE $\ell \leftarrow \ell + \lambda_u \| u_t - u_t^- \|_2 + \lambda_i \| i_t - i_t^- \|_2$
-                \IF{State change \TRUE}
-                    \STATE  prev$_{state}[j]$ $\leftarrow$ $u_t$
-                    \STATE $\widehat u_{pred} \leftarrow \Theta_{state}(\text{prev}_{state})$
-                    \STATE $\ell \leftarrow \ell + CE(u_{true},\,\widehat u_{state})$
-                \ENDIF\\
-                Back-propagation loss and update model parameters
-            \ENDFOR
-            \RETURN $u_t$, $i_t$, model: $\Theta_{proj}$, $\Theta_{pred}$, $\Theta_{state}$, \textbf{RNN}$_U$, \textbf{RNN}$_I$
-        \end{algorithmic}
-    \end{algorithm}
-\end{comment}
+% \begin{comment}
+%     \begin{algorithm}[H]
+%         \caption{JODIE}
+%         \begin{algorithmic} 
+%             \STATE \textbf{Input}: Sequence of interactions ordered by time S : $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
+%             \STATE \quad \hspace{0.73cm}Initial user embedding $u_t$
+%             \STATE \quad \hspace{0.73cm}Initial item embedding $i_t$
+%             \STATE \quad \hspace{0.73cm}Current model parameters: $\Theta_{proj}$, $\Theta_{pred}$, $\Theta_{state}$, \textbf{RNN}$_U$, \textbf{RNN}$_I$
+%             \STATE \textbf{Output}: Dynamic user and item embeddings, updated model parameters
+%             \STATE \textbf{Initialize}: $\ell \leftarrow 0$
+%             \STATE \quad \hspace{1.1cm} prev $\leftarrow$ $\{\}$
+%             \STATE \quad \hspace{1.1cm} prev$_{state}$ $\leftarrow$ $\{\}$
+%             \FOR{$j \in$ 1 à Card$(S)$}
+%                 \STATE Preprocessing $S_j$
+%                 \STATE $\widehat u_t$ $\; \leftarrow \; \Theta_{proj}(u_t^-, \, \Delta_u)$
+%                 \STATE $k \leftarrow$ prev[$u$]
+%                 \STATE $\overset{\sim}{i_t} \leftarrow \Theta_{pred}(\widehat u_t, \, \Bar{u}, \, i^-, \,\Bar{i})$
+%                 \STATE $\ell \leftarrow \ell + \| \overset{\sim}{i_t} - [ \Bar{i}, \, i_t^-] \|_2$
+%                 \STATE $u_t \leftarrow \textbf{RNN}_U(u_t^-,\,i_t^-,\,\Delta_u,\,f)$
+%                 \STATE $i_t \leftarrow \textbf{RNN}_I(i_t^-,\,u_t^-,\,\Delta_i,\,f)$
+%                 \STATE prev[$u$] $\leftarrow i$
+%                 \STATE $\ell \leftarrow \ell + \lambda_u \| u_t - u_t^- \|_2 + \lambda_i \| i_t - i_t^- \|_2$
+%                 \IF{State change \TRUE}
+%                     \STATE  prev$_{state}[j]$ $\leftarrow$ $u_t$
+%                     \STATE $\widehat u_{pred} \leftarrow \Theta_{state}(\text{prev}_{state})$
+%                     \STATE $\ell \leftarrow \ell + CE(u_{true},\,\widehat u_{state})$
+%                 \ENDIF\\
+%                 Back-propagation loss and update model parameters
+%             \ENDFOR
+%             \RETURN $u_t$, $i_t$, model: $\Theta_{proj}$, $\Theta_{pred}$, $\Theta_{state}$, \textbf{RNN}$_U$, \textbf{RNN}$_I$
+%         \end{algorithmic}
+%     \end{algorithm}
+% \end{comment}
 
 
 
@@ -597,14 +597,17 @@ The first part of the results concerns the prediction of the user's state change
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{@{}lcrrr@{}}\toprule
-    & JODIE & \multicolumn{3}{c}{Replications} \\
-    \cmidrule{2}
-    & 128 & 32 & 128 & 256 \\
+    \ra{1.3}
+    \begin{tabular}{@{}lcrrrr@{}}
+    \toprule
+    & JODIE & \phantom{abc} & \multicolumn{3}{c}{Replications} \\
+    \cmidrule{2-2} \cmidrule{4-6}
+    & 128 && \multicolumn{1}{c}{32} & \multicolumn{1}{c}{128} & \multicolumn{1}{c}{256} \\
     \midrule
-    Reddit &&&&\\
-    Wikipedia &&&& \\
-    MOOC &&&&\\
+    Reddit & \textbf{0.599} && 0.576 & 0.731 & 0.565\\
+    Wikipedia &\textbf{0.831} && 0.576 & 0.778 & 0.721\\
+    MOOC &\textbf{0.756} && 0.551 & 0.747 & 0.705\\
+    \bottomrule
     \end{tabular}
     \caption{Results: user state change prediction}
 \end{table}
@@ -614,29 +617,53 @@ we can see that if we increase the size of the embeddings to 256, the results de
 
 For the prediction of future interaction, we used the same hyperparameters as for the state prediction. We present the obtained results and the results of the original paper in the following table:
 
+% \begin{table}[H]
+%     \hspace{-2.3cm}
+%     \begin{tabular}{|c|c|c|c|c|c|c|}
+%         \cline{2-7} \multicolumn{1}{c|}{} & \multicolumn{2}{c|}{Reddit} & \multicolumn{2}{c|}{Wikipedia} & \multicolumn{2}{c|}{LastFM}\\
+%         \cline{1-7} \multicolumn{1}{|c|}{Method} & MRR & Recall@10 & MRR & Recall@10 & MRR & Recall@10 \\\hline
+%         JODIE (embedding size: 128) & \textbf{0.726} & \textbf{0.852} & \textbf{0.746} & \textbf{0.822} & \textbf{0.195} & \textbf{0.307} \\\hline
+%         JODIE replication (embedding size: 128) & 0.707 & 0.799 & 0.765 & 0.835 & 0.312 & 0.551 \\\hline
+%         JODIE replication (embedding size: 256) & 0.688 & 0.756 & 0.755 & 0.812 & 0.313 & 0.455 \\\hline
+%     \end{tabular}
+%     \caption{Results: future interaction prediction}
+% \end{table}
+
+
 \begin{table}[H]
-    \hspace{-2.3cm}
-    \begin{tabular}{|c|c|c|c|c|c|c|}
-        \cline{2-7} \multicolumn{1}{c|}{} & \multicolumn{2}{c|}{Reddit} & \multicolumn{2}{c|}{Wikipedia} & \multicolumn{2}{c|}{LastFM}\\
-        \cline{1-7} \multicolumn{1}{|c|}{Method} & MRR & Recall@10 & MRR & Recall@10 & MRR & Recall@10 \\\hline
-        JODIE (embedding size: 128) & \textbf{0.726} & \textbf{0.852} & \textbf{0.746} & \textbf{0.822} & \textbf{0.195} & \textbf{0.307} \\\hline
-        JODIE replication (embedding size: 128) & 0.707 & 0.799 & 0.765 & 0.835 & 0.312 & 0.551 \\\hline
-        JODIE replication (embedding size: 256) & 0.688 & 0.756 & 0.755 & 0.812 & 0.313 & 0.455 \\\hline
+    \centering
+    \ra{1.3}
+    \begin{tabular}{@{}rcrrr@{}}
+    \toprule
+    Dataset\hspace*{3em} & JODIE & \phantom{abc} & \multicolumn{2}{c}{Replications} \\
+    \cmidrule{2-2} \cmidrule{4-5}
+    & 128 && \multicolumn{1}{c}{128} & \multicolumn{1}{c}{256} \\
+    \midrule
+    \multicolumn{1}{l}{\textbf{Reddit}} \\
+    {\small MRR} & \textbf{0.726}  && 0.707 & 0.688 \\
+    {\small Recall@10}  &\textbf{0.852} && 0.799 & 0.756\\
+    \multicolumn{1}{l}{\textbf{Wikipedia}}\\
+    {\small MRR} &\textbf{0.746} && 0.765 &  0.755  \\
+    {\small Recall@10}  & \textbf{0.822} && 0.835 & 0.812\\
+    \multicolumn{1}{l}{\textbf{LastFM}} \\
+    {\small MRR} &\textbf{0.195} && 0.312 & 0.313 \\
+    {\small Recall@10}  & \textbf{0.307} && 0.551 & 0.455\\
+    \bottomrule
     \end{tabular}
-    \caption{Results: future interaction prediction}
+    \caption{Results: user state change prediction}
 \end{table}
 
 We notice that only the results for the Reddit dataset are worse than in the original paper. On these data, we obtained 0.707 in MRR and 0.799 in Recall@10. However, these results remain close to those obtained by the authors with 0.726 in MRR and 0.852 in Recall@10. For the Wikipedia and LastFM datasets, we can see that our results outperformed the authors' results with 0.765 in MRR and 0.835 in Recall@10 and 0.312 in MRR and 0.551 in Recall@10 respectively. These differences can be explained by the choice to evaluate the last epoch and not to choose the best performance on the validation. These differences remain small.\\
 
 To go further in the replication and reproduction, we will also reproduce two figures that show that the JODIE model is robust. The first figure will concern the prediction of future interaction on the Wikipedia dataset by plotting the MRR. For this figure, we varied the percentage of the training set from 10\% to 80\% with 10\% step. The second figure will be on the same dataset but for the prediction of user state change. For this, we varied the percentage of the training set from 20\% to 60\% in 10\% steps.
 
-\begin{figure}[H]
-	\centering
-    \subfigure[A]{\includegraphics[trim = 0cm 0cm 0cm 0cm, clip,width=0.46\textwidth]{image/wiki.pdf}} 
-    \subfigure[B]{\includegraphics[trim = 0cm 0cm 0cm 0cm, clip,width=0.46\textwidth]{image/wiki_state.pdf}}
-    \caption{Robustness of JODIE replication: [A] compare the MRR of JODIE replication with baselines on interaction prediction task, by varying the training data size. [B] shows the AUC of user state change prediction task by varying the training data size.}
-    \label{fig:foobar}
-\end{figure}
+% \begin{figure}[H]
+% 	\centering
+%     \subfigure[A]{\includegraphics[trim = 0cm 0cm 0cm 0cm, clip,width=0.46\textwidth]{image/wiki.pdf}} 
+%     \subfigure[B]{\includegraphics[trim = 0cm 0cm 0cm 0cm, clip,width=0.46\textwidth]{image/wiki_state.pdf}}
+%     \caption{Robustness of JODIE replication: [A] compare the MRR of JODIE replication with baselines on interaction prediction task, by varying the training data size. [B] shows the AUC of user state change prediction task by varying the training data size.}
+%     \label{fig:foobar}
+% \end{figure}
 
 We can see on the first figure that shows an increasing curve. The larger the training set is, the less the model is failing on the prediction of future interaction. This makes sense because the test set is reduced each time. If we were to compare the curve obtained by the authors of the paper and ours, we could say that the general shape is similar.
 For the second figure, the curve is decreasing. The larger the training set is, the more the model is wrong. This makes sense because in state prediction, there is very few change of state so the model will tend to predict more the majority class. This is even more pronounced when the training set is small.\\
@@ -656,14 +683,14 @@ We can say that their model outperforms the existing models on these 4 datasets 
 
 To go further, we decided to test the impact of the split hyper-parameter. As a reminder, the original study does not consider split as a hyper-parameter but as a fixed value of 500. The following figures show the importance of choosing this hyper-parameter. To do so, we predict the user state change on MOOC dataset with several embedding sizes 8, 16 and 32 and different split 5, 500 and 50000.
 
-\begin{figure}[H]
-	\centering
-    \subfigure[A]{\includegraphics[trim = 0cm 0cm 0cm 0cm, clip,width=0.46\textwidth]{image/8_split.pdf}} 
-    \subfigure[B]{\includegraphics[trim = 0cm 0cm 0cm 0cm, clip,width=0.46\textwidth]{image/16_split.pdf}}
-    \subfigure[C]{\includegraphics[trim = 0cm 0cm 0cm 0cm, clip,width=0.46\textwidth]{image/32_split.pdf}}
-    \caption{[A] Evolution of performances for embedding size 8. [B] Evolution of performances for embedding size 16. [C] Evolution of performances for embedding size 32.}
-    \label{fig:foobar}
-\end{figure}
+% \begin{figure}[H]
+% 	\centering
+%     \subfigure[A]{\includegraphics[trim = 0cm 0cm 0cm 0cm, clip,width=0.46\textwidth]{image/8_split.pdf}} 
+%     \subfigure[B]{\includegraphics[trim = 0cm 0cm 0cm 0cm, clip,width=0.46\textwidth]{image/16_split.pdf}}
+%     \subfigure[C]{\includegraphics[trim = 0cm 0cm 0cm 0cm, clip,width=0.46\textwidth]{image/32_split.pdf}}
+%     \caption{[A] Evolution of performances for embedding size 8. [B] Evolution of performances for embedding size 16. [C] Evolution of performances for embedding size 32.}
+%     \label{fig:foobar}
+% \end{figure}
 
 We can see, for any embedding size, that the three curves are increasing. By increasing the split from 5 to 500, we have increased the performance by 0.14 in AUC for the different sizes. Going from 500 to 50000, increased the performance by 0.08. We can say that the choice of this hyper-parameter is important to have better performance. We can explain this improvement by the fact that the model will do back-propagation after each time step defined by split. So if we increase the split number, we increase the number of back-propagation.
 
