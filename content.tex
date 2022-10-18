@@ -629,6 +629,9 @@ For the prediction of future interaction, we used the same hyperparameters as fo
 %     \caption{Results: future interaction prediction}
 % \end{table}
 
+\begin{itemize}
+    \item Embedding size: $8 \rightarrow 256$
+\end{itemize}
 
 \begin{table}[H]
     \centering
@@ -640,7 +643,7 @@ For the prediction of future interaction, we used the same hyperparameters as fo
     & 128 && \multicolumn{1}{c}{128} & \multicolumn{1}{c}{256} \\
     \midrule
     \multicolumn{1}{l}{\textbf{Reddit}} \\
-    {\small MRR} & \textbf{0.726}  && 0.707 & 0.688 \\
+    {\small MRR} & \textbf{0.726}  && $0.70 \pm 0.1$ & 0.688 \\
     {\small Recall@10}  &\textbf{0.852} && 0.799 & 0.756\\
     \multicolumn{1}{l}{\textbf{Wikipedia}}\\
     {\small MRR} &\textbf{0.746} && 0.765 &  0.755  \\
@@ -659,11 +662,26 @@ To go further in the replication and reproduction, we will also reproduce two fi
 
 % \begin{figure}[H]
 % 	\centering
-%     \subfigure[A]{\includegraphics[trim = 0cm 0cm 0cm 0cm, clip,width=0.46\textwidth]{image/wiki.pdf}} 
-%     \subfigure[B]{\includegraphics[trim = 0cm 0cm 0cm 0cm, clip,width=0.46\textwidth]{image/wiki_state.pdf}}
+%     \subfigure[A]{\includegraphics[width=0.46\textwidth]{image/wiki.pdf}} 
+%     \subfigure[B]{\includegraphics[clip,width=0.46\textwidth]{image/wiki_state.pdf}}
 %     \caption{Robustness of JODIE replication: [A] compare the MRR of JODIE replication with baselines on interaction prediction task, by varying the training data size. [B] shows the AUC of user state change prediction task by varying the training data size.}
 %     \label{fig:foobar}
 % \end{figure}
+
+
+
+\begin{figure}
+	\centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=1\textwidth]{image/wiki.pdf}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \includegraphics[width=1\textwidth]{image/wiki_state.pdf}
+    \end{subfigure}
+
+    \caption{Robustness of JODIE replication: [A] compare the MRR of JODIE replication with baselines on interaction prediction task, by varying the training data size. [B] shows the AUC of user state change prediction task by varying the training data size.}
+    \label{fig:foobar}
+\end{figure}
 
 We can see on the first figure that shows an increasing curve. The larger the training set is, the less the model is failing on the prediction of future interaction. This makes sense because the test set is reduced each time. If we were to compare the curve obtained by the authors of the paper and ours, we could say that the general shape is similar.
 For the second figure, the curve is decreasing. The larger the training set is, the more the model is wrong. This makes sense because in state prediction, there is very few change of state so the model will tend to predict more the majority class. This is even more pronounced when the training set is small.\\
