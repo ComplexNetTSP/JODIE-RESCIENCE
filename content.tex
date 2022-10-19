@@ -60,50 +60,21 @@ The JOint Dynamic user-Item Embeddings (JODIE) model designed by Srijan Kumar et
 
 Several metrics were chosen to evaluate the predictions. For future interaction prediction, the authors chose to use the Mean Reciprocal Rank and the Recall@10.
 \begin{itemize}
-    \item The Mean Reciprocal Rank (MRR) is a statistic measure for evaluating any process that produces a list of possible responses to a sample queries, ordered by probability of correctness. The reciprocal rank of a query response is the multiplicative inverse of the rank of the first correct answer: 1 for first place, $\frac{1}{2}$ for second place, $\frac{1}{3}$ for third place and so on. The MRR is the average of the reciprocal ranks of results for a sample of queries $Q$.
-    $$
-    \text{MRR} = \frac{1}{\text{Card(}Q\text{)}} \sum_{i=1}^{\text{Card(}Q\text{)}} \frac{1}{\text{rank}_i}
-    $$
-    where rank$_i$ refers to the rank position of the first relevant document for the $i$-th query.
+    \item The Mean Reciprocal Rank (MRR) is a statistic measure for evaluating any process that produces a list of possible responses to a sample queries, ordered by probability of correctness. The reciprocal rank of a query response is the multiplicative inverse of the rank of the first correct answer. The MRR is the average of the reciprocal ranks of results for a sample of queries $Q$.
     \item The Recall@k is a statistical measure to evaluate any process that produces a list of possible answers to a sample of queries, ranked by its rank. The Recall@k is the sum of ranks less than or equal to k divided by the number of ranks.
-    $$
-    \text{Recall@k} = \frac{1}{\text{Card(}Q\text{)}} \sum_{i=1}^{\text{Card(}Q\text{)}} \left ( \text{rank}_i \leq \text{k} \right )
-    $$
-    Where $\left ( \text{rank}_i \leq \text{k} \right )$ is a condition, if it is not met we move to the next i.
 \end{itemize}
 
-For user state change prediction, the authors chose to use the Area Under the ROC Curve (AUC). The AUC, as its name suggest, is the area under the ROC curve. To calculate this indicator, you must first draw the ROC curve. To do this, we calculate the specificity (SP) and sensitivity (SE) when we have the contingency table in the following form:
-\begin{figure}[H]
-    \centering
-    \begin{tabular}{|c|c|c|}
-        \hline
-         & Positive real case & Negative real case \\\hline
-         Positive prediction & TP & FP \\\hline
-         Negative prediction & FN & TN \\\hline
-    \end{tabular}
-\end{figure}
-The following formulas give the SP and SE:
-\begin{align*}
-    \begin{aligned}[t]
-        \text{SP} = \frac{TN}{TN+FP}
-    \end{aligned}&&
-    \begin{aligned}[t]
-        \text{SE} = \frac{TP}{TP+FN}
-    \end{aligned}
-\end{align*}
-Then the ROC curve is plotted from (0,0) to (1-SP,SE) and from (1-SP,SE) to (1,1). Finally the AUC is $\frac{SP+SE}{2}$. Scores as close to 1 as possible are desired.
+For user state change prediction, the authors chose to use the Area Under the ROC Curve (AUC). The AUC, as its name suggest, is the area under the ROC curve. To calculate this indicator, you must first draw the ROC curve. To do this, we calculate the specificity (SP) and sensitivity (SE). Finally the AUC is $\frac{SP+SE}{2}$. Scores as close to 1 as possible are desired.
 
-The original paper describes recommender systems as a temporal bipartite graph where nodes represent users and products and an edge represents an interaction between a user and an item. 
+The original paper describes recommender systems as a temporal bipartite graph where nodes represent users and items and an edge represents an interaction between a user and an item. 
 
 \begin{figure}[H]
     \centering
     \includegraphics[scale = 0.4]{image/bipartite_graph.png}
     \caption{Bipartite graph}
+    \label{bipartite_graph}
 \end{figure}
-
 Each interaction is described by a time $t_r$ and a feature vector $f_r$.\\
-
-
 
 The claims that the paper made are as follows:
 \begin{itemize}
@@ -114,11 +85,10 @@ The claims that the paper made are as follows:
     \item The optimal size of the embeddings, found by the authors, is 128.
 \end{itemize}
 
-%In addition to reproducing the results presented in the paper, we extend the values for the choice of embedding size to 8, 16, 32, 64 and 128.
-We perform new experiment\amel{s} to demonstrate the impact \amel{of} the frequency at which the batches are created, i.e the split.
+We perform new experiments to demonstrate the impact of the frequency at which the batches are created, i.e the split.
 \section*{Methodology}
 
-At first, we wanted to reimplement the code without looking at the authors' original code. We quickly realized that there was a lack of explanation on some technical points like t-batch or neural network inputs. So we decided to use the available code to reimplement the code and improve it. We found that there were details that differed from the paper. The resources we mainly used were the code and the authors' paper. We don't have GPUs at our disposal, we had to use Google Colab and a CPU server.\\
+At first, we wanted to reimplement the code without looking at the authors' original code. We quickly realized that there was a lack of explanation on some technical points like t-batch or neural network inputs. So we decided to use the available code to reimplement the code and improve it. We found that there were details that differed from the paper. The resources we mainly used were the code and the authors' paper. At first, we had a CPU server and then we used a GPU server.\\
 
 The JODIE model is summarised as follows. The model consists of two main components: update operation and projection operation. The update operation is composed of two RNNs that generate user and item embeddings.
 
@@ -137,13 +107,11 @@ In this section, we will replicate and re-implement the work of Kumar et al. \su
 Our architecture consists of two Recurrent Neural Networks (RNNs) and two Multi-Layer Perceptrons (MLP) as shown in Figure \ref{Pipeline}. The first RNN is dedicated to users, the second to items. Both RNNs are activated with sigmoids according to the paper but by looking at the documentation of the RNNCell() function, we saw that the activation function used was hyperbolic tangent. The first MLP is dedicated to user classification. It consists of a hidden layer of 50 neurons activated by a ReLU function and an output layer composed of two neurons, one for each state. The second MLP is dedicated to the estimation of the embedding of the next item. It includes a single projection layer that consists of a linear projection in the space of embeddings.
 
 \begin{figure}[H]
-   
-    \begin{center}
-                \includegraphics[scale = 0.4]{image/pipeline.png}
-
+   \begin{center}
+        \includegraphics[scale = 0.4]{image/pipeline.png}
     \end{center}
     \caption{Pipeline. $\text{MLP}_{reg}$ gives an estimation of the embedding of the next item $\textcolor{blue}{\overset{\sim}{i}}$ with which a user \textcolor{red}{u} is likely to interact. The MLP  is designed to recommend the best \textcolor{blue}{i} to each user. $\text{MLP}_{classif}$ is used to predict the user's state change $\textcolor{red}{\widehat u_{state}}$. Will the user potentially drop out / get banned ?}
-     \label{Pipeline}
+    \label{Pipeline}
 \end{figure}
 
 \subsubsection{Update operator}
@@ -184,35 +152,38 @@ We can see that if $\Delta = 0$ then $w=0$ and the projected embedding is the sa
 
 \subsubsection{t-Batch algorithm}
 
-The goal of the \texttt{t-batch} algorithm is to be able to separate temporal data in batches. We work on datasets that are indexed by time, so we cannot separate data in a classical batches. Indeed, we cannot update an embedding of a user who arrives at time $t+1$ before an embedding of a user who arrives at time $t$. To do this, we must take into account several constraints. First, the same batch cannot contain the same entity several times. Second, the batches must keep temporal dependencies, i.e. we process the interactions in the order. \amel{Third, each batch is parallelizable?. }From an algorithmic point of view, those constraint are satisfied while using the following algorithm.\\
+The goal of the \texttt{t-batch} algorithm is to be able to separate temporal data in batches. We work on datasets that are indexed by time, so we cannot separate data in a classical batches. Indeed, we cannot update an embedding of a user who arrives at time $t+1$ before an embedding of a user who arrives at time $t$. To do this, we must take into account several constraints. First, the same batch cannot contain the same entity several times. Second, the batches must keep temporal dependencies, i.e. we process the interactions in the order. By respecting these two conditions, the authors guarantee that the batches are parallelizable. A negative point of the original article is the understanding of the \texttt{t-batch} algorithm with only a few lines description. To better understand, we present the algorithm \ref{t-batch}.
 
-% \begin{comment}
-% \begin{algorithm}[H]
-%     \caption{t-Batch}
-%     \begin{algorithmic} 
-%         \STATE \textbf{Input} : Sequence of interactions ordered by time S : $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
-%         \STATE \textbf{Output} : Sequence of batches B : $B_k = \{S_{k,1},\,...,\,S_{k,n} \}$
-%         \STATE \textbf{Initialize} : 
-%         \STATE \quad $\text{tbatch\_id\_u[u]} \leftarrow 0 \; \forall \; u \in \mathcal{U}$
-%         \STATE \quad $\text{tbatch\_id\_i[i]} \leftarrow 0 \; \forall \; i \in \mathcal{I}$
-%         \STATE \quad $B_k \leftarrow \{ \},\; \forall \; k \in [1,\;\text{Card}(S)]$
-%         \STATE \quad $C \leftarrow 0$
-%         \FOR{$j \in$ 1 à Card$(S)$}
-%             \STATE Extraction $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
-%             \STATE idx $\leftarrow$ $\max$(tbatch\_id\_u[$u_j$], tbatch\_id\_i[$i_j$]) + 1
-%             \STATE $B_\text{idx} \leftarrow B_\text{idx} \cup \{ S_j \}$
-%             \STATE tbatch\_id\_u[$u_j$] = idx
-%             \STATE tbatch\_id\_i[$i_j$] = idx
-%             \STATE $C \leftarrow \max(C,\,$idx)
-%         \ENDFOR
-%         \RETURN $\{ B_1,\,...,\,B_C \}$
-%     \end{algorithmic}
-% \end{algorithm}
-% \end{comment}
+
+%From an algorithmic point of view, those constraint are satisfied while using the algorithm \ref{t-batch}. A negative point of the original article is the understanding of the t-batch algorithm with only a few lines description. To better understand this algorithm, we present it.\\
+
+    \begin{algorithm}[H]
+        \caption{t-Batch}
+        \begin{algorithmic} 
+            \STATE \textbf{Input} : Sequence of interactions ordered by time S : $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
+            \STATE \textbf{Output} : Sequence of batches B : $B_k = \{S_{k,1},\,...,\,S_{k,n} \}$
+            \STATE \textbf{Initialize} : 
+            \STATE \quad $\text{tbatch\_id\_u[u]} \leftarrow 0 \; \forall \; u \in \mathcal{U}$
+            \STATE \quad $\text{tbatch\_id\_i[i]} \leftarrow 0 \; \forall \; i \in \mathcal{I}$
+            \STATE \quad $B_k \leftarrow \{ \},\; \forall \; k \in [1,\;\text{Card}(S)]$
+            \STATE \quad $C \leftarrow 0$
+            \FOR{$j \in S$}
+                \STATE Extraction $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
+                \STATE idx $\leftarrow$ $\max$(tbatch\_id\_u[$u_j$], tbatch\_id\_i[$i_j$]) + 1
+                \STATE $B_\text{idx} \leftarrow B_\text{idx} \cup \{ S_j \}$
+                \STATE tbatch\_id\_u[$u_j$] = idx
+                \STATE tbatch\_id\_i[$i_j$] = idx
+                \STATE $C \leftarrow \max(C,\,$idx)
+            \ENDFOR
+            \RETURN $\{ B_1,\,...,\,B_C \}$
+        \end{algorithmic}
+    \end{algorithm}
+
 
 
 \begin{algorithm}[H]
     \caption{t-Batch}
+    \label{t-batch}
     \begin{algorithmic} 
         \STATE \textbf{Input} :  [user\_id, id\_user\_seq, $\Delta_u$, previous\_item\_seq, item\_id, id\_item\_seq, $\Delta_i$,\\
         \hspace{1.2cm}timestamp\_seq, feature\_seq, y\_true\_labels] = preprocessing(S)\\
