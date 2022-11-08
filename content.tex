@@ -706,17 +706,9 @@ We can say that their model outperforms the existing models on these 4 datasets 
 To go further, we decided to test the impact of the \texttt{split} hyper-parameter. As a reminder, the original study does not consider \texttt{split} as a hyper-parameter but as a fixed value of 500. The following figures show the importance of choosing this hyper-parameter. To do so, we predict the user state change on MOOC dataset with several embedding sizes 8, 16 and 32 and different split 5, 500 and 50000.
 
 \begin{figure}[H]
-	\centering
-    \begin{subfigure}[b]{0.30\textwidth}
-        \includegraphics[width=\textwidth]{image/8_split.pdf}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.30\textwidth}
-        \includegraphics[width=\textwidth]{image/16_split.pdf}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.36\textwidth}
-        \includegraphics[width=\textwidth]{image/32_split.pdf}
-    \end{subfigure}
-    \caption{Robustness of JODIE replication: [A] compare the MRR of JODIE replication with baselines on interaction prediction task, by varying the training data size. [B] shows the AUC of user state change prediction task by varying the training data size.}
+    \centering
+    \includegraphics[width = \textwidth]{image/split.pdf}
+    \caption{Comparaison the robustness of the JODIE model as a function of the hyper-parameter \texttt{split}.}
     \label{fig:foobar}
 \end{figure}
 
