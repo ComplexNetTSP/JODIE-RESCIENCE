@@ -78,22 +78,32 @@ location = {Cambridge, United Kingdom},
 series = {WSDM '17}
 }
 
-@inproceedings{ijcai2017-504,
-  author    = {Yu Zhu and Hao Li and Yikang Liao and Beidou Wang and Ziyu Guan and Haifeng Liu and Deng Cai},
-  title     = {What to Do Next: Modeling User Behaviors by Time-LSTM},
-  booktitle = {Proceedings of the Twenty-Sixth International Joint Conference on
-               Artificial Intelligence, {IJCAI-17}},
-  pages     = {3602--3608},
-  year      = {2017},
-  doi       = {10.24963/ijcai.2017/504},
-  url       = {https://doi.org/10.24963/ijcai.2017/504},
+@inproceedings{Zhu17,
+    author    = {Yu Zhu and Hao Li and Yikang Liao and Beidou Wang and Ziyu Guan and Haifeng Liu and Deng Cai},
+    title     = {What to Do Next: Modeling User Behaviors by Time-LSTM},
+    booktitle = {Proceedings of the Twenty-Sixth International Joint Conference on Artificial Intelligence, {IJCAI-17}},
+    pages     = {3602--3608},
+    year      = {2017},
+    doi       = {10.24963/ijcai.2017/504},
+    url       = {https://doi.org/10.24963/ijcai.2017/504},
 }
 
-@inproceedings{46488,
-title	= {Latent Cross: Making Use of Context in Recurrent Recommender Systems},
-author	= {Alex Beutel and Paul Covington and Sagar Jain and Can Xu and Jia Li and Vince Gatto and Ed H. Chi},
-year	= {2018},
-booktitle	= {WSDM 2018: The Eleventh ACM International Conference on Web Search and Data Mining}
+@inproceedings{Beutel18,
+    author = {Beutel, Alex and Covington, Paul and Jain, Sagar and Xu, Can and Li, Jia and Gatto, Vince and Chi, Ed H.},
+    title = {Latent Cross: Making Use of Context in Recurrent Recommender Systems},
+    year = {2018},
+    isbn = {9781450355810},
+    publisher = {Association for Computing Machinery},
+    address = {New York, NY, USA},
+    url = {https://doi.org/10.1145/3159652.3159727},
+    doi = {10.1145/3159652.3159727},
+    abstract = {The success of recommender systems often depends on their ability to understand and make use of the context of the recommendation request. Significant research has focused on how time, location, interfaces, and a plethora of other contextual features affect recommendations. However, in using deep neural networks for recommender systems, researchers often ignore these contexts or incorporate them as ordinary features in the model.In this paper, we study how to effectively treat contextual data in neural recommender systems. We begin with an empirical analysis of the conventional approach to context as features in feed-forward recommenders and demonstrate that this approach is inefficient in capturing common feature crosses. We apply this insight to design a state-of-the-art RNN recommender system. We first describe our RNN-based recommender system in use at YouTube. Next, we offer "Latent Cross," an easy-to-use technique to incorporate contextual data in the RNN by embedding the context feature first and then performing an element-wise product of the context embedding with model's hidden states. We demonstrate the improvement in performance by using this Latent Cross technique in multiple experimental settings.},
+    booktitle = {Proceedings of the Eleventh ACM International Conference on Web Search and Data Mining},
+    pages = {46–54},
+    numpages = {9},
+    keywords = {recurrent neural network, contextual recommendation, recommender system},
+    location = {Marina Del Rey, CA, USA},
+    series = {WSDM '18}
 }
 
 @article{LSTM,
@@ -155,29 +165,39 @@ doi = {10.1162/neco.1997.9.8.1735}
   copyright = {arXiv.org perpetual, non-exclusive license}
 }
 
-@inproceedings{IGE,
-author = {Zhang, Yao and Xiong, Yun and Kong, Xiangnan and Zhu, Yangyong},
-title = {Learning Node Embeddings in Interaction Graphs},
-year = {2017},
-isbn = {9781450349185},
-publisher = {Association for Computing Machinery},
-address = {New York, NY, USA},
-url = {https://doi.org/10.1145/3132847.3132918},
-doi = {10.1145/3132847.3132918},
-abstract = {Node embedding techniques have gained prominence since they produce continuous and low-dimensional features, which are effective for various tasks. Most existing approaches learn node embeddings by exploring the structure of networks and are mainly focused on static non-attributed graphs. However, many real-world applications, such as stock markets and public review websites, involve bipartite graphs with dynamic and attributed edges, called attributed interaction graphs. Different from conventional graph data, attributed interaction graphs involve two kinds of entities (e.g. investors/stocks and users/businesses) and edges of temporal interactions with attributes (e.g. transactions and reviews). In this paper, we study the problem of node embedding in attributed interaction graphs. Learning embeddings in interaction graphs is highly challenging due to the dynamics and heterogeneous attributes of edges. Different from conventional static graphs, in attributed interaction graphs, each edge can have totally different meanings when the interaction is at different times or associated with different attributes. We propose a deep node embedding method called IGE (Interaction Graph Embedding). IGE is composed of three neural networks: an encoding network is proposed to transform attributes into a fixed-length vector to deal with the heterogeneity of attributes; then encoded attribute vectors interact with nodes multiplicatively in two coupled prediction networks that investigate the temporal dependency by treating incident edges of a node as the analogy of a sentence in word embedding methods. The encoding network can be specifically designed for different datasets as long as it is differentiable, in which case it can be trained together with prediction networks by back-propagation. We evaluate our proposed method and various comparing methods on four real-world datasets. The experimental results prove the effectiveness of the learned embeddings by IGE on both node clustering and classification tasks.},
-booktitle = {Proceedings of the 2017 ACM on Conference on Information and Knowledge Management},
-pages = {397–406},
-numpages = {10},
-keywords = {graph mining, attributed interaction graph, node embedding, representation learning},
-location = {Singapore, Singapore},
-series = {CIKM '17}
+@inproceedings{Zhang17,
+    author = {Zhang, Yao and Xiong, Yun and Kong, Xiangnan and Zhu, Yangyong},
+    title = {Learning Node Embeddings in Interaction Graphs},
+    year = {2017},
+    isbn = {9781450349185},
+    publisher = {Association for Computing Machinery},
+    address = {New York, NY, USA},
+    url = {https://doi.org/10.1145/3132847.3132918},
+    doi = {10.1145/3132847.3132918},
+    abstract = {Node embedding techniques have gained prominence since they produce continuous and low-dimensional features, which are effective for various tasks. Most existing approaches learn node embeddings by exploring the structure of networks and are mainly focused on static non-attributed graphs. However, many real-world applications, such as stock markets and public review websites, involve bipartite graphs with dynamic and attributed edges, called attributed interaction graphs. Different from conventional graph data, attributed interaction graphs involve two kinds of entities (e.g. investors/stocks and users/businesses) and edges of temporal interactions with attributes (e.g. transactions and reviews). In this paper, we study the problem of node embedding in attributed interaction graphs. Learning embeddings in interaction graphs is highly challenging due to the dynamics and heterogeneous attributes of edges. Different from conventional static graphs, in attributed interaction graphs, each edge can have totally different meanings when the interaction is at different times or associated with different attributes. We propose a deep node embedding method called IGE (Interaction Graph Embedding). IGE is composed of three neural networks: an encoding network is proposed to transform attributes into a fixed-length vector to deal with the heterogeneity of attributes; then encoded attribute vectors interact with nodes multiplicatively in two coupled prediction networks that investigate the temporal dependency by treating incident edges of a node as the analogy of a sentence in word embedding methods. The encoding network can be specifically designed for different datasets as long as it is differentiable, in which case it can be trained together with prediction networks by back-propagation. We evaluate our proposed method and various comparing methods on four real-world datasets. The experimental results prove the effectiveness of the learned embeddings by IGE on both node clustering and classification tasks.},
+    booktitle = {Proceedings of the 2017 ACM on Conference on Information and Knowledge Management},
+    pages = {397–406},
+    numpages = {10},
+    keywords = {graph mining, attributed interaction graph, node embedding, representation learning},
+    location = {Singapore, Singapore},
+    series = {CIKM '17}
 }
 
-@article{CTDNE,
-  title={Continuous-Time Dynamic Network Embeddings},
-  author={Giang Hoang Nguyen and John Boaz Lee and Ryan A. Rossi and Nesreen Ahmed and Eunyee Koh and Sungchul Kim},
-  journal={Companion Proceedings of the The Web Conference 2018},
-  year={2018}
+@inproceedings{Nguyen18, 
+    author = {Nguyen, Giang Hoang and Lee, John Boaz and Rossi, Ryan A. and Ahmed, Nesreen K. and Koh, Eunyee and Kim, Sungchul},
+    title = {Continuous-Time Dynamic Network Embeddings},
+    year = {2018},
+    isbn = {9781450356404},
+    publisher = {International World Wide Web Conferences Steering Committee},
+    address = {Republic and Canton of Geneva, CHE},
+    url = {https://doi.org/10.1145/3184558.3191526},
+    doi = {10.1145/3184558.3191526},
+    booktitle = {Companion Proceedings of the The Web Conference 2018},
+    pages = {969–976},
+    numpages = {8},
+    keywords = {continuous-time dynamic networks, temporal node embeddings, temporal random walks, dynamic networks, continuous-time dynamical system, network representation learning, temporal networks, feature learning, dynamic network embeddings, graph stream},
+    location = {Lyon, France},
+    series = {WWW '18}
 }
 
 @misc{https://doi.org/10.48550/arxiv.1406.1078GRU,
@@ -209,18 +229,18 @@ series = {CIKM '17}
 }
 
 @InProceedings{10.1007/978-3-642-33486-3_5lastFM,
-author="Hidasi, Bal{\'a}zs
-and Tikk, Domonkos",
-editor="Flach, Peter A.
-and De Bie, Tijl
-and Cristianini, Nello",
-title="Fast ALS-Based Tensor Factorization for Context-Aware Recommendation from Implicit Feedback",
-booktitle="Machine Learning and Knowledge Discovery in Databases",
-year="2012",
-publisher="Springer Berlin Heidelberg",
-address="Berlin, Heidelberg",
-pages="67--82",
-isbn="978-3-642-33486-3"
+    author="Hidasi, Bal{\'a}zs
+    and Tikk, Domonkos",
+    editor="Flach, Peter A.
+    and De Bie, Tijl
+    and Cristianini, Nello",
+    title="Fast ALS-Based Tensor Factorization for Context-Aware Recommendation from Implicit Feedback",
+    booktitle="Machine Learning and Knowledge Discovery in Databases",
+    year="2012",
+    publisher="Springer Berlin Heidelberg",
+    address="Berlin, Heidelberg",
+    pages="67--82",
+    isbn="978-3-642-33486-3"
 }
 
 @misc{mooc,
@@ -242,69 +262,37 @@ isbn="978-3-642-33486-3"
   year = 2001
 }
 @article{Shang_2010,
-doi = {10.1209/0295-5075/90/48006},
-url = {https://dx.doi.org/10.1209/0295-5075/90/48006},
-year = {2010},
-month = {jun},
-publisher = {},
-volume = {90},
-number = {4},
-pages = {48006},
-author = {Ming-Sheng Shang and Linyuan Lü and Yi-Cheng Zhang and Tao Zhou},
-title = {Empirical analysis of web-based user-object bipartite networks},
-journal = {Europhysics Letters},
-abstract = {Understanding the structure and evolution of web-based user-object networks is a significant task since they play a crucial role in e-commerce nowadays. This letter reports the empirical analysis on two large-scale web sites, audioscrobbler.com and del.icio.us, where users are connected with music groups and bookmarks, respectively. The degree distributions and degree-degree correlations for both users and objects are reported. We propose a new index, named collaborative similarity, to quantify the diversity of tastes based on the collaborative selection. Accordingly, the correlation between degree and selection diversity is investigated. We report some novel phenomena well characterizing the selection mechanism of web users and outline the relevance of these phenomena to the information recommendation problem.}
+    doi = {10.1209/0295-5075/90/48006},
+    url = {https://dx.doi.org/10.1209/0295-5075/90/48006},
+    year = {2010},
+    month = {6},
+    publisher = {},
+    volume = {90},
+    number = {4},
+    pages = {48006},
+    author = {Ming-Sheng Shang and Linyuan Lü and Yi-Cheng Zhang and Tao Zhou},
+    title = {Empirical analysis of web-based user-object bipartite networks},
+    journal = {Europhysics Letters},
 }
-@article{L__2012,
-	doi = {10.1016/j.physrep.2012.02.006},
-  
-	url = {https://doi.org/10.1016%2Fj.physrep.2012.02.006},
-  
-	year = 2012,
-	month = {oct},
-  
-	publisher = {Elsevier {BV}
-},
-  
-	volume = {519},
-  
-	number = {1},
-  
-	pages = {1--49},
-  
-	author = {Linyuan Lü and Mat{\'{u}}{\v{s}} Medo and Chi Ho Yeung and Yi-Cheng Zhang and Zi-Ke Zhang and Tao Zhou},
-  
-	title = {Recommender systems},
-  
-	journal = {Physics Reports}
-}
+
 @article{netflix,
-author = {Bell, Robert and Koren, Yehuda},
-year = {2007},
-month = {12},
-pages = {75-79},
-title = {Lessons from the Netflix prize challenge},
-volume = {9},
-journal = {SIGKDD Explorations},
-doi = {10.1145/1345448.1345465}
+    author = {Bell, Robert and Koren, Yehuda},
+    year = {2007},
+    month = {12},
+    pages = {75-79},
+    title = {Lessons from the Netflix prize challenge},
+    volume = {9},
+    journal = {SIGKDD Explorations},
+    doi = {10.1145/1345448.1345465}
 }
 
 @misc{pixie,
-  doi = {10.48550/ARXIV.1711.07601},
-  
-  url = {https://arxiv.org/abs/1711.07601},
-  
-  author = {Eksombatchai, Chantat and Jindal, Pranav and Liu, Jerry Zitao and Liu, Yuchen and Sharma, Rahul and Sugnet, Charles and Ulrich, Mark and Leskovec, Jure},
-  
-  keywords = {Information Retrieval (cs.IR), Machine Learning (cs.LG), Performance (cs.PF), Social and Information Networks (cs.SI), FOS: Computer and information sciences, FOS: Computer and information sciences},
-  
-  title = {Pixie: A System for Recommending 3+ Billion Items to 200+ Million Users in Real-Time},
-  
-  publisher = {arXiv},
-  
-  year = {2017},
-  
-  copyright = {arXiv.org perpetual, non-exclusive license}
+    doi = {10.48550/ARXIV.1711.07601},
+    url = {https://arxiv.org/abs/1711.07601},
+    author = {Eksombatchai, Chantat and Jindal, Pranav and Liu, Jerry Zitao and Liu, Yuchen and Sharma, Rahul and Sugnet, Charles and Ulrich, Mark and Leskovec, Jure},
+    keywords = {Information Retrieval (cs.IR), Machine Learning (cs.LG), Performance (cs.PF), Social and Information Networks (cs.SI), FOS: Computer and information sciences, FOS: Computer and information sciences},  
+    title = {Pixie: A System for Recommending 3+ Billion Items to 200+ Million Users in Real-Time},  
+    year = {2017},
 }
 
 @misc{lsh,
