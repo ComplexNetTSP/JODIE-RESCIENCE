@@ -17,7 +17,7 @@ We reimplement the method of Kumar et al.\supercite{kumar2019predicting} for rec
 
 \subsubsection{Result}
 
-We will reproduce the results for user state change prediction and future interaction prediction on all datasets. We will also test the robustness of the model by varying the percentage of training data and the size of the embeddings. The first results show that the model is reproducible and even better in one case. For the robustness, the variations of the percentage of training data allowed us to affirm that the model was robust. Moreover, we could test the importance of the \texttt{split} hyper-parameter. This showed that it is important to choose it well in order to find a compromise between performance and learning time because the bigger the split, the longer the learning time.
+We will reproduce the results for user state change prediction and future interaction prediction on all datasets. We will also test the robustness of the model by varying the percentage of training data and the size of the embeddings. The first results show that the model is reproducible and even better in one case. For the robustness, the variations of the percentage of training data allowed us to affirm that the model was robust. Moreover, we could test the importance of the \texttt{split} hyper-parameter. This showed that it is important to choose it well in order to find a compromise between performance and learning time because the bigger the \texttt{split}, the longer the learning time.
 
 
 \subsubsection{What was easy}
@@ -44,6 +44,7 @@ The authors claim to outperform some of the state of the art recommender systems
 %Recommendation systems are crucial in the current era of information overload and lack of user comprehension. The recent development of recommender systems has been prompted by the availability of more complex data sets, especially from Web-based data sources. Scientists from diverse disciplines have contributed their individual expertise to this field, but there are still challenges when trying to compare and incorporate those different approaches. Recommendation systems are user-centric, focusing on providing users with the information they want. In many ways, this means simulating the experience of a knowledgeable friend. The basic approach to recommendation systems is to leverage past interactions with other users that are similar to the target user. Furthermore, recommender systems have become an important component of web applications, thanks to their tremendous success in e-commerce domain, or even social network sites; they are able to predict what users are going to like based on the users’ past behavior (e.g., products they have bought or friends they have talked with), as well as what other users with similar tastes have also liked (e.g., friends who have chosen the same movie as you). In general, whenever there is plenty of diverse products and customers are not alike, personalized recommendation may help to deliver the right content to the right person. Moreover, recommender systems offer marketers a way of increasing sales by suggesting additional products to the customers and improving consumer loyalty because consumers tend to return to the sites that best serve their needs; in October 2006, Netflix released a dataset with more than 100 million anonymous movie ratings while challenging the IA community to beat the actual accuracy of the company's recommendation system, challengers propose a better solution with an accuracy increase by 10\% . This improvement allows Netflix to increase their sales revenues by millions of dollars \supercite{netflix}.\\ \\
 
 %However, researchers soon realized that there is no single best method in recommendation, instead depending on the context and density of the available data, different methods adapting to particular applications are most likely to succeed. Hence there is no perfect solution, as one cannot simply apply existing models as-is and expect optimal performance. Rather, understanding the underlying premises and recommendation mechanisms will help tackle many diverse application problems from real life examples. It is also important to highlight that recommendation systems face several challenges which pose danger for the use and performance of the latter. First, those systems are prone to data sparsity; since the set of available items or users often exceed millions of individuals, in some practical scenario users do not buy or rate every item, in fact large number of users are concentrated on few items and hence a consequent amount of items are untouched by users. Next, the computational cost issues and search for recommendation algorithms is something to consider for famous websites like Amazon which include millions of users and item which is known as scalability. Then, the difficulty to produce a personal recommendation for new users while having insufficient information about them which is known as cold start. Finally, most of recommendation systems neglect the timestamps of interactions, in fact  old interactions should decay with time because real users have many diverse interests that change over time, with short term interests as well as long term interests. It's also important to note that real time recommendations is one of the biggest challenge  that researchers  are trying to solve, which is actually possible using Locality Minimum Hashing (LSH) \supercite{lsh} that provides a constant time inference despite a negligible loss of accuracy, or with specific architecture like Pixie \supercite{pixie} based on Random Walk proposed by Pinterest that is able to recommend more than 3 billion items to more than 200 million users in real-time.\\ \\
+<<<<<<< HEAD
 %The state of the art related to recommendation system is quite rich. Collaborative filtering is one of the first concept shared by researchers, where Non-Negative Matrix Factorization (NMF) was used to reduce the dimensionality of filtering databases and to improve the performance \supercite{1714249}. However, we will focus in the literature quoted by the authors of the The JOint Dynamic user‐Item Embeddings (JODIE), where three types of models are presented and will serve as algorithms reference for recommendation task:
 %\begin{itemize}
 %    \item Deep recurrent recommender models use Recurrent Neural Networks\supercite{Rumelhart1986} (RNNs) or their variants Long Short-Term Memory\supercite{LSTM} (LSTM) and Gated Recurrent Unit\supercite{https://doi.org/10.48550/arxiv.1406.1078GRU} (GRU) to build recommender systems.
@@ -51,6 +52,18 @@ The authors claim to outperform some of the state of the art recommender systems
 %    \item Temporal network embedding models that generate embeddings for nodes in temporal networks.
 %\end{itemize}
 %Among the first family of models mentioned, the Recurrent Recommender Network\supercite{10.1145/3018661.3018689} (RRN) uses RNNs to generate dynamic embeddings of users and items from rating networks. More recently, Time-LSTM\supercite{ijcai2017-504} and LatentCross\supercite{46488} learn to integrate features into the embeddings. But these methods suffer from two shortcomings. First, they take one-hot vector of the item as input to update the user embedding. This only takes into account the item ID and ignores the current state of the item. Second, some models generate dynamic embeddings only for users and not for items.\\
+=======
+The state of the art related to recommendation system is quite rich. Collaborative filtering is one of the first concept shared by researchers, where Non-Negative Matrix Factorization (NMF) was used to reduce the dimensionality of filtering databases and to improve the performance \supercite{1714249}. However, we will focus in the literature quoted by the authors of the The JOint Dynamic user‐Item Embeddings (JODIE), where three types of models are presented and will serve as algorithms reference for recommendation task.
+%\begin{itemize}
+  %  \item 
+    Deep recurrent recommender models use Recurrent Neural Networks\supercite{Rumelhart1986} (RNNs) or their variants Long Short-Term Memory\supercite{LSTM} (LSTM) and Gated Recurrent Unit\supercite{https://doi.org/10.48550/arxiv.1406.1078GRU} (GRU) to build recommender systems.
+   % \item 
+   Dynamic co-evolution models that jointly learn user and item representations using point-process modeling\supercite{https://doi.org/10.48550/arxiv.1705.05742}$^,$\supercite{NIPS2016_53ed35c7} and RNN-based modeling\supercite{https://doi.org/10.48550/arxiv.1609.03675}.
+   % \item 
+    Temporal network embedding models that generate embeddings for nodes in temporal networks.
+%\end{itemize}
+Among the first family of models mentioned, the Recurrent Recommender Network\supercite{10.1145/3018661.3018689} (RRN) uses RNNs to generate dynamic embeddings of users and items from rating networks. More recently, Time-LSTM\supercite{ijcai2017-504} and LatentCross\supercite{46488} learn to integrate features into the embeddings. But these methods suffer from two shortcomings. First, they take one-hot vector of the item as input to update the user embedding. This only takes into account the item ID and ignores the current state of the item. Second, some models generate dynamic embeddings only for users and not for items.\\
+>>>>>>> 45cc6f8b9eea2797349dd63681fdb08057c15ca1
 
 %The idea of the following family, is that user and item embeddings influence each other while interacting. JODIE was designed similarly to these models, the difference is that JODIE trains a projection operation to predict the user's embedding at any given time. JODIE produces item embeddings instead of interaction probabilities and trains the model using batches. The authors claim to outperform in average these models by 104.85\% in term of MRR and 71.68\% in term of recall@10 in predicting the next interaction and by 14\% in average of AUC in predicting the state change. Regarding batches, these models are not evolutionary because they process the interaction in a sequential order to maintain the time dependence. JODIE creates batches with a new algorithm, which makes it 9 times faster than this family of models.\\
 
@@ -95,7 +108,7 @@ The original paper describes recommender systems as a temporal bipartite network
 
 \begin{figure}[H]
     \centering
-    \includegraphics[scale = 0.35]{image/bipartite_graph.png}
+    \includegraphics[width = 0.3\textwidth]{image/bipartite_graph.pdf}
     \caption{Bipartite graph}
     \label{bipartite_graph}
 \end{figure}
@@ -293,7 +306,7 @@ We detail the learning steps and the specificity of JODIE model. More precisely,
     \item The JODIE model has a particularity in the way the \texttt{t-batch} is formed, which is not discussed in the article and difficult to understand in the code. Normally to make batches, we cut the dataset with the number of observations we want per batch. But when we have a dataset with temporal dependencies the operation can not be done the same way, this why we apply the \texttt{t-batch} algorithm. But, instead of applying directly the algorithm on the whole dataset, the authors made it in another way. From the temporal data, the authors decided to make subsets of the data and apply independently the \texttt{t-batch} algorithm on each subset of the data. The following figure will help us to understand better:
     \begin{figure}[H]
         \centering
-        \includegraphics[scale = 0.43]{image/pipeline-jodie.pdf}
+        \includegraphics[scale = 0.43]{image/pipeline.pdf}
         \caption{Pipeline of the \texttt{t-batch} algorithm}
         \label{pipeline_t-batch}
     \end{figure}
@@ -701,20 +714,12 @@ We can say that their model outperforms the existing models on these 4 datasets 
 
 \subsection*{Additional result not present in the original paper}
 
-To go further, we decided to test the impact of the \texttt{split} hyper-parameter. As a reminder, the original study does not consider \texttt{split} as a hyper-parameter but as a fixed value of 500. The following figures show the importance of choosing this hyper-parameter. To do so, we predict the user state change on MOOC dataset with several embedding sizes 8, 16 and 32 and different split 5, 500 and 50000.
+To go further, we decided to test the impact of the \texttt{split} hyper-parameter. As a reminder, the original study does not consider \texttt{split} as a hyper-parameter but as a fixed value of 500. The following figures show the importance of choosing this hyper-parameter. To do so, we predict the user state change on MOOC dataset with several embedding sizes 8, 16 and 32 and different \texttt{split} 5, 500 and 50000.
 
 \begin{figure}[H]
-	\centering
-    \begin{subfigure}[b]{0.30\textwidth}
-        \includegraphics[width=\textwidth]{image/8_split.pdf}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.30\textwidth}
-        \includegraphics[width=\textwidth]{image/16_split.pdf}
-    \end{subfigure}
-    \begin{subfigure}[b]{0.36\textwidth}
-        \includegraphics[width=\textwidth]{image/32_split.pdf}
-    \end{subfigure}
-    \caption{Robustness of JODIE replication: [A] compare the MRR of JODIE replication with baselines on interaction prediction task, by varying the training data size. [B] shows the AUC of user state change prediction task by varying the training data size.}
+    \centering
+    \includegraphics[width = \textwidth]{image/split.pdf}
+    \caption{Comparaison the robustness of the JODIE model as a function of the hyper-parameter \texttt{split}.}
     \label{fig:foobar}
 \end{figure}
 
