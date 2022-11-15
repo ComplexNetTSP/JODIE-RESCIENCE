@@ -23,7 +23,7 @@ the authors had made their code available and all the necessary information at t
 
 \subsubsection{What was difficult}
 
-Although the code is available, however some technical aspects in the article have not been developed which has hindered our complete understanding of the model. These problems were solved by studying the code made available.
+Although the code is available, however some technical aspects in the article developed which has hindered our complete understanding of the model. These problems were solved by studying the code made available.
 
 \subsubsection{Communication with original authors}
 We contacted the authors for clarification about which aggregation method used to fit the inputs constraints of the RNN gate.
@@ -32,8 +32,8 @@ We contacted the authors for clarification about which aggregation method used t
 
 \section*{Introduction}
 
-Recommender systems are systems that cover a broad scope of techniques which all aim to provide suggestions of items that are most pertinent to a particular user (e.g.., which music playlists to choose, which book a user might like, etc.), see [2] for a review of the techniques and challenges of the field. We can observe, particularly in areas such as  e-commerce or social media, that one user may interact with several items/products, and these interactions may evolve with time and context (e.g., Winter clothe recommendation should be different from summer clothes recommendation). 
-As a result,  understanding and modeling the dynamic evolution of users and items is an important issue. In the literature, this dynamicity is generally modeled by an embedding trajectory in a Euclidean space. However, existing works suffer from several limitations, as the authors in [1] pointed out. At first, none of the existing methods predicts the future embedding trajectory. Instead, the embeddings are generated only at each user's action. Moreover, static and dynamic properties are generally not considered in the same framework. Finally, scalability remains an open issue for the prediction of user-item interactions as well as for the model's training when dealing with large-scale datasets. To overcome these limitations, [1] proposes JODIE, a deep learning-based recommender system that models user‐item interactions as a sequence of timestamped edges on a bipartite graph (cf figure \ref{bipartite_graph}).
+Recommender systems are systems that cover a broad scope of techniques which all aim to provide suggestions of items that are most pertinent to a particular user (e.g.., which music playlists to choose, which book a user might like, etc.), see~\cite{Ricci_Rokach_Shapira_2021} for a review of the techniques and challenges of the field. We can observe, particularly in areas such as  e-commerce or social media, that one user may interact with several items/products, and these interactions may evolve with time and context (e.g., Winter clothe recommendation should be different from summer clothes recommendation). 
+As a result,  understanding and modeling the dynamic evolution of users and items is an important issue. In the literature, this dynamicity is generally modeled by an embedding trajectory in a Euclidean space. However, existing works suffer from several limitations, as the authors in \cite{kumar2019predicting} pointed out. At first, none of the existing methods predicts the future embedding trajectory. Instead, the embeddings are generated only at each user's action. Moreover, static and dynamic properties are generally not considered in the same framework. Finally, scalability remains an open issue for the prediction of user-item interactions as well as for the model's training when dealing with large-scale datasets. To overcome these limitations, \cite{kumar2019predicting} proposes JODIE, a deep learning-based recommender system that models user‐item interactions as a sequence of timestamped edges on a bipartite graph (cf figure \ref{bipartite_graph}).
 The core idea is that each user and item has two embeddings: a static embedding representing the entity's long‐term stationary property
 and a dynamic embedding representing the time‐varying property. These embeddings are used to make predictions regarding future interactions. The proposed method is trained with batches of data to overcome the scalability issue.
 The authors claim to outperform some of the state-of-the-art recommender systems such as Time-LSTM~\cite{Zhu17}, LatentCross~\cite{Beutel18}, Interaction Graph Embedding (IGE)~\cite{Zhang17}, Recurrent Recommender Networks~\cite{Wu17} and the Continuous-Time Dynamic Network Embeddings(CTDNE)~\cite{Nguyen18} in predicting future interactions  at least 20\% better, and user state change predictions 12\% better on average.
@@ -298,41 +298,6 @@ We detail the learning steps and the specificity of JODIE model. More precisely,
 \end{enumerate}
 Once the learning stage is over, the evaluation is carried out.
 
-% \begin{comment}
-%     \begin{algorithm}[H]
-%         \caption{JODIE}
-%         \begin{algorithmic} 
-%             \STATE \textbf{Input}: Sequence of interactions ordered by time S : $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
-%             \STATE \quad \hspace{0.73cm}Initial user embedding $u_t$
-%             \STATE \quad \hspace{0.73cm}Initial item embedding $i_t$
-%             \STATE \quad \hspace{0.73cm}Current model parameters: $\Theta_{proj}$, $\Theta_{pred}$, $\Theta_{state}$, \textbf{RNN}$_U$, \textbf{RNN}$_I$
-%             \STATE \textbf{Output}: Dynamic user and item embeddings, updated model parameters
-%             \STATE \textbf{Initialize}: $\ell \leftarrow 0$
-%             \STATE \quad \hspace{1.1cm} prev $\leftarrow$ $\{\}$
-%             \STATE \quad \hspace{1.1cm} prev$_{state}$ $\leftarrow$ $\{\}$
-%             \FOR{$j \in$ 1 à Card$(S)$}
-%                 \STATE Preprocessing $S_j$
-%                 \STATE $\widehat u_t$ $\; \leftarrow \; \Theta_{proj}(u_t^-, \, \Delta_u)$
-%                 \STATE $k \leftarrow$ prev[$u$]
-%                 \STATE $\overset{\sim}{i_t} \leftarrow \Theta_{pred}(\widehat u_t, \, \Bar{u}, \, i^-, \,\Bar{i})$
-%                 \STATE $\ell \leftarrow \ell + \| \overset{\sim}{i_t} - [ \Bar{i}, \, i_t^-] \|_2$
-%                 \STATE $u_t \leftarrow \textbf{RNN}_U(u_t^-,\,i_t^-,\,\Delta_u,\,f)$
-%                 \STATE $i_t \leftarrow \textbf{RNN}_I(i_t^-,\,u_t^-,\,\Delta_i,\,f)$
-%                 \STATE prev[$u$] $\leftarrow i$
-%                 \STATE $\ell \leftarrow \ell + \lambda_u \| u_t - u_t^- \|_2 + \lambda_i \| i_t - i_t^- \|_2$
-%                 \IF{State change \TRUE}
-%                     \STATE  prev$_{state}[j]$ $\leftarrow$ $u_t$
-%                     \STATE $\widehat u_{pred} \leftarrow \Theta_{state}(\text{prev}_{state})$
-%                     \STATE $\ell \leftarrow \ell + CE(u_{true},\,\widehat u_{state})$
-%                 \ENDIF\\
-%                 Back-propagation loss and update model parameters
-%             \ENDFOR
-%             \RETURN $u_t$, $i_t$, model: $\Theta_{proj}$, $\Theta_{pred}$, $\Theta_{state}$, \textbf{RNN}$_U$, \textbf{RNN}$_I$
-%         \end{algorithmic}
-%     \end{algorithm}
-% \end{comment}
-
-
 \begin{comment}
 \begin{algorithm}[H]
     \caption{JODIE}
@@ -537,7 +502,7 @@ A negative point about the data sets is that the variable names are not in the r
 As described in the model descriptions section, the model has several hyperparameters like epoch number, dynamic embedding size, learning rate, \texttt{split}, $\lambda_U$ and $\lambda_I$. Initially the hyperparameters were chosen as in the original article as follow.
 
 \begin{itemize}
-    \item Embedding size: $32, \, 64, \, \boldsymbol{128}, \, 256$
+    \item Embedding size: $32, \, 64, \, \textbf{128}, \, 256$
     \item Epoch, learning rate, $\lambda_U$ and $\lambda_I$: $50, \, 1e-3, \, 1, \, 1$ respectively
     \item \texttt{Split}: $500$
 \end{itemize}
@@ -635,7 +600,7 @@ For the prediction of future interaction, we used the same hyperparameters as fo
     {\quad\small Recall@10}  & $0.822$ && $\boldsymbol{0.829} \pm 0.005$ & $\boldsymbol{0.833} \pm 0.004$ & $\boldsymbol{0.827} \pm 0.004$\\
     \multicolumn{1}{l}{\hspace{-0.2cm}\textbf{LastFM}} \\
     {\quad\small MRR} &$0.195$ && $\boldsymbol{0.311} \pm 0.001$ & $\boldsymbol{0.313} \pm 0.002$ & $\boldsymbol{0.312} \pm 0.001$ \\
-    {\quad\small Recall@10}  & $0.307$ && $\boldsymbol{0.455} \pm 0.003 & \boldsymbol{0.483} \pm 0.047$ & $\boldsymbol{0.453} \pm 0.002$\\
+    {\quad\small Recall@10}  & $0.307$ && $\boldsymbol{0.455} \pm 0.003$ & $\boldsymbol{0.483} \pm 0.047$ & $\boldsymbol{0.453} \pm 0.002$\\
     \bottomrule
     \end{tabular}
     \caption{Results: future interaction prediction}
