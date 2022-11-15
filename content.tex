@@ -9,144 +9,131 @@
 
 \subsubsection{Scope of Reproducibility}
 
-In this work, the article Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks \supercite{kumar2019predicting}  is evaluated through a replication study. Replication results examine whether the claims made by authors are valid. Our goal is to replicate the experiments and achieve the same results as the authors.
+In this work, the article Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks~\cite{kumar2019predicting}  is evaluated through a replication study. Replication results examine whether the claims made by authors are valid. Our goal is to replicate the experiments and achieve the same results as the authors.
 
 \subsubsection{Methodology}
 
-We reimplement the method of Kumar et al.\supercite{kumar2019predicting} for recommender systems using their new algorithm that allows batch learning on temporal data, improves their codes, and extends their work. Our improvements consist in using the last versions of Python and  Pytorch, and having a more readable code. Our extension includes impacting a hyperparameters by varying it. The codes are available on \href{https://github.com/ComplexNetTSP/JODIE}{GitHub}. 
+We reimplement the method of Kumar et al.~\cite{kumar2019predicting} for recommender systems using their new algorithm that allows batch learning on temporal data, improves their codes, and extends their work. Our improvements consist in using the last versions of Python and  Pytorch, and having a more readable code. Our extension includes impacting a hyperparameters by varying it. The codes are available on \href{https://github.com/ComplexNetTSP/JODIE}{GitHub}. 
 
 \subsubsection{Result}
 
-We will reproduce the results for user state change prediction and future interaction prediction on all datasets. We will also test the robustness of the model by varying the percentage of training data and the size of the embeddings. The first results show that the model is reproducible and even better in one case. For the robustness, the variations of the percentage of training data allowed us to affirm that the model was robust. Moreover, we could test the importance of the \texttt{split} hyper-parameter. This showed that it is important to choose it well in order to find a compromise between performance and learning time because the bigger the \texttt{split}, the longer the learning time.
-
+We mainly the reach the same results with our own code compare to the original paper, with a notable difference with the prediction of future interaction task (with the LastFM dataset) where we achieve a result twice better than the one publish in the paper. Moreover, we showed that the number of split during the learning phase (the number of time with perform a back-propagation) has strong impact on the final results (cf. Fig. \ref{split}). This fact were not highlighted in the original paper.
 
 \subsubsection{What was easy}
 
-The codebase and all the necessary information were available on \href{https://github.com/srijankr/jodie}{GitHub}, which meant that we didn't have to start from scratch.
+the authors had made their code available and all the necessary information at the following  address \href{https://github.com/srijankr/jodie}{GitHub}.  Their original code has considerably simplify our replication task.
 
 \subsubsection{What was difficult}
 
-Although the code is available, understanding it has been difficult. Some technical aspects in the article have not been developed which hinders complete understanding. These problems were solved by studying the code made available.
+Although the code is available, however some technical aspects in the article have not been developed which has hindered our complete understanding of the model. These problems were solved by studying the code made available.
 
 \subsubsection{Communication with original authors}
-
-We contacted the authors for clarification on the management of the four network inputs of a recurrent neural network when there are only two in the state of the art. We also asked them about the calculation of the loss function for the last user who has no future item.
+We contacted the authors for clarification about which aggregation method used to fit the inputs constraints of the RNN gate.
 
 \newpage
 
 \section*{Introduction}
 
-Recommender systems are systems that cover broad scope of technique which all aims to provide suggestions for items that are most pertinent to a particular user (i.e.: which music playlists to listen next, which book a user might like), see \cite{Ricci_Rokach_Shapira_2021} for a review of the techniques and challenges of the field. These techniques are particularly relevant for online shops where the growing volume of online information make the online navigation particularly the cumbersome without recommender helps. 
-
-In \cite{kumar2019predicting}, authors proposed JODIE a deep learning based recommender system that model the user-item interaction as a sequence timestamped interaction on a bipartite graph (user-item). This approach might be especially relevant for an online fashion store for instance who want to provide an evolving recommendation to their customers (i.e.: winter clothes recommendation should be different than summer clothes recommendation). JODIE use representation learning of nodes of the bipartite graph and their projection (and the users-items relations) to represent the evolution of users’ and items’ properties. The core idea is that each user and item has two embeddings: a static embedding and a dynamic embedding. The static embedding represents the entity’s long-term stationary property, while the dynamic embedding represents time-varying property and is learned using the JODIE algorithm. Both the stationary and time-varying properties of the user are used to make prediction about the next interactions. 
-The authors claim to outperform some of the state of the art recommender systems among them: Time-LSTM~\cite{Zhu17}, LatentCross~\cite{Beutel18}, Interaction Graph Embedding (IGE)~\cite{Zhang17}, Recurrent Recommender Networks~\cite{Wu17} and the Continuous-Time Dynamic Network Embeddings(CTDNE)~\cite{Nguyen18} in predicting future interactions and user state change predictions, by performing at least 20\% better in predicting future interactions and 12\% better on average in predicting user state change. \textcolor{red}{The JODIE model outperforms these models by training in temporal batch, generating embeddings at future times and predicting an item in constant time.}
-
-This paper describes our efforts to replicate the work of the paper Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks~\cite{kumar2019predicting}, our code is available at \href{https://github.com/ComplexNetTSP/JODIE}{Github}.
-
-\\
-
-
-%Recommendation systems are crucial in the current era of information overload and lack of user comprehension. The recent development of recommender systems has been prompted by the availability of more complex data sets, especially from Web-based data sources. Scientists from diverse disciplines have contributed their individual expertise to this field, but there are still challenges when trying to compare and incorporate those different approaches. Recommendation systems are user-centric, focusing on providing users with the information they want. In many ways, this means simulating the experience of a knowledgeable friend. The basic approach to recommendation systems is to leverage past interactions with other users that are similar to the target user. Furthermore, recommender systems have become an important component of web applications, thanks to their tremendous success in e-commerce domain, or even social network sites; they are able to predict what users are going to like based on the users’ past behavior (e.g., products they have bought or friends they have talked with), as well as what other users with similar tastes have also liked (e.g., friends who have chosen the same movie as you). In general, whenever there is plenty of diverse products and customers are not alike, personalized recommendation may help to deliver the right content to the right person. Moreover, recommender systems offer marketers a way of increasing sales by suggesting additional products to the customers and improving consumer loyalty because consumers tend to return to the sites that best serve their needs; in October 2006, Netflix released a dataset with more than 100 million anonymous movie ratings while challenging the IA community to beat the actual accuracy of the company's recommendation system, challengers propose a better solution with an accuracy increase by 10\% . This improvement allows Netflix to increase their sales revenues by millions of dollars \supercite{netflix}.\\ \\
-
-%However, researchers soon realized that there is no single best method in recommendation, instead depending on the context and density of the available data, different methods adapting to particular applications are most likely to succeed. Hence there is no perfect solution, as one cannot simply apply existing models as-is and expect optimal performance. Rather, understanding the underlying premises and recommendation mechanisms will help tackle many diverse application problems from real life examples. It is also important to highlight that recommendation systems face several challenges which pose danger for the use and performance of the latter. First, those systems are prone to data sparsity; since the set of available items or users often exceed millions of individuals, in some practical scenario users do not buy or rate every item, in fact large number of users are concentrated on few items and hence a consequent amount of items are untouched by users. Next, the computational cost issues and search for recommendation algorithms is something to consider for famous websites like Amazon which include millions of users and item which is known as scalability. Then, the difficulty to produce a personal recommendation for new users while having insufficient information about them which is known as cold start. Finally, most of recommendation systems neglect the timestamps of interactions, in fact  old interactions should decay with time because real users have many diverse interests that change over time, with short term interests as well as long term interests. It's also important to note that real time recommendations is one of the biggest challenge  that researchers  are trying to solve, which is actually possible using Locality Minimum Hashing (LSH) \supercite{lsh} that provides a constant time inference despite a negligible loss of accuracy, or with specific architecture like Pixie \supercite{pixie} based on Random Walk proposed by Pinterest that is able to recommend more than 3 billion items to more than 200 million users in real-time.\\ \\
-%The state of the art related to recommendation system is quite rich. Collaborative filtering is one of the first concept shared by researchers, where Non-Negative Matrix Factorization (NMF) was used to reduce the dimensionality of filtering databases and to improve the performance \supercite{1714249}. However, we will focus in the literature quoted by the authors of the The JOint Dynamic user‐Item Embeddings (JODIE), where three types of models are presented and will serve as algorithms reference for recommendation task:
-%\begin{itemize}
-%    \item Deep recurrent recommender models use Recurrent Neural Networks\supercite{Rumelhart1986} (RNNs) or their variants Long Short-Term Memory\supercite{LSTM} (LSTM) and Gated Recurrent Unit\supercite{https://doi.org/10.48550/arxiv.1406.1078GRU} (GRU) to build recommender systems.
-%    \item Dynamic co-evolution models that jointly learn user and item representations using point-process modeling\supercite{https://doi.org/10.48550/arxiv.1705.05742}$^,$\supercite{NIPS2016_53ed35c7} and RNN-based modeling\supercite{https://doi.org/10.48550/arxiv.1609.03675}.
-%    \item Temporal network embedding models that generate embeddings for nodes in temporal networks.
-%\end{itemize}
-%Among the first family of models mentioned, the Recurrent Recommender Network\supercite{10.1145/3018661.3018689} (RRN) uses RNNs to generate dynamic embeddings of users and items from rating networks. More recently, Time-LSTM\supercite{ijcai2017-504} and LatentCross\supercite{46488} learn to integrate features into the embeddings. But these methods suffer from two shortcomings. First, they take one-hot vector of the item as input to update the user embedding. This only takes into account the item ID and ignores the current state of the item. Second, some models generate dynamic embeddings only for users and not for items.\\
-
-%The idea of the following family, is that user and item embeddings influence each other while interacting. JODIE was designed similarly to these models, the difference is that JODIE trains a projection operation to predict the user's embedding at any given time. JODIE produces item embeddings instead of interaction probabilities and trains the model using batches. The authors claim to outperform in average these models by 104.85\% in term of MRR and 71.68\% in term of recall@10 in predicting the next interaction and by 14\% in average of AUC in predicting the state change. Regarding batches, these models are not evolutionary because they process the interaction in a sequential order to maintain the time dependence. JODIE creates batches with a new algorithm, which makes it 9 times faster than this family of models.\\
-
-%Finally in the last family, the Continuous-Time Dynamic Network Embeddings\supercite{CTDNE} (CTDNE) model is an algorithm that generates embeddings using temporally-increasing random walks but it generates a final static embedding of nodes. Same thing for the Interaction Graph Embedding\supercite{IGE} (IGE) model which generates one final embedding of users and items from interaction graphs. These two models must be re-executed for each new edge in order to create dynamic embeddings. JODIE has a system that handles dynamic embeddings for users and items and is 4.4 times better than CTDNE at predicting the next interaction, while having a comparable execution time. \\
-
-%In this paper, we dig into JODIE which main goal is to  accurately predict user and item trajectories over time. JODIE meet this challenge considering entities to have two properties: stationary and dynamic. The stationarity property does not evolve over time which is not the case of the dynamic property.It also a framework that is able to predict  future interaction, and leverage the inference time using LSH. Finally,  JODIE enables a learning time improvement by reconsidering the training procedure using t-batch while keeping the temporal dependencies.\\
-%}
+Recommender systems are systems that cover a broad scope of techniques which all aim to provide suggestions of items that are most pertinent to a particular user (e.g.., which music playlists to choose, which book a user might like, etc.), see [2] for a review of the techniques and challenges of the field. We can observe, particularly in areas such as  e-commerce or social media, that one user may interact with several items/products, and these interactions may evolve with time and context (e.g., Winter clothe recommendation should be different from summer clothes recommendation). 
+As a result,  understanding and modeling the dynamic evolution of users and items is an important issue. In the literature, this dynamicity is generally modeled by an embedding trajectory in a Euclidean space. However, existing works suffer from several limitations, as the authors in [1] pointed out. At first, none of the existing methods predicts the future embedding trajectory. Instead, the embeddings are generated only at each user's action. Moreover, static and dynamic properties are generally not considered in the same framework. Finally, scalability remains an open issue for the prediction of user-item interactions as well as for the model's training when dealing with large-scale datasets. To overcome these limitations, [1] proposes JODIE, a deep learning-based recommender system that models user‐item interactions as a sequence of timestamped edges on a bipartite graph (cf figure \ref{bipartite_graph}).
+The core idea is that each user and item has two embeddings: a static embedding representing the entity's long‐term stationary property
+and a dynamic embedding representing the time‐varying property. These embeddings are used to make predictions regarding future interactions. The proposed method is trained with batches of data to overcome the scalability issue.
+The authors claim to outperform some of the state-of-the-art recommender systems such as Time-LSTM~\cite{Zhu17}, LatentCross~\cite{Beutel18}, Interaction Graph Embedding (IGE)~\cite{Zhang17}, Recurrent Recommender Networks~\cite{Wu17} and the Continuous-Time Dynamic Network Embeddings(CTDNE)~\cite{Nguyen18} in predicting future interactions  at least 20\% better, and user state change predictions 12\% better on average.
+This paper describes our efforts to replicate the JODIE model designed by Srijan Kumar et al~\cite{kumar2019predicting}. 
+We use the publicly available code provided by the authors to reproduce
+their results and validate their conclusions. Our code is available at \href{https://github.com/ComplexNetTSP/JODIE}{Github}.
 
 
-%\iffalse
-%The usage of recommendation systems grew rapidly in recent years thanks to websites such as Amazon, Facebook or Netflix. Different issues have arisen in this area, such as making recommendations in real-time and predicting the change of state of a user. Different methods have been developed to solve those problems, but four fundamental challenges have emerged. The first is to accurately predict user and item trajectories over time. The second challenge is that entities have two properties: stationary and dynamic. The stationarity property does not evolve over time which is not the case of the dynamic property. The existing methods consider either one or the other but never both. The third challenge is the prediction of future interaction. The existing methods predict, for a user, a probability for each item. The complexity of this method is linearly proportional to the number of existing items, which is not optimal if millions of items are studied. The final challenge concerns learning time. Indeed, the existing models process the interactions individually and successively to keep the temporal dependencies. Therefore, training on datasets with millions of interactions is heavily time consuming.\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Fig 1
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width = 0.2\textwidth]{image/bipartite_graph.pdf}
+    \caption{Bipartite graph}
+    \label{bipartite_graph}
+\end{figure}
 
-%In the literature , there are three types of models:
-%\begin{itemize}
-%    \item Deep recurrent recommender models use Recurrent Neural Networks\supercite{Rumelhart1986} (RNNs) or their variants Long Short-Term Memory\supercite{LSTM} (LSTM) and Gated Recurrent Unit\supercite{https://doi.org/10.48550/arxiv.1406.1078GRU} (GRU) to build recommender systems.
-%    \item Dynamic co-evolution models that jointly learn user and item representations using point-process modeling\supercite{https://doi.org/10.48550/arxiv.1705.05742}$^,$\supercite{NIPS2016_53ed35c7} and RNN-based modeling\supercite{https://doi.org/10.48550/arxiv.1609.03675}.
-%    \item Temporal network embedding models that generate embeddings for nodes in temporal networks.
-%\end{itemize}
-
-%Among the first family of models mentioned, the Recurrent Recommender Network\supercite{10.1145/3018661.3018689} (RRN) uses RNNs to generate dynamic embeddings of users and items from rating networks. More recently, Time-LSTM\supercite{ijcai2017-504} and LatentCross\supercite{46488} learn to integrate features into the embeddings. But these methods suffer from two shortcomings. First, they take one-hot vector of the item as input to update the user embedding. This only takes into account the item ID and ignores the current state of the item. Second, some models generate dynamic embeddings only for users and not for items.\\
-
-%The idea of the following family, is that user and item embeddings influence each other while interacting. JODIE was designed similarly to these models, the difference is that JODIE trains a projection operation to predict the user's embedding at any given time. JODIE produces item embeddings instead of interaction probabilities and trains the model using batches. The authors claim to outperform in average these models by 104.85\% in term of MRR and 71.68\% in term of recall@10 in predicting the next interaction and by 14\% in average of AUC in predicting the state change. Regarding batches, these models are not evolutionary because they process the interaction in a sequential order to maintain the time dependence. JODIE creates batches with a new algorithm, which makes it 9 times faster than this family of models.\\
-
-%Finally in the last family, the Continuous-Time Dynamic Network Embeddings\supercite{CTDNE} (CTDNE) model is an algorithm that generates embeddings using temporally-increasing random walks but it generates a final static embedding of nodes. Same thing for the Interaction Graph Embedding\supercite{IGE} (IGE) model which generates one final embedding of users and items from interaction graphs. These two models must be re-executed for each new edge in order to create dynamic embeddings. JODIE has a system that handles dynamic embeddings for users and items and is 4.4 times better than CTDNE at predicting the next interaction, while having a comparable execution time.
-%\fi
 
 \section*{Scope of Reproducibility}
 
 %This paper describes our efforts to replicate the work of the paper Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks\supercite{kumar2019predicting}, which addresses recommender systems in a more practical, faster, and more accurate way than previous approaches.\\
 
-The JODIE model designed by Srijan Kumar et al.\supercite{kumar2019predicting} offers innovative solutions to overcome all these challenges at once. This model learns to generate embedding trajectories from temporal interactions. User and item embeddings are updated when a user performs an action. The projection operation is then used to predict the future trajectory of the user's embedding. Each user and item has two embeddings: a static one, denoted $\Bar{e}$, and a dynamic one denoted $e$. A static embedding represents the long-term stationary property of the entity while the dynamic embedding represents a time-varying property. These two embeddings are used for training the JODIE model. This allows the model to make predictions from the stationary and dynamic properties of a user. JODIE is composed of two RNNs, coupled to integrate the interdependence between users and items. There are two types of predictions: future interaction and change of state. The interaction prediction predicts the next interaction of a given user while the state change prediction predicts whether or not a user will change his state.\\
+%The JODIE model designed by Srijan Kumar et al.\supercite{kumar2019predicting} offers innovative solutions to overcome all these challenges at once. This model learns to generate embedding trajectories from temporal interactions. User and item embeddings are updated when a user performs an action. The projection operation is then used to predict the future trajectory of the user's embedding. Each user and item has two embeddings: a static one, denoted $\Bar{e}$, and a dynamic one denoted $e$. A static embedding represents the long-term stationary property of the entity while the dynamic embedding represents a time-varying property. These two embeddings are used for training the JODIE model. This allows the model to make predictions from the stationary and dynamic properties of a user. JODIE is composed of two RNNs, coupled to integrate the interdependence between users and items. There are two types of predictions: future interaction and change of state. The interaction prediction predicts the next interaction of a given user while the state change prediction predicts whether or not a user will change his state.\\
 
-Several metrics were chosen to evaluate the predictions. For future interaction prediction, the authors chose to use the Mean Reciprocal Rank and the Recall@10.
+%Several metrics were chosen to evaluate the predictions. For future interaction prediction, the authors chose to use the Mean Reciprocal Rank and the Recall@10.
+%\begin{itemize}
+ %   \item The Mean Reciprocal Rank (MRR) is a statistic measure for evaluating any process that produces a list of possible responses to a sample queries, ordered by probability of correctness. The reciprocal rank of a query response is the multiplicative inverse of the rank of the first correct answer. The MRR is the average of the reciprocal ranks of results for a sample of queries $Q$.
+ %   \item The Recall@k is a statistical measure to evaluate any process that produces a list of possible answers to a sample of queries, ranked by its rank. The Recall@k is the sum of ranks less than or equal to k divided by the number of ranks.
+%\end{itemize}
+
+%For user state change prediction, the authors chose to use the Area Under the ROC Curve (AUC). The AUC, as its name suggest, is the area under the ROC curve. To calculate this indicator, you must first draw the ROC curve. To do this, we calculate the specificity and sensitivity. Finally the AUC is the average of specificity and sensitivity. Scores as close to 1 as possible are desired.
+
+%The original paper describes recommender systems as a temporal bipartite network { \color{blue} $G(V, E)$  where $V$ is the set of nodes and the set of edges $E$, if there exists a partition $\left(V_1, V_2\right)$ such that $V_1 \cup V_2=V, V_1 \cap V_2=\emptyset$, and every edge connects a node of $V_1$ and a node of $V_2$. Many real systems are naturally modeled as bipartite networks. The paper focused on a particular class of bipartite networks called web-based user-object networks \supercite{Shang_2010}, which represent interactions between users and objects in online service sites, such as purchases of books in Amazon, which means that in our graphs  nodes  represent users and items and an edge  represents an interaction between a user and an item.}
+
+
+%Each interaction is described by a time $t_r$ and a feature vector $f_r$.\\
+
+In this paper, we investigate the following claims from the original paper:
+%The claims that the paper made are as follows:
 \begin{itemize}
-    \item The Mean Reciprocal Rank (MRR) is a statistic measure for evaluating any process that produces a list of possible responses to a sample queries, ordered by probability of correctness. The reciprocal rank of a query response is the multiplicative inverse of the rank of the first correct answer. The MRR is the average of the reciprocal ranks of results for a sample of queries $Q$.
-    \item The Recall@k is a statistical measure to evaluate any process that produces a list of possible answers to a sample of queries, ranked by its rank. The Recall@k is the sum of ranks less than or equal to k divided by the number of ranks.
+    \item \textbf{More accurate recommendation performance}. By using the JODIE model, the authors claim \textcolor{green}{to achieve better predictions of future interactions over all the selected datasets.}
+    %to obtain better results for the prediction  of future interactions on all the datasets used. 
+    \textcolor{green}{JODIE outperforms six %6 
+    models with an improvement of at least 20\% \href{https://github.com/ComplexNetTSP/JODIE}{Github}.  and 14\%  in terms of Mean Reciprocal Rank (MRR) and Recall@10, respectively.} %of 20\% in minimum Mean Reciprocal Rank (MRR) and 14\% in minimum Recall@10.
+    \item \textbf{More accurate state change performance}. \textcolor{green}{The authors claim that JODIE outperforms five models regarding the user state change over all the selected datasets with an average improvement of 12.63\% for the Area Under the Curve (AUC) metric.}%By using the JODIE model, the authors claim to obtain better results for the change of state of a user on all the data sets used. JODIE outperforms 5 models with an average improvement of 12.63\% in Area Under the Curve (AUC).
+    \item \textbf{\textbf{Shorter learning time}}. Thanks to the new t-batch algorithm, \textcolor{green}{the} learning \textcolor{green} {phase} is 9.2 times faster than other models comparable to JODIE, i.e. with a model with two Recurrent Neural Networks (RNNs).
+    \item \textbf{Robustness of the model to the proportion of the training set}. \textcolor{green}{Regardless of the training data percentage, JODIE outperforms all the compared models.}%Whatever the percentage of data used for the training data, JODIE outperforms all other models.
+    \item \textbf{Robustness of the model to the embedding size}. \textcolor{green}{The size of the embeddings does not have much impact on the performance of JODIE.}%Whatever the embedding size used, JODIE has no change performance.
 \end{itemize}
+\textcolor{green}{We have implemented the JODIE model using a more recent version of the Pytorch library aiming at reproducing the results stated by the authors:} 
+\begin{itemize}
+    \item \textcolor{green}{We explored which embedding size is the most effective for predicting state change and future interaction.}
+    \item We also replicated the experiments that concern the robustness of the JODIE model to the percentage of training data.
+    \item \textcolor{green}{To measure the robustness to dynamic embedding size, the authors measured the performance of JODIE with embedding sizes from 32 to 256 on solely the LastFM dataset. We extended this experiment by adding three embedding sizes, 8, 16, and 32, on the LastFM and Wikipedia datasets and calculating the MRR and Recall@10.}
+\end{itemize}
+In addition to reproducing the results presented in the paper, we perform novel experiment that test the impact of the hyperparameter \texttt{split}. We varied \texttt{split} by 5, 500 and 50000 on the MOOC dataset, which will increase the number of back-propagation, and we calculate the performance in AUC. \textcolor{red}{The main issue we encountered during our code replication of the original model~\cite{kumar2019predicting} was the lack of understanding of the \texttt{t-batch} algorithm which where not provided in the original paper and not referenced, but previously publish by the same authors as a \textit{preprint} in \cite{kumar18}}.
+To conclude, we have reproduced the results present in the original paper by extending an experiment on the robustness of the size of dynamic embeddings and by bringing an additional experiment on the choice of an hyper-parameter.
 
-For user state change prediction, the authors chose to use the Area Under the ROC Curve (AUC). The AUC, as its name suggest, is the area under the ROC curve. To calculate this indicator, you must first draw the ROC curve. To do this, we calculate the specificity and sensitivity. Finally the AUC is the average of specificity and sensitivity. Scores as close to 1 as possible are desired.
-
-The original paper describes recommender systems as a temporal bipartite network { \color{blue} $G(V, E)$  where $V$ is the set of nodes and the set of edges $E$, if there exists a partition $\left(V_1, V_2\right)$ such that $V_1 \cup V_2=V, V_1 \cap V_2=\emptyset$, and every edge connects a node of $V_1$ and a node of $V_2$. Many real systems are naturally modeled as bipartite networks. The paper focused on a particular class of bipartite networks called web-based user-object networks \supercite{Shang_2010}, which represent interactions between users and objects in online service sites, such as purchases of books in Amazon, which means that in our graphs  nodes  represent users and items and an edge  represents an interaction between a user and an item.}
+\section*{Methodology}
+The JOint Dynamic user-Item Embedding (JODIE) is a model that learns dynamic embeddings of users $u_t \in \mathbb{R}^n$, $\forall u \in \mathcal{U}$ and items $i_t \in \mathbb{R}^n$, $\forall i \in \mathcal{I}$ over time t, $\forall t \in [0; T]$, where $\mathcal{U}$ and $\mathcal{I}$ are the sets of users and items and $T$ the final time. Moreover, the interactions are ordered in time, i.e. an interaction between a user $u_r$ and an item $i_r$ at time $t_r$ characterized by $f_r$, noted $S_r = (u_r, \, i_r, \, t_r, \, f_r)$, cannot be before the interaction $S_{r-1}$. The model consists of two main operators: the update operator and the projection operator. To consider the time in the interactions, we cannot separate the data in classical batch, so the authors found a solution called \texttt{t-batch}.
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width = 0.3\textwidth]{image/bipartite_graph.pdf}
-    \caption{Bipartite graph}
-    \label{bipartite_graph}
+   \begin{center}
+        \includegraphics[scale = 0.9]{image/pipeline.pdf}
+    \end{center}
+    \caption{Pipeline. $MLP_{reg}$ gives an estimation of the embedding of the next item $\textcolor{blue}{\overset{\sim}{i}}$ with which a user $\textcolor{red}{u}$ is likely to interact. The MLP  is designed to recommend the best $\textcolor{blue}{i}$ to each user. $MLP_{classif}$ is used to predict the user's state change $\textcolor{red}{\widehat u_{state}}$. Will the user potentially drop out / get banned ?}
+    \label{Pipeline}
 \end{figure}
-Each interaction is described by a time $t_r$ and a feature vector $f_r$.\\
 
-The claims that the paper made are as follows:
-\begin{itemize}
-    \item More accurate recommendation performance. By using the JODIE model, the authors claim to obtain better results for the prediction of future interaction on all the datasets used. JODIE outperforms 6 models with an improvement of 20\% in minimum MRR and 14\% in minimum Recall@10.
-    \item More accurate state change performance. By using the JODIE model, the authors claim to obtain better results for the change of state of a user on all the data sets used. JODIE outperforms 5 models with an average improvement of 12.63\% in AUC.
-    \item Shorter learning time. Thanks to the new t-batch algorithm, learning is 9.2 times faster than other models comparable to JODIE, i.e. with a model with two RNNs.
-    \item Robustness of the model to the proportion of the training set. Whatever the percentage of data used for the training data, JODIE outperforms all other models.
-    \item The optimal size of the embeddings, found by the authors, is 128.
-\end{itemize}
 
-We perform new experiments to demonstrate the impact of the frequency at which the batches are created, i.e the \texttt{split}.
-\section*{Methodology}
 
-At first, we wanted to reimplement the code without looking at the authors' original code. We quickly realized that there was a lack of explanation on some technical points like \texttt{t-batch} or neural network inputs. So we decided to use the available code to reimplement the code and improve it. We found that there were details that differed from the paper. The resources we mainly used were the code and the authors' paper. At first, we had a CPU server and then we used a GPU server.\\
-
-The JODIE model is summarised as follows. The model consists of two main components: update operation and projection operation. The update operation is composed of two RNNs that generate user and item embeddings. The projection operator makes a projection in the space of embeddings.
+%The JODIE model is summarized as follows. The model consists of two main components: update operation and projection operation. The update operation is composed of two RNNs that generate user and item embeddings. The projection operator makes a projection in the space of embeddings.
 
 \subsection*{Code}
+We re-implemented the JODIE model using newer version of Pytorch~\cite{NEURIPS2019_bdbca288} version 1.10 and python 3.8 independently of the original code provided by the authors\footnote{\url{https://github.com/srijankr/jodie}}. We want to highlight the fact that we used the \textit{tanh} function  as the activation function at the output of the RNNs (see fig. \ref{Pipeline}) to build our model,  in accordance to the authors' original code but contrary to what's written in the original paper. Our code is available at the following address: \url{https://github.com/ComplexNetTSP/JODIE}. 
 
-A publicly available source code has been provided by the original authors in the corresponding \href{https://github.com/srijankr/jodie}{GitHub repository}. It was written using the Pytorch \supercite{NEURIPS2019_bdbca288} library with Python 2.7. A negative point is that the original code was implemented with an outdated version of Python. Another issue was the difficulty encountered in reading the code written in blocks without using functions.\\
-
-Based on the available code, we propose a newer, modular, reusable and understandable version. The use of Python functions facilitates understanding and makes the code modular. Our goal is to reimplement JODIE, in Python 3.8 and Pytorch \supercite{NEURIPS2019_bdbca288} 1.10 a more recent version than the one used in the article.
+our Source code is organized as follows:
+\begin{itemize}
+    \item \textbf{preprocessing.py} where everything about the data preprocessing and the t-batch algorithm.
+    \item \textbf{model.py} the model as described in figure \ref{Pipeline}.
+    \item \textbf{train.py} is used to train the model.
+    \item \textbf{evaluate.py} is used to evaluate the model after training.
+\end{itemize}
+By organizing the work in this way, it allows to have a modular, easily reusable and understandable code.
 
 \subsection*{Model descriptions}
-
-In this section, we will replicate and re-implement the work of Kumar et al. \supercite{kumar2019predicting}. JOint Dynamic user-Item Embedding (JODIE) model is a model that learns dynamic embeddings of users $u_t \in \mathbb{R}^n$, $\forall u \in \mathcal{U}$ and items $i_t \in \mathbb{R}^n$, $\forall i \in \mathcal{I}$ over time t, $\forall t \in [0; T]$, where $\mathcal{U}$ and $\mathcal{I}$ are the sets of users and items and $T$ the final time. Moreover, the interactions are ordered in time, i.e. an interaction between a user $u_r$ and an item $i_r$ at time $t_r$ characterized by $f_r$, noted $S_r = (u_r, \, i_r, \, t_r, \, f_r)$, cannot be before the interaction $S_{r-1}$. The model consists of two main operators: the update operator and the projection operator. To consider the time in the interactions, we cannot separate the data in classical batch, so the authors found a solution called \texttt{t-batch}.
 
 \subsubsection{Architecture and learning}
 
 The architecture consists of two Recurrent Neural Networks (RNNs) and two Multi-Layer Perceptrons (MLP) as shown in Figure \ref{Pipeline}. The first RNN is dedicated to users, the second to items. Both RNNs are activated with sigmoids according to the paper but by looking at the documentation of the RNNCell() function, we saw that the activation function used was hyperbolic tangent. The first MLP is dedicated to user classification. It consists of a hidden layer of 50 neurons activated by a ReLU function and an output layer composed of two neurons, one for each state. The second MLP is dedicated to the estimation of the embedding of the next item. It includes a single projection layer that consists of a linear projection in the space of embeddings.
 
-\begin{figure}[H]
-   \begin{center}
-        \includegraphics[scale = 0.4]{image/pipeline.png}
-    \end{center}
-    \caption{Pipeline. $\text{MLP}_{reg}$ gives an estimation of the embedding of the next item $\textcolor{blue}{\overset{\sim}{i}}$ with which a user $\textcolor{red}{u}$ is likely to interact. The MLP  is designed to recommend the best $\textcolor{blue}{i}$ to each user. $\text{MLP}_{classif}$ is used to predict the user's state change $\textcolor{red}{\widehat u_{state}}$. Will the user potentially drop out / get banned ?}
-    \label{Pipeline}
-\end{figure}
-
 \subsubsection{Update operator}
-
-Now, we will introduce the update operator. The update operator takes the form of two mutually recursive neural networks shown in Figure \ref{recursive RNNs}. The RNN$_u$ is used to update the dynamic user embeddings and the RNN$_i$ updates the dynamic item embeddings. In this case, the embeddings are considered as the hidden state of the classical RNNs respectively. At time $t=0$, we initialize dynamic embeddings $u_0$ and $i_0$ randomly according to a uniform distribution $\mathcal{U}[0;1[$ followed by a normalization which will be used as inputs of the RNNs. As input, there is also the embedding of the other entity, $\Delta$ the time elapsed between an entity and the previous interaction and $f$ a feature vector which characterizes the link of the interaction. A specificity of these RNNs is that they take four inputs instead of two as usual. In order to narrow down to just two entries, we concatenate the embedding of the other entity, $\Delta$ and $f$. In Figure \ref{recursive RNNs}, we denote the concatenation by [.,.]. More formally, we use the following formulas to update the embeddings:
+% enlever les we
+% forme active
+Now, we will introduce the update operator. The update operator takes the form of two mutually recursive neural networks shown in Figure \ref{recursive RNNs}. The RNN$_\text{U}$ is used to update the dynamic user embeddings and the RNN$_\text{I}$ updates the dynamic item embeddings. In this case, the embeddings are considered as the hidden state of the classical RNNs respectively. At time $t=0$, we initialize dynamic embeddings $u_0$ and $i_0$ randomly according to a uniform distribution $\mathcal{U}[0;1[$ followed by a normalization which will be used as inputs of the RNNs. As input, there is also the embedding of the other entity, $\Delta$ the time elapsed between an entity and the previous interaction and $f$ a feature vector which characterizes the link of the interaction. A specificity of these RNNs is that they take four inputs instead of two as usual. In order to narrow down to just two entries, we concatenate the embedding of the other entity, $\Delta$ and $f$. In Figure \ref{recursive RNNs}, we denote the concatenation by [.,.]. More formally, we use the following formulas to update the embeddings:
 $$
 u^+ = \sigma \left ( W_1^u u^- + W_2^u i^- + W_3^u f + W_4^u \Delta_u \right )
 $$
@@ -156,9 +143,8 @@ $$
 Where the matrices $W_1^e, ..., W_4^e$ are the parameters of the RNN$_e$ and $\sigma$ an activation function (here hyperbolic tangent). We note by $u^-$ and $i^-$ the embeddings before update and by $u^+$ and $i^+$ the embeddings after update. Once this step is finished, we can proceed to the second operation, the projection operation.
 
 \begin{figure}[H]
-   
    \centering
-    \includegraphics[scale = 0.4]{image/rnn_mutually.png}
+    \includegraphics[width=1.0\textwidth]{image/rnn_jodie.pdf}
     \caption{RNN mutually recursive}
     \label{recursive RNNs}
 \end{figure}
@@ -173,6 +159,7 @@ This operation consists in projecting the user's embedding to a future time. Ind
     \caption{Projection operation}
    \label{Projection}
 \end{figure}
+
 
 We notice that over a very short time interval, the projected embedding of the user changes slightly, but as time goes, the projected embedding will be further away from its original embedding. To perform this operation, we must first convert $\Delta$ into a vector $w \in \mathbb{R}^n$ using a linear layer represented by its weights vector $W_p$. We have $w = W_p \Delta$. We initialize $W_p$ by a Gaussian of zero mean. We obtain the projected embedding by computing Hadamard product, denoted $*$, of $1+w$ and $u_t$. The authors use the following formula.
 $$
@@ -298,7 +285,7 @@ We detail the learning steps and the specificity of JODIE model. More precisely,
     \item The JODIE model has a particularity in the way the \texttt{t-batch} is formed, which is not discussed in the article and difficult to understand in the code. Normally to make batches, we cut the dataset with the number of observations we want per batch. But when we have a dataset with temporal dependencies the operation can not be done the same way, this why we apply the \texttt{t-batch} algorithm. But, instead of applying directly the algorithm on the whole dataset, the authors made it in another way. From the temporal data, the authors decided to make subsets of the data and apply independently the \texttt{t-batch} algorithm on each subset of the data. The following figure will help us to understand better:
     \begin{figure}[H]
         \centering
-        \includegraphics[scale = 0.43]{image/pipeline.pdf}
+        \includegraphics[scale = 0.43]{image/pipeline_t-batch.pdf}
         \caption{Pipeline of the \texttt{t-batch} algorithm}
         \label{pipeline_t-batch}
     \end{figure}
@@ -513,12 +500,12 @@ From a temporal bipartite graph, we proceed in the same way as for learning, we 
  
 The data sets that were used in the original article were also used in this work. The authors of the article give the datasets. \\
 
-\textbf{Reddit\supercite{Reddit} post dataset}: this public dataset consists of one month of posts made by users on subreddits. We selected the 1000 most active subreddits as items and the 10000 most active users. We convert the text of each post into a feature vector representing their Linguistic Inquiry and Work Count\supercite{pennebaker01LIWC} (LIWC) categories.\\
-\textbf{Wikipedia\supercite{Wiki} edits}: this public dataset is one month of edits made by edits on Wikipedia pages. We selected the 1000 most edited pages as items and editors who made at least 5 edits as users (a total of 8227 users). Similar to the Reddit dataset, we convert the edit text into a LIWC feature vector.\\
-\textbf{LastFM\supercite{10.1007/978-3-642-33486-3_5lastFM} song listens}: this public dataset has one month of who-listens-to-which song information. We selected all 1000 users and the 1000 most listened songs. In the dataset, interactions do not have features.\\
+\textbf{Reddit~\cite{Reddit} post dataset}: this public dataset consists of one month of posts made by users on subreddits. We selected the 1000 most active subreddits as items and the 10000 most active users. We convert the text of each post into a feature vector representing their Linguistic Inquiry and Work Count~\cite{pennebaker01LIWC} (LIWC) categories.\\
+\textbf{Wikipedia~\cite{Wiki} edits}: this public dataset is one month of edits made by edits on Wikipedia pages. We selected the 1000 most edited pages as items and editors who made at least 5 edits as users (a total of 8227 users). Similar to the Reddit dataset, we convert the edit text into a LIWC feature vector.\\
+\textbf{LastFM~\cite{10.1007/978-3-642-33486-3_5lastFM} song listens}: this public dataset has one month of who-listens-to-which song information. We selected all 1000 users and the 1000 most listened songs. In the dataset, interactions do not have features.\\
 \textbf{Reddit bans}: Reddit post dataset with ground-truth labels of banned users from Reddit. This gives 366 true labels (=0.05\%).\\
 \textbf{Wikipedia bans}: Wikipedia edit data with public ground-truth labels of banned users. This results in 217 positive labels (=0.14\%).\\
-\textbf{MOOC\supercite{mooc} student drop-out}: this public dataset consists of actions done by students on a MOOC online course. This dataset consists of 7047 users interacting with 98 items. There are 4066 drop-out events (=0.98\%). All datasets and their details are shown in table \ref{description data}. \\
+\textbf{MOOC~\cite{mooc} student drop-out}: this public dataset consists of actions done by students on a MOOC online course. This dataset consists of 7047 users interacting with 98 items. There are 4066 drop-out events (=0.98\%). All datasets and their details are shown in table \ref{description data}. \\
 
 \begin{table}[H]
     \centering
@@ -646,11 +633,11 @@ For the prediction of future interaction, we used the same hyperparameters as fo
     {\quad \small MRR} & $\boldsymbol{0.726}$  && $0.711 \pm 0.007$ & $0.719 \pm 0.008$ & $0.684 \pm 0.005$ \\
     {\quad\small Recall@10}  &$\boldsymbol{0.852}$ && $0.810 \pm 0.020$ & $0.830 \pm 0.020$ & $0.747 \pm 0.011$\\
     \multicolumn{1}{l}{\hspace{-0.2cm}\textbf{Wikipedia}}\\
-    {\quad\small MRR} &$\boldsymbol{0.746}$ && $0.763 \pm 0.005$ & $0.764 \pm 0.002$ & $0.763 \pm 0.004$  \\
-    {\quad\small Recall@10}  & $\boldsymbol{0.822}$ && $0.829 \pm 0.005$ & $0.833 \pm 0.004$ & $0.827 \pm 0.004$\\
+    {\quad\small MRR} &$0.746$ && $\boldsymbol{0.763} \pm 0.005$ & $\boldsymbol{0.764} \pm 0.002$ & $\boldsymbol{0.763} \pm 0.004$  \\
+    {\quad\small Recall@10}  & $0.822$ && $\boldsymbol{0.829} \pm 0.005$ & $\boldsymbol{0.833} \pm 0.004$ & $\boldsymbol{0.827} \pm 0.004$\\
     \multicolumn{1}{l}{\hspace{-0.2cm}\textbf{LastFM}} \\
-    {\quad\small MRR} &$\boldsymbol{0.195}$ && $0.311 \pm 0.001$ & $0.313 \pm 0.002$ & $0.312 \pm 0.001$ \\
-    {\quad\small Recall@10}  & $\boldsymbol{0.307}$ && $0.455 \pm 0.003$ & $0.483 \pm 0.047$ & $0.453 \pm 0.002$\\
+    {\quad\small MRR} &$0.195$ && $\boldsymbol{0.311} \pm 0.001$ & $\boldsymbol{0.313} \pm 0.002$ & $\boldsymbol{0.312} \pm 0.001$ \\
+    {\quad\small Recall@10}  & $0.307$ && $\boldsymbol{0.455} \pm 0.003 & \boldsymbol{0.483} \pm 0.047$ & $\boldsymbol{0.453} \pm 0.002$\\
     \bottomrule
     \end{tabular}
     \caption{Results: future interaction prediction}
@@ -712,7 +699,7 @@ To go further, we decided to test the impact of the \texttt{split} hyper-paramet
     \centering
     \includegraphics[width = \textwidth]{image/split.pdf}
     \caption{Comparaison the robustness of the JODIE model as a function of the hyper-parameter \texttt{split}.}
-    \label{fig:foobar}
+    \label{split}
 \end{figure}
 
 We can see, for any embedding size, that the performance is increasing when the \texttt{split} values is high. By increasing this \texttt{split} value from 5 to 500, we have increased the performance by 0.14 in AUC for the different sizes of embedding. Going from 500 to 50000, increased the performance by 0.08. We can say that the choice of this hyper-parameter is important to have better performance. We can explain this improvement by the fact that the model will do back-propagation after each time step defined by \texttt{split}. So if we increase the \texttt{split} number, we increase the number of back-propagation. This suggest that higher values of this parameter allows to enhance the performance but the choice of it must been done considering the running time and the complexity which are increasing significantly when the \texttt{split} get larger.
@@ -721,4 +708,4 @@ We can see, for any embedding size, that the performance is increasing when the 
 With our work we are able to successfully reproduce the results obtained by the authors of the original paper. As explained in the previous section, some of our results differ slightly from those in the paper. This can be explained by a variation due to the initialization but also by the evaluation of the last epoch for the replication while the authors of the paper evaluated each epoch and chose the best performance on the validation. We can say that the JODIE model outperforms the state of the art methods.\\
 Our replication allowed to make a more readable code, easily reusable and easily adjustable for all the hyper-parameters combinations.\\
 We also tested the importance of the hyper-parameter \texttt{split}. It was concluded that it is important to choose well to obtain better results. The highest performance was obtained with the largest value but a learning time that is longer. This hyper-parameter must be adjusted taking into account a complexity-performance trade-off.\\
-In terms of perspectives, it would be interesting to use the focal loss\supercite{https://doi.org/10.48550/arxiv.1708.02002}. We use this loss in cases of unbalanced class. This loss allowed to have better results in these cases.
+In terms of perspectives, it would be interesting to use the focal loss~\cite{https://doi.org/10.48550/arxiv.1708.02002}. We use this loss in cases of unbalanced class. This loss allowed to have better results in these cases.
