@@ -1,8 +1,6 @@
 
 
 \newcommand{\amel}[1]{{\color{orange} #1}} 
-% \supercite{titre dans bibliography.bib}
-% \href{url du site}{mot que l'on veut pour cliquer dessus}
 
 \section*{Reproducibility Summary}
 
@@ -18,7 +16,6 @@ We reimplement the method of Kumar et al.\supercite{kumar2019predicting} for rec
 \subsubsection{Result}
 
 We will reproduce the results for user state change prediction and future interaction prediction on all datasets. We will also test the robustness of the model by varying the percentage of training data and the size of the embeddings. The first results show that the model is reproducible and even better in one case. For the robustness, the variations of the percentage of training data allowed us to affirm that the model was robust. Moreover, we could test the importance of the \texttt{split} hyper-parameter. This showed that it is important to choose it well in order to find a compromise between performance and learning time because the bigger the \texttt{split}, the longer the learning time.
-
 
 \subsubsection{What was easy}
 
