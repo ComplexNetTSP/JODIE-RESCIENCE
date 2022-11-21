@@ -96,15 +96,19 @@ In addition to reproducing the results presented in the paper, we perform novel 
 To conclude, we have reproduced the results present in the original paper by extending an experiment on the robustness of the size of dynamic embeddings and by bringing an additional experiment on the choice of an hyper-parameter.
 
 \section*{Methodology}
-The JOint Dynamic user-Item Embedding (JODIE) is a model that learns dynamic embeddings of users $u_t \in \mathbb{R}^n$, $\forall u \in \mathcal{U}$ and items $i_t \in \mathbb{R}^n$, $\forall i \in \mathcal{I}$ over time t, $\forall t \in [0; T]$, where $\mathcal{U}$ and $\mathcal{I}$ are the sets of users and items and $T$ the final time. Moreover, the interactions are ordered in time, i.e. an interaction between a user $u_r$ and an item $i_r$ at time $t_r$ characterized by $f_r$, noted $S_r = (u_r, \, i_r, \, t_r, \, f_r)$, cannot be before the interaction $S_{r-1}$. The model consists of two main operators: the update operator and the projection operator. To consider the time in the interactions, we cannot separate the data in classical batch, so the authors found a solution called \texttt{t-batch}.
+The JODIE is a model that learns dynamic embeddings of users $u_t \in \mathbb{R}^n$, $\forall u \in \mathcal{U}$ and items $i_t \in \mathbb{R}^n$, $\forall i \in \mathcal{I}$ over time t, $\forall t \in [0; T]$, where $\mathcal{U}$ and $\mathcal{I}$ are the sets of users and items and $T$ the final time. Moreover, the interactions are ordered in time, i.e. an interaction between a user $u_r$ and an item $i_r$ at time $t_r$ characterized by $f_r$, noted $S_r = (u_r, \, i_r, \, t_r, \, f_r)$, cannot be before the interaction $S_{r-1}$. Figure \ref{Pipeline} shows the structure of JODIE. The model is composed of two main components: the update operator which, with the help of two RNNs, updates the embeddings and the projection operator which allows to make a projection of an embedding in a future time represented in purple on the figure. Then, the model uses the different outputs to make the prediction of the future interaction or change of state.
+
+%The model consists of two main operators: the update operator and the projection operator. To consider the time in the interactions, we cannot separate the data in classical batch, so the authors found a solution called \texttt{t-batch}.
 
 \begin{figure}[H]
-   \begin{center}
-        \includegraphics[scale = 0.9]{image/pipeline.pdf}
+    \begin{center}
+        \includegraphics[width=1.0\textwidth]{image/pipeline.pdf}
     \end{center}
     \caption{Pipeline. $MLP_{reg}$ gives an estimation of the embedding of the next item $\textcolor{blue}{\overset{\sim}{i}}$ with which a user $\textcolor{red}{u}$ is likely to interact. The MLP  is designed to recommend the best $\textcolor{blue}{i}$ to each user. $MLP_{classif}$ is used to predict the user's state change $\textcolor{red}{\widehat u_{state}}$. Will the user potentially drop out / get banned ?}
     \label{Pipeline}
 \end{figure}
+
+To better understand what we have done, it is important to see our more recent version of the code, but also the architecture of the model, the loss functions used and the evaluation of JODIE.
 
 
 
@@ -113,7 +117,7 @@ The JOint Dynamic user-Item Embedding (JODIE) is a model that learns dynamic emb
 \subsection*{Code}
 We re-implemented the JODIE model using newer version of Pytorch~\cite{NEURIPS2019_bdbca288} version 1.10 and python 3.8 independently of the original code provided by the authors\footnote{\url{https://github.com/srijankr/jodie}}. We want to highlight the fact that we used the \textit{tanh} function  as the activation function at the output of the RNNs (see fig. \ref{Pipeline}) to build our model,  in accordance to the authors' original code but contrary to what's written in the original paper. Our code is available at the following address: \url{https://github.com/ComplexNetTSP/JODIE}. 
 
-our Source code is organized as follows:
+Our source code is organized as follows:
 \begin{itemize}
     \item \textbf{preprocessing.py} where everything about the data preprocessing and the t-batch algorithm.
     \item \textbf{model.py} the model as described in figure \ref{Pipeline}.
@@ -124,14 +128,15 @@ By organizing the work in this way, it allows to have a modular, easily reusable
 
 \subsection*{Model descriptions}
 
-\subsubsection{Architecture and learning}
+%\subsubsection{Architecture}
 
-The architecture consists of two Recurrent Neural Networks (RNNs) and two Multi-Layer Perceptrons (MLP) as shown in Figure \ref{Pipeline}. The first RNN is dedicated to users, the second to items. Both RNNs are activated with sigmoids according to the paper but by looking at the documentation of the RNNCell() function, we saw that the activation function used was hyperbolic tangent. The first MLP is dedicated to user classification. It consists of a hidden layer of 50 neurons activated by a ReLU function and an output layer composed of two neurons, one for each state. The second MLP is dedicated to the estimation of the embedding of the next item. It includes a single projection layer that consists of a linear projection in the space of embeddings.
+%The architecture consists of two Recurrent Neural Networks (RNNs) and two Multi-Layer Perceptrons (MLP) as shown in Figure \ref{Pipeline}. The first RNN is dedicated to users, the second to items. The first MLP is dedicated to user classification. It consists of a hidden layer of 50 neurons activated by a ReLU function and an output layer composed of two neurons, one for each state. The second MLP is dedicated to the estimation of the embedding of the next item. It includes a single projection layer that consists of a linear projection in the space of embeddings.
 
 \subsubsection{Update operator}
 % enlever les we
 % forme active
-Now, we will introduce the update operator. The update operator takes the form of two mutually recursive neural networks shown in Figure \ref{recursive RNNs}. The RNN$_U$ is used to update the dynamic user embeddings and the RNN$_I$ updates the dynamic item embeddings. In this case, the embeddings are considered as the hidden state of the classical RNNs respectively. At time $t=0$, we initialize dynamic embeddings $u_0$ and $i_0$ randomly according to a uniform distribution $\mathcal{U}[0;1[$ followed by a normalization which will be used as inputs of the RNNs. As input, there is also the embedding of the other entity, $\Delta$ the time elapsed between an entity and the previous interaction and $f$ a feature vector which characterizes the link of the interaction. A specificity of these RNNs is that they take four inputs instead of two as usual. In order to narrow down to just two entries, we concatenate the embedding of the other entity, $\Delta$ and $f$. In Figure \ref{recursive RNNs}, we denote the concatenation by [.,.]. More formally, we use the following formulas to update the embeddings:
+
+The authors will introduce the update operator. The update operator takes the form of two mutually recursive neural networks shown in Figure \ref{recursive RNNs}. The RNN$_U$ is used to update the dynamic user embeddings and the RNN$_I$ updates the dynamic item embeddings. In this case, the embeddings are considered as the hidden state of the classical RNNs respectively. At time $t=0$, the embeddings are initialized randomly according to uniform distribution $\mathcal{U}[0;1[$ followed by a normalization and are noted $u_0$ and $i_0$. As input, there is the embeddings at time $t=0$ but also $\Delta$ the time elapsed between an entity and the previous interaction and $f$ a feature vector which characterizes the link of the interaction. A specificity of these RNNs is that they take four inputs instead of two as usual. In order to narrow down to just two inputs, we concatenate the embedding of the other entity, $\Delta$ and $f$. In Figure \ref{recursive RNNs}, we denote the concatenation by [.,.]. More formally, we use the following formulas to update the embeddings:
 $$
 u^+ = \sigma \left ( W_1^u u^- + W_2^u i^- + W_3^u f + W_4^u \Delta_u \right )
 $$
@@ -149,25 +154,39 @@ Where the matrices $W_1^e, ..., W_4^e$ are the parameters of the RNN$_e$ and $\s
 
 \subsubsection{Projection operation}
 
-This operation consists in projecting the user's embedding to a future time. Indeed, it is assumed that user's interest changes with time, for example in winter and in summer, hence the need to model this variation as a linear projection. To make the explanation more clear, the authors present the Figure \ref{Projection} to better understand.\\
+This operation consists in projecting the user's embedding to a future time. Indeed, it is assumed that user's interest changes with time, for example in winter and in summer, hence the need to model this variation as a linear projection. To make the explanation more clear, the authors present a figure %\ref{Projection} 
+to better understand (cf figure 3 in~\cite{kumar2019predicting}).\\
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[scale = 0.4]{image/projection_operation.png}
-    \caption{Projection operation}
-   \label{Projection}
-\end{figure}
+%\begin{figure}[H]
+%    \centering
+%    \includegraphics[scale = 0.4]{image/projection_operation.png}
+%    \caption{Projection operation}
+%   \label{Projection}
+%\end{figure}
 
 
 We notice that over a very short time interval, the projected embedding of the user changes slightly, but as time goes, the projected embedding will be further away from its original embedding. To perform this operation, we must first convert $\Delta$ into a vector $w \in \mathbb{R}^n$ using a linear layer represented by its weights vector $W_p$. We have $w = W_p \Delta$. We initialize $W_p$ by a Gaussian of zero mean. We obtain the projected embedding by computing Hadamard product, denoted $*$, of $1+w$ and $u_t$. The authors use the following formula.
 $$
 \widehat u_{t+\Delta} = (1+w) * u_t
 $$
-We can see that if $\Delta = 0$ then $w=0$ and the projected embedding is the same as the initial embedding. We can consider this operation as a simple linear transformation. These two operators consist in the learning of the model. For a faster learning, the authors have created the \texttt{t-batch} algorithm.
+We can see that if $\Delta = 0$ then $w=0$ and the projected embedding is the same as the initial embedding. We can consider this operation as a simple linear transformation.\\
+
+These two operators consist in the learning of the model. One limitation cited by the authors is the learning time. Indeed, the existing models process each interaction one after the other, which takes a considerable amount of time. The authors have invented an algorithm that allows to separate temporal data in batches and thus to accelerate the learning time. This algorithm is called \texttt{t-batch}.
 
 \subsubsection{t-Batch algorithm}
 
-The goal of the \texttt{t-batch} algorithm is to be able to separate temporal data in batches. We work on datasets that are indexed by time, so we cannot separate data in a classical batches. Indeed, we cannot update an embedding of a user who arrives at time $t+1$ before an embedding of a user who arrives at time $t$. To do this, we must take into account several constraints. First, the same batch cannot contain the same entity several times. Second, the batches must keep temporal dependencies, i.e. we process the interactions in the order. By respecting these two conditions, the authors guarantee that the batches are parallelizable. A negative point of the original article is the understanding of the \texttt{t-batch} algorithm with only a few lines description. To better understand, we present the algorithm \ref{t-batch}.
+% dire que le t-batch est un point clé de la méthode qui permet d'accélérer le temps d'apprentissage
+% Difficile de compréhension dans l'article original (quelques lignes) et la compréhension dans le code a été difficile également. Dire les différentes façons de faire le t-batch (au début pour nous, première epoch pour eux).
+
+%The goal of the \texttt{t-batch} algorithm is to be able to separate temporal data in batches. We work on datasets that are indexed by time, so we cannot separate data in a classical batches. Indeed, we cannot update an embedding of a user who arrives at time $t+1$ before an embedding of a user who arrives at time $t$. To do this, we must take into account several constraints. First, the same batch cannot contain the same entity several times. Second, the batches must keep temporal dependencies, i.e. we process the interactions in the order. By respecting these two conditions, the authors guarantee that the batches are parallelizable. A negative point of the original article is the understanding of the \texttt{t-batch} algorithm with only a few lines description. To better understand, we present the algorithm \ref{t-batch}.
+
+
+The goal of the \texttt{t-batch} algorithm is to be able to separate temporal data into batches. 
+
+This algorithm is a key point of the method that allows to speed up the learning time considerably. The \texttt{t-batch} algorithm is explained in the original article by a few lines. Concerning the code, the algorithm was difficult to identify in the learning loop. As a result, it took us some time to understand this algorithm. To facilitate the understanding of the \texttt{t-batch} we propose algorithm \ref{t-batch} and explain its principle.
+
+In classical computer science, we separate the data into batches of equal size. Here we work on data sets that are indexed by time, so we cannot separate the data in a classical batch. Indeed, we cannot update an embedding of a user that arrives at time t+1 before an embedding of a user that arrives at time $t$. To do so, we must take into account several constraints. First, the same batch cannot contain the same entity multiple times. Second, batches must retain temporal dependencies, i.e., we process interactions in order. By meeting these two conditions, the authors guarantee that batches are parallelizable. By proceeding in this way we cannot know the size of the batches in advance.
+
 
 
 %From an algorithmic point of view, those constraint are satisfied while using the algorithm \ref{t-batch}. A negative point of the original article is the understanding of the t-batch algorithm with only a few lines description. To better understand this algorithm, we present it.\\
@@ -275,19 +294,21 @@ Where $u_{true}$ is the real class of the user and $\widehat u_{pred}$ his predi
 
 \subsubsection{Training JODIE model} 
 
+% bien définir une période et le split dans l'étape 3 pour rendre les choses bien clair et facilité la compréhension.
+
 We detail the learning steps and the specificity of JODIE model. More precisely, we explain the used functions and we specify there location for a better understanding of the available files.
 
 \begin{enumerate}
     \item We use a function called \textbf{preprocess} which is in the file \textbf{preprocessing.py} to make a pre-processing of the data to extract information necessary during the training. Information like the sequence of users, items, time, features or previous items that will be used in the learning process.
     \item We initialize the embeddings in a unique and same way, i.e. by using a uniform law $\mathcal{U}([0,1[)$.
-    \item The JODIE model has a particularity in the way the \texttt{t-batch} is formed, which is not discussed in the article and difficult to understand in the code. Normally to make batches, we cut the dataset with the number of observations we want per batch. But when we have a dataset with temporal dependencies the operation can not be done the same way, this why we apply the \texttt{t-batch} algorithm. But, instead of applying directly the algorithm on the whole dataset, the authors made it in another way. From the temporal data, the authors decided to make subsets of the data and apply independently the \texttt{t-batch} algorithm on each subset of the data. The following figure will help us to understand better:
+    \item To begin, we will define two terms: \texttt{split} and period. \texttt{Split} is an integer used to separate time into several intervals. Period is a time interval. The JODIE model has a particularity in the way the \texttt{t-batch} is formed, which is not discussed in the article and difficult to understand in the code. Normally to make batches, we cut the dataset with the number of observations we want per batch. But when we have a dataset with temporal dependencies the operation can not be done the same way, this why we apply the \texttt{t-batch} algorithm. But, instead of applying directly the algorithm on the whole dataset, the authors made it in another way. From the temporal data, the authors decided to make subsets of the data and apply independently the \texttt{t-batch} algorithm on each subset of the data. The following figure will help us to understand better:
     \begin{figure}[H]
         \centering
-        \includegraphics[scale = 0.43]{image/pipeline_t-batch.pdf}
+        \includegraphics[width=1\textwidth]{image/pipeline_t-batch.pdf}
         \caption{Pipeline of the \texttt{t-batch} algorithm}
         \label{pipeline_t-batch}
     \end{figure}
-    From the temporal bipartite graph, we will separate the edges and classify them in an increasing temporal order. Then, we will take the time interval where the interactions occur and we will divide this time by a hyper-parameter called \texttt{split}. The authors have set \texttt{split} to 500. We obtain temporal periods with different sizes. Finally, we will apply the t-batch algorithm on each period. Once all the t-batches are processed, we can back-propagate the error for one period.
+    From the temporal bipartite graph, we will separate the edges and classify them in an increasing temporal order. Then, we will take the time interval where the interactions occur and we will divide this time by a hyper-parameter called \texttt{split}. The authors have set \texttt{split} to 500. We obtain temporal periods with different sizes. Finally, we will apply the \texttt{t-batch} algorithm on each period. Once all the t-batches are processed, we can back-propagate the error for one period.
     \item The \texttt{t-batch} algorithm is used to make temporal batches. We use another approach than the authors. Instead of taking a period, applying the \texttt{t-batch} and using the t-batches to learn, we do all the t-batches at once with the function \textbf{t\_batch} in the file \textbf{preprocessing.py} before the learning step and loop over the periods.
     \item During the learning stage, in the function \textbf{train\_ray} in the file \textbf{train.py}, we use the function \textbf{projection} from the file \textbf{model.py} to project the user's embedding in a future time. We also use the function \textbf{predict\_embedding\_item} in the file \textbf{model.py} to make a prediction of the next embedding of the item. And finally, we calculate the Mean Square Error (MSE) of the predicted embedding and the real embedding.
     \item We update the embeddings of users and items using the functions \textbf{update\_rnn\_user} and \textbf{update\_rnn\_item} respectively in the file \textbf{model.py}.
@@ -470,6 +491,7 @@ The data sets that were used in the original article were also used in this work
 \textbf{Wikipedia bans}: Wikipedia edit data with public ground-truth labels of banned users. This results in 217 positive labels (=0.14\%).\\
 \textbf{MOOC~\cite{mooc} student drop-out}: this public dataset consists of actions done by students on a MOOC online course. This dataset consists of 7047 users interacting with 98 items. There are 4066 drop-out events (=0.98\%). All datasets and their details are shown in table \ref{description data}. \\
 
+\setlength\tabcolsep{0.12cm} % changer l'écart entre les colonnes pour faire rentrer sur la bonne largeur.
 \begin{table}[H]
     \centering
     \ra{1.3}
@@ -486,6 +508,7 @@ The data sets that were used in the original article were also used in this work
     \caption{Description of the datasets that were used in this project}
     \label{description data}
 \end{table}
+\setlength\tabcolsep{6pt} % default value: 6pt
 
 The authors of the original paper created their own datasets. Thus, a dataset has the following format :
 \begin{itemize}
@@ -498,6 +521,8 @@ The authors of the original paper created their own datasets. Thus, a dataset ha
 A negative point about the data sets is that the variable names are not in the right places and this creates errors when using them. That is why we created a function called \textbf{fetch\_datasets} in the file \textbf{preprocessing.py} which allows to have correct variable names which have the following format: \texttt{user, item, timestamp, labels, f\_1, ..., f\_$n$} with $n$ the number of features.\\
 
 \subsection*{Hyperparameters}
+
+% ce sont nos hyperparamètres a tester ! Eux n'ont pas fait de recherche pour la taille des embeddings juste ils testent la robustesse du modèle en faisant varier la taille des embeddings sur lastFM
 
 As described in the model descriptions section, the model has several hyperparameters like epoch number, dynamic embedding size, learning rate, \texttt{split}, $\lambda_U$ and $\lambda_I$. Initially the hyperparameters were chosen as in the original article as follow.
 
@@ -526,6 +551,8 @@ As described in the model descriptions section, the model has several hyperparam
 Only the size of the dynamic embeddings have been studied and chosen using a grid search. The other hyperparameters are just given without any justification.
 
 \subsection*{Extended experiments}
+
+% dire les expériences en plus et insister sur le split.
 
 Of all these hyper-parameters, the one that caught our eye the most was \texttt{split}. Indeed, \texttt{split} is used to define the frequency at which t-batches are created and the JODIE model is trained. It is important to choose its value well to have enough data in a period. To test this hyper-parameter, we set the other hyper-parameters to $50$ epoch, $\lambda_U = \lambda_I = 1$, learning rate = $1e-3$ and the size of the embeddings to $128$, and we test these $5$, $500$ and $50000$ for the value of \texttt{split}. We define \texttt{split} as follows:
 \texttt{split} is used to split the dataset for a specific period of time. The authors use it as follows : $\frac{\text{time}_{\text{end}} - \text{time}_{\text{start}}}{\text{\texttt{split}}}$
