@@ -150,10 +150,6 @@ This algorithm is a key point of the method that allows to speed up the learning
 
 In classical computer science, we separate the data into batches of equal size. Here we work on data sets that are indexed by time, so we cannot separate the data in a classical batch. Indeed, we cannot update an embedding of a user that arrives at time t+1 before an embedding of a user that arrives at time $t$. To do so, we must take into account several constraints. First, the same batch cannot contain the same entity multiple times. Second, batches must retain temporal dependencies, i.e., we process interactions in order. By meeting these two conditions, the authors guarantee that batches are parallelizable. By proceeding in this way we cannot know the size of the batches in advance.
 
-
-
-%From an algorithmic point of view, those constraint are satisfied while using the algorithm \ref{t-batch}. A negative point of the original article is the understanding of the t-batch algorithm with only a few lines description. To better understand this algorithm, we present it.\\
-
     \begin{algorithm}[H]
         \caption{t-Batch}
         \label{t-batch}
