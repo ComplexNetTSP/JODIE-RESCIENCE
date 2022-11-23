@@ -146,7 +146,7 @@ These two operators consist in the learning of the model. One limitation cited b
 
 The goal of the \texttt{t-batch} algorithm is to be able to separate temporal data into batches. 
 
-This algorithm is a key point of the method that allows to speed up the learning time considerably. The \texttt{t-batch} algorithm is explained in the original article by a few lines. Concerning the code, the algorithm was difficult to identify in the learning loop. As a result, it took us some time to understand this algorithm. To facilitate the understanding of the \texttt{t-batch} we propose algorithm \ref{t-batch} and explain its principle.
+This algorithm is a key point of the method that allows to speed up the learning time considerably. The \texttt{t-batch} algorithm is explained in the original article only by a few lines. Regarding the code, the algorithm was difficult to identify since it was miwed with other in the learning loop. To facilitate the understanding of the \texttt{t-batch} we propose algorithm \ref{t-batch} and explain its principle.
 
 In classical computer science, we separate the data into batches of equal size. Here we work on data sets that are indexed by time, so we cannot separate the data in a classical batch. Indeed, we cannot update an embedding of a user that arrives at time t+1 before an embedding of a user that arrives at time $t$. To do so, we must take into account several constraints. First, the same batch cannot contain the same entity multiple times. Second, batches must retain temporal dependencies, i.e., we process interactions in order. By meeting these two conditions, the authors guarantee that batches are parallelizable. By proceeding in this way we cannot know the size of the batches in advance.
 
