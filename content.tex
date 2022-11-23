@@ -407,15 +407,6 @@ We notice that only the results for the Reddit dataset are slightly lower than i
 
 To go further in the replication and reproduction, we will also reproduce two figures that show that the robustness of JODIE model. The first figure will concern the prediction of future interaction on the Wikipedia dataset by plotting the MRR. For this figure, we varied the percentage of the training set from 10\% to 80\% with 10\% step. The second figure will be on the same dataset but for the prediction of user state change. For this, we varied the percentage of the training set from 20\% to 60\% in 10\% steps.
 
-% \begin{figure}[H]
-% 	\centering
-%     \subfigure[A]{\includegraphics[width=0.46\textwidth]{image/wiki.pdf}} 
-%     \subfigure[B]{\includegraphics[clip,width=0.46\textwidth]{image/wiki_state.pdf}}
-%     \caption{Robustness of JODIE replication: [A] compare the MRR of JODIE replication with baselines on interaction prediction task, by varying the training data size. [B] shows the AUC of user state change prediction task by varying the training data size.}
-%     \label{fig:foobar}
-% \end{figure}
-
-
 \begin{figure}[H]
     \centering
     \includegraphics[width = \textwidth]{image/percentage_train.pdf}
@@ -424,21 +415,9 @@ To go further in the replication and reproduction, we will also reproduce two fi
 \end{figure}
 
 
-%\begin{figure}[H]
-%	\centering
-%    \begin{subfigure}[b]{0.49\textwidth}
-%        \includegraphics[width=1\textwidth]{image/wiki.pdf}
-%    \end{subfigure}
-%    \begin{subfigure}[b]{0.49\textwidth}
-%        \includegraphics[width=1\textwidth]{image/wiki_state.pdf}
-%    \end{subfigure}
-
-%    \caption{Robustness of JODIE replication: [A] compare the MRR of JODIE replication with baselines on interaction prediction task, by varying the training data size. [B] shows the AUC of user state change prediction task by varying the training data size.}
-%    \label{fig:foobar}
-%\end{figure}
 
 We can see on the first figure that shows an increasing curve. The larger the training set is, the better is the model in the prediction of future interaction. This is because the test set is reduced each time. If we were to compare the curve obtained by the authors of the paper and ours, we could say that the general shape is similar.
-For the second figure, the curve is decreasing. The larger the training set is, the more the model is wrong. In state prediction, there is very few change of state so the model will tend to predict more the majority class when the training set is smaller and does not contains enough changing state cases. This is even more pronounced when the training set get even smaller.\\
+For the second figure, the curve is decreasing. The larger the training set is, the more the model is wrong. In state prediction, there is very few change of state so the model will tend to predict more the majority class when the training set is smaller and does not contains enough changing state cases. This is even more pronounced when the training set get even smaller.
 
 Additionally, we test the robustness of the model for variations in the size of the embeddings. The figure on the left shows the MRR results of predicting future interactions for the datasets LastFM and Wikipedia and the figure on the right shows the same results but in recall@10:
 \begin{figure}[H]
