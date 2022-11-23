@@ -88,8 +88,6 @@ JODIE is a model that learns dynamic embeddings of users $u_t \in \mathbb{R}^n$,
 
 %To better understand what we have done, it is important to see our more recent version of the code, but also the architecture of the model, the loss functions used and the evaluation of JODIE.
 
-
-
 \subsection*{Code}
 We re-implemented the JODIE model using newer version of Pytorch~\cite{NEURIPS2019_bdbca288} version 1.10 and python 3.8 independently of the original code provided by the authors\footnote{\url{https://github.com/srijankr/jodie}}. We want to highlight the fact that we used the \textit{tanh} function  as the activation function at the output of the RNNs (see fig. \ref{Pipeline}) to build our model,  in accordance to the authors' original code but contrary to what's written in the original paper. Our code is available at the following address: \url{https://github.com/ComplexNetTSP/JODIE}. 
 
@@ -101,7 +99,7 @@ Our source code is organized as follows:
     \item \textbf{evaluate.py} is used to evaluate the model after training.
 \end{itemize}
 By organizing the work in this way, it allows to have a modular, easily reusable and understandable code.
-\textcolor{red}{HOW TO run teh Model ....... !!!!!!!!!!!}
+\textcolor{red}{HOW TO run the Model ....... !!!!!!!!!!!}
 \subsection*{Model descriptions}
 
 \subsubsection{Update operator}
