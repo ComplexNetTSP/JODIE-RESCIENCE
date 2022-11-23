@@ -138,12 +138,12 @@ These two operators consist in the learning of the model. One limitation cited b
 
 \subsubsection{t-Batch algorithm}
 
-The \texttt{t-batch} algorithm is a linear algorithm that split temporal data into batches. This algorithm is a key point of the method that allows to speed up the learning time considerably. The \texttt{t-batch} algorithm is explained in the original article only by a few lines. Regarding the code, the algorithm was difficult to identify since it was mixed with other parts of code in the learning loop. To facilitate the understanding of the \texttt{t-batch} we propose the following algorithm \ref{t-batch}. To summarize the \ref{t-batch} algorithm, given a list of timestamped events, it dispatches the event into a batch according to the following contains: first it ensures that the same batch cannot contain the same entity multiple times. Secondly, it ensures to retain temporal dependencies inside batches and between batches, i.e., we process interactions in order. By meeting these two conditions, the authors guarantee that batches are parallelizable. 
+The \texttt{t-batch} algorithm is a linear algorithm that split temporal data into batches. This algorithm is a key point of the method that allows to speed up the learning time considerably. The \texttt{t-batch} algorithm is explained in the original article only by a few lines. Regarding the code, the algorithm was difficult to identify since it was mixed with other parts of code in the learning loop. To facilitate the understanding of the \texttt{t-batch} we propose the following algorithm \ref{t-batch}. To summarize the \ref{t-batch} algorithm, given a list of timestamped events, it dispatches the event into a batch according to the following constrains first it ensures that the same batch cannot contain the same entity multiple times. Secondly, it ensures to retain temporal dependencies inside batches and between batches, i.e., we process interactions in order. By meeting these two conditions, we guarantee that batches are independent (and parallelizable). Finally, in line 9. of Alg. \ref{t-batch} we compute the index of the batch $B_{idx}$ where the interaction $\mathcal{S}_r \in \mathcal{S}$ will be put in. Let $\text{maxBatch}(e, \,r-1)$ be the function that gives the index of the batch at time $r-1$ containing the entity $e$. 
 
     \begin{algorithm}[H]
         \caption{t-Batch}
         \label{t-batch}
-        \begin{algorithmic} 
+        \begin{algorithmic}[1]
             \STATE \textbf{Input} : Sequence of interactions ordered by time $S$ : $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
             \STATE \textbf{Output} : Sequence of batches $B$ : $B_k = \{S_{k,1},\,...,\,S_{k,n} \}$
             \STATE \textbf{Initialize} : 
@@ -204,12 +204,10 @@ The \texttt{t-batch} algorithm is a linear algorithm that split temporal data in
 %    \end{algorithmic}
 %\end{algorithm}
 
-In eq. \ref{eq:1} we compute the index of the batch $B_{idx}$ where the interaction $\mathcal{S}_r \in \mathcal{S}$ wille be put in. Let $\text{maxBatch}(e, \,r-1)$ be the function that gives the index of the batch at time $r-1$ containing the entity $e$. Moreover, in each batch there is an edge with two nodes of the graph that are totally independent from the other edges in the same batch. By ..... we are guaranteed to make batches indepênadant of each other (parallelizable) and the events ordered.
-
-\begin{equation}
-\text{idx} = \max \left ( \text{maxBatch}(u, \,r-1), \,\text{maxBatch}(i, \,r-1) \right ) + 1
-\label{eq:1}
-\end{equation}
+% \begin{equation}
+% \text{idx} = \max \left ( \text{maxBatch}(u, \,r-1), \,\text{maxBatch}(i, \,r-1) \right ) + 1
+% \label{eq:1}
+% \end{equation}
 
 \subsubsection{Next item embedding and state change losses}
 
@@ -246,19 +244,11 @@ Where $u_{true}$ is the real class of the user and $\widehat u_{pred}$ his predi
 
 % bien définir une période et le split dans l'étape 3 pour rendre les choses bien clair et facilité la compréhension.
 
-We detail the learning steps and the specificity of JODIE model. More precisely, we explain the used functions and we specify there location for a better understanding of the available files.
-
+We detail the learning steps and the specificity of JODIE model we provide. 
 \begin{enumerate}
-    \item We use a function called \textbf{preprocess} which is in the file \textbf{preprocessing.py} to make a pre-processing of the data to extract information necessary during the training. Information like the sequence of users, items, time, features or previous items that will be used in the learning process.
+    \item We use a function called \textbf{preprocess} which is in the file \textbf{preprocessing.py} to make a pre-processing of the data to extract information necessary during the training. Information like the sequence of users, items, time, features or previous items that will be used during the learning step.
     \item We initialize the embeddings in a unique and same way, i.e. by using a uniform law $\mathcal{U}([0,1[)$.
-    \item To begin, we will define two terms: \texttt{split} and period. \texttt{Split} is an integer used to separate time into several intervals. Period is a time interval. The JODIE model has a particularity in the way the \texttt{t-batch} is formed, which is not discussed in the article and difficult to understand in the code. Normally to make batches, we cut the dataset with the number of observations we want per batch. But when we have a dataset with temporal dependencies the operation can not be done the same way, this why we apply the \texttt{t-batch} algorithm. But, instead of applying directly the algorithm on the whole dataset, the authors made it in another way. From the temporal data, the authors decided to make subsets of the data and apply independently the \texttt{t-batch} algorithm on each subset of the data. The following figure will help us to understand better:
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=1\textwidth]{image/pipeline_t-batch.pdf}
-        \caption{Pipeline of the \texttt{t-batch} algorithm}
-        \label{pipeline_t-batch}
-    \end{figure}
-    From the temporal bipartite graph, we will separate the edges and classify them in an increasing temporal order. Then, we will take the time interval where the interactions occur and we will divide this time by a hyper-parameter called \texttt{split}. The authors have set \texttt{split} to 500. We obtain temporal periods with different sizes. Finally, we will apply the \texttt{t-batch} algorithm on each period. Once all the t-batches are processed, we can back-propagate the error for one period.
+    \item To begin, we will define two terms: \texttt{split} and period. \texttt{Split} is an integer used to separate time into several intervals. Period is a time interval. The JODIE model has a particularity in the way the \texttt{t-batch} is formed. Usualy, to batches, we split teh observations the dataset within a givent number of batches. But when we have a dataset ha s temporal dependencies the operation can not be done the same way. Tha why apply the \texttt{t-batch} algorithm is applied. But, Instead of applying directly the algorithm on the whole dataset, the authors decided to apply independently the \texttt{t-batch} algorithm on each subset of the data as described int the figure \ref{pipeline_t-batch}. From the temporal bipartite graph, we will separate the edges and classify them in an increasing temporal order. Then, we will take the time interval where the interactions occur and we will divide this time by a hyper-parameter called \texttt{split} (in the original papaer \texttt{split} is set to to 500). Finally, we will apply the \texttt{t-batch} algorithm on each period. Once all the t-batches are processed, we can back-propagate the error for one period.
     \item The \texttt{t-batch} algorithm is used to make temporal batches. We use another approach than the authors. Instead of taking a period, applying the \texttt{t-batch} and using the t-batches to learn, we do all the t-batches at once with the function \textbf{t\_batch} in the file \textbf{preprocessing.py} before the learning step and loop over the periods.
     \item During the learning stage, in the function \textbf{train\_ray} in the file \textbf{train.py}, we use the function \textbf{projection} from the file \textbf{model.py} to project the user's embedding in a future time. We also use the function \textbf{predict\_embedding\_item} in the file \textbf{model.py} to make a prediction of the next embedding of the item. And finally, we calculate the Mean Square Error (MSE) of the predicted embedding and the real embedding.
     \item We update the embeddings of users and items using the functions \textbf{update\_rnn\_user} and \textbf{update\_rnn\_item} respectively in the file \textbf{model.py}.
@@ -268,6 +258,13 @@ We detail the learning steps and the specificity of JODIE model. More precisely,
     \item Once all the time periods are covered, we go to the second epoch.
 \end{enumerate}
 Once the learning stage is over, the evaluation is carried out.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{image/pipeline_t-batch.pdf}
+    \caption{Pipeline of the \texttt{t-batch} algorithm}
+    \label{pipeline_t-batch}
+\end{figure}
 
 \begin{comment}
 \begin{algorithm}[H]
