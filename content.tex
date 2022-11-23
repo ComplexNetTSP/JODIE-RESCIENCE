@@ -132,7 +132,7 @@ We notice that over a very short time interval, the projected embedding of the u
 $$
 \widehat u_{t+\Delta} = (1+w) * u_t
 $$
-We can see that if $\Delta = 0$ then $w=0$ and the projected embedding is the same as the initial embedding. We can consider this operation as a simple linear transformation.\\
+We can see that if $\Delta = 0$ then $w=0$ and the projected embedding is the same as the initial embedding. We can consider this operation as a simple linear transformation.
 
 These two operators consist in the learning of the model. One limitation cited by the authors is the learning time. Indeed, the existing models process each interaction one after the other, which takes a considerable amount of time. The authors have invented an algorithm that allows to separate temporal data in batches and thus to accelerate the learning time. This algorithm is called \texttt{t-batch}.
 
