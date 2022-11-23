@@ -138,13 +138,7 @@ These two operators consist in the learning of the model. One limitation cited b
 
 \subsubsection{t-Batch algorithm}
 
-% dire que le t-batch est un point clé de la méthode qui permet d'accélérer le temps d'apprentissage
-% Difficile de compréhension dans l'article original (quelques lignes) et la compréhension dans le code a été difficile également. Dire les différentes façons de faire le t-batch (au début pour nous, première epoch pour eux).
-
-%The goal of the \texttt{t-batch} algorithm is to be able to separate temporal data in batches. We work on datasets that are indexed by time, so we cannot separate data in a classical batches. Indeed, we cannot update an embedding of a user who arrives at time $t+1$ before an embedding of a user who arrives at time $t$. To do this, we must take into account several constraints. First, the same batch cannot contain the same entity several times. Second, the batches must keep temporal dependencies, i.e. we process the interactions in the order. By respecting these two conditions, the authors guarantee that the batches are parallelizable. A negative point of the original article is the understanding of the \texttt{t-batch} algorithm with only a few lines description. To better understand, we present the algorithm \ref{t-batch}.
-
-
-The goal of the \texttt{t-batch} algorithm is to be able to separate temporal data into batches. This algorithm is a key point of the method that allows to speed up the learning time considerably. The \texttt{t-batch} algorithm is explained in the original article only by a few lines. Regarding the code, the algorithm was difficult to identify since it was mixed with other parts of code in the learning loop. To facilitate the understanding of the \texttt{t-batch} we propose the following algorithm \ref{t-batch}. To summarize the \ref{t-batch} algorithm, given a list of timestamped events, it dispatches the event into a batch according to the following contains: first it ensures that the same batch cannot contain the same entity multiple times. Secondly, it ensures to retain temporal dependencies inside batches and between batches, i.e., we process interactions in order. By meeting these two conditions, the authors guarantee that batches are parallelizable. 
+The \texttt{t-batch} algorithm is a linear algorithm that split temporal data into batches. This algorithm is a key point of the method that allows to speed up the learning time considerably. The \texttt{t-batch} algorithm is explained in the original article only by a few lines. Regarding the code, the algorithm was difficult to identify since it was mixed with other parts of code in the learning loop. To facilitate the understanding of the \texttt{t-batch} we propose the following algorithm \ref{t-batch}. To summarize the \ref{t-batch} algorithm, given a list of timestamped events, it dispatches the event into a batch according to the following contains: first it ensures that the same batch cannot contain the same entity multiple times. Secondly, it ensures to retain temporal dependencies inside batches and between batches, i.e., we process interactions in order. By meeting these two conditions, the authors guarantee that batches are parallelizable. 
 
     \begin{algorithm}[H]
         \caption{t-Batch}
@@ -210,11 +204,12 @@ The goal of the \texttt{t-batch} algorithm is to be able to separate temporal da
 %    \end{algorithmic}
 %\end{algorithm}
 
-The batch index calculation where to place the interaction $r$ is expressed mathematically as:
-$$
+In eq. \ref{eq:1} we compute the index of the batch $B_{idx}$ where the interaction $\mathcal{S}_r \in \mathcal{S}$ wille be put in. Let $\text{maxBatch}(e, \,r-1)$ be the function that gives the index of the batch at time $r-1$ containing the entity $e$. Moreover, in each batch there is an edge with two nodes of the graph that are totally independent from the other edges in the same batch. By ..... we are guaranteed to make batches indepênadant of each other (parallelizable) and the events ordered.
+
+\begin{equation}
 \text{idx} = \max \left ( \text{maxBatch}(u, \,r-1), \,\text{maxBatch}(i, \,r-1) \right ) + 1
-$$
-Where $\text{maxBatch}(e, \,r-1)$ gives the index of the biggest batch at time $r-1$ containing the entity $e$ . Thus, we place the interaction in the next batch to respect the temporal dependencies. Moreover, in each batch there is an edge with two nodes of the graph that are totally independent from the other edges in the same batch. By respecting these two conditions, we are guaranteed to make batches that can be parallelized and keep the temporal dependencies. Finally, we do not know the number of batches in advance and the size of the batches will be different. Besides, the \texttt{t-batch} algorithm has a linear complexity. The algorithm goes through each observation only once and efficient on large datasets.
+\label{eq:1}
+\end{equation}
 
 \subsubsection{Next item embedding and state change losses}
 
