@@ -7,23 +7,23 @@
 
 \subsubsection{Scope of Reproducibility}
 
-In this work, the article Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks~\cite{kumar2019predicting}  is evaluated through a replication study. Replication results examine whether the claims made by authors are valid. Our goal is to replicate the experiments and achieve the same results as the authors.
+In this work, the article Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks~\cite{kumar2019predicting} is evaluated through a replication study. Replication results examine whether the claims made by authors are valid. Our goal is to replicate the experiments and achieve the same results as the authors.
 
 \subsubsection{Methodology}
 
-We reimplement the method of Kumar et al.~\cite{kumar2019predicting} for recommender systems using their new algorithm that allows batch learning on temporal data, improves their codes, and extends their work. Our improvements consist in using the last versions of Python and  Pytorch, and having a more readable code. Our extension includes impacting a hyperparameters by varying it. The codes are available on \href{https://github.com/ComplexNetTSP/JODIE}{GitHub}. 
+We reimplement the method of Kumar et al.~\cite{kumar2019predicting} for recommender systems using their new algorithm that allows batch learning on temporal data, improves their codes, and extends their work. Our improvements consist of using the last versions of Python and  Pytorch, and having a more readable code. Our extension includes impacting hyperparameters by varying it. The codes are available at \href{https://github.com/ComplexNetTSP/JODIE}{GitHub}. 
 
 \subsubsection{Result}
 
-We mainly the reach the same results with our own code compare to the original paper, with a notable difference with the prediction of future interaction task (with the LastFM dataset) where we achieve a result twice better than the one publish in the paper. Moreover, we showed that the number of split during the learning phase (the number of time with perform a back-propagation) has strong impact on the final results (cf. Fig. \ref{split}). This fact were not highlighted in the original paper.
+We mainly reach the same results with our own code compared to the original paper, with a notable difference with the prediction of future interaction task (with the LastFM dataset) where we achieve a result twice better than the one publish in the paper. Moreover, we showed that the number of split during the learning phase (the number of times the back propagation is performed) has a strong impact on the final results (cf. Fig. \ref{split}). This fact was not highlighted in the original paper.
 
 \subsubsection{What was easy}
 
-the authors had made their code available and all the necessary information at the following  address \href{https://github.com/srijankr/jodie}{GitHub}.  Their original code has considerably simplify our replication task.
+The authors had made their code available and all the necessary information at the following  address \href{https://github.com/srijankr/jodie}{GitHub}. Their original code has considerably simplified our replication task.
 
 \subsubsection{What was difficult}
 
-Although the code is available, however some technical aspects in the article developed which has hindered our complete understanding of the model. These problems were solved by studying the code made available.
+Although the code is available. However some technical aspects have hindered our complete understanding of the model. We solved them by studying the code made available by the authors.
 
 \subsubsection{Communication with original authors}
 We contacted the authors for clarification about which aggregation method used to fit the inputs constraints of the RNN gate.
@@ -32,8 +32,8 @@ We contacted the authors for clarification about which aggregation method used t
 
 \section*{Introduction}
 
-Recommender systems are systems that cover a broad scope of techniques which all aim to provide suggestions of items that are most pertinent to a particular user (e.g.., which music playlists to choose, which book a user might like, etc.), see~\cite{Ricci_Rokach_Shapira_2021} for a review of the techniques and challenges of the field. We can observe, particularly in areas such as  e-commerce or social media, that one user may interact with several items/products, and these interactions may evolve with time and context (e.g., Winter clothe recommendation should be different from summer clothes recommendation). 
-As a result,  understanding and modeling the dynamic evolution of users and items is an important issue. In the literature, this dynamicity is generally modeled by an embedding trajectory in a Euclidean space. However, existing works suffer from several limitations, as the authors in \cite{kumar2019predicting} pointed out. At first, none of the existing methods predicts the future embedding trajectory. Instead, the embeddings are generated only at each user's action. Moreover, static and dynamic properties are generally not considered in the same framework. Finally, scalability remains an open issue for the prediction of user-item interactions as well as for the model's training when dealing with large-scale datasets. To overcome these limitations, \cite{kumar2019predicting} proposes JODIE, a deep learning-based recommender system that models user‐item interactions as a sequence of timestamped edges on a bipartite graph (cf figure \ref{bipartite_graph}).
+Recommender systems are systems that cover a broad scope of techniques which all aim to provide suggestions of items that are most pertinent to a particular user (e.g., which music playlists to choose, which book a user might like, etc.), see~\cite{Ricci_Rokach_Shapira_2021} for a review of the techniques and challenges of the field. We can observe, particularly in areas such as  e-commerce or social media, that one user may interact with several items/products, and these interactions may evolve with time and context (e.g., Winter clothes recommendations should be different from summer clothes recommendation). 
+As a result,  understanding and modeling the dynamic evolution of users and items is an important issue. In the literature, this dynamicity is generally modeled by an embedding trajectory in a Euclidean space. However, existing works suffer from several limitations, as the authors in \cite{kumar2019predicting} pointed out. At first, none of the existing methods predicts the future embedding trajectory. Instead, embeddings are generated only at each user's action. Moreover, static and dynamic properties are generally not considered in the same framework. Finally, scalability remains an open issue for the prediction of user-item interactions as well as for the model's training when dealing with large-scale datasets. To overcome these limitations, \cite{kumar2019predicting} proposes JODIE, a deep learning-based recommender system that models user‐item interactions as a sequence of timestamped edges on a bipartite graph (cf figure \ref{bipartite_graph}).
 The core idea is that each user and item has two embeddings: a static embedding representing the entity's long‐term stationary property
 and a dynamic embedding representing the time‐varying property. These embeddings are used to make predictions regarding future interactions. The proposed method is trained with batches of data to overcome the scalability issue.
 The authors claim to outperform some of the state-of-the-art recommender systems such as Time-LSTM~\cite{Zhu17}, LatentCross~\cite{Beutel18}, Interaction Graph Embedding (IGE)~\cite{Zhang17}, Recurrent Recommender Networks~\cite{Wu17} and the Continuous-Time Dynamic Network Embeddings(CTDNE)~\cite{Nguyen18} in predicting future interactions  at least 20\% better, and user state change predictions 12\% better on average.
@@ -57,40 +57,19 @@ their results and validate their conclusions. Our code is available at \href{htt
 
 \section*{Scope of Reproducibility}
 
-%This paper describes our efforts to replicate the work of the paper Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks\supercite{kumar2019predicting}, which addresses recommender systems in a more practical, faster, and more accurate way than previous approaches.\\
-
-%The JODIE model designed by Srijan Kumar et al.\supercite{kumar2019predicting} offers innovative solutions to overcome all these challenges at once. This model learns to generate embedding trajectories from temporal interactions. User and item embeddings are updated when a user performs an action. The projection operation is then used to predict the future trajectory of the user's embedding. Each user and item has two embeddings: a static one, denoted $\Bar{e}$, and a dynamic one denoted $e$. A static embedding represents the long-term stationary property of the entity while the dynamic embedding represents a time-varying property. These two embeddings are used for training the JODIE model. This allows the model to make predictions from the stationary and dynamic properties of a user. JODIE is composed of two RNNs, coupled to integrate the interdependence between users and items. There are two types of predictions: future interaction and change of state. The interaction prediction predicts the next interaction of a given user while the state change prediction predicts whether or not a user will change his state.\\
-
-%Several metrics were chosen to evaluate the predictions. For future interaction prediction, the authors chose to use the Mean Reciprocal Rank and the Recall@10.
-%\begin{itemize}
- %   \item The Mean Reciprocal Rank (MRR) is a statistic measure for evaluating any process that produces a list of possible responses to a sample queries, ordered by probability of correctness. The reciprocal rank of a query response is the multiplicative inverse of the rank of the first correct answer. The MRR is the average of the reciprocal ranks of results for a sample of queries $Q$.
- %   \item The Recall@k is a statistical measure to evaluate any process that produces a list of possible answers to a sample of queries, ranked by its rank. The Recall@k is the sum of ranks less than or equal to k divided by the number of ranks.
-%\end{itemize}
-
-%For user state change prediction, the authors chose to use the Area Under the ROC Curve (AUC). The AUC, as its name suggest, is the area under the ROC curve. To calculate this indicator, you must first draw the ROC curve. To do this, we calculate the specificity and sensitivity. Finally the AUC is the average of specificity and sensitivity. Scores as close to 1 as possible are desired.
-
-%The original paper describes recommender systems as a temporal bipartite network { \color{blue} $G(V, E)$  where $V$ is the set of nodes and the set of edges $E$, if there exists a partition $\left(V_1, V_2\right)$ such that $V_1 \cup V_2=V, V_1 \cap V_2=\emptyset$, and every edge connects a node of $V_1$ and a node of $V_2$. Many real systems are naturally modeled as bipartite networks. The paper focused on a particular class of bipartite networks called web-based user-object networks \supercite{Shang_2010}, which represent interactions between users and objects in online service sites, such as purchases of books in Amazon, which means that in our graphs  nodes  represent users and items and an edge  represents an interaction between a user and an item.}
-
-
-%Each interaction is described by a time $t_r$ and a feature vector $f_r$.\\
-
 In this paper, we investigate the following claims from the original paper:
-%The claims that the paper made are as follows:
 \begin{itemize}
-    \item \textbf{More accurate recommendation performance}. By using the JODIE model, the authors claim \textcolor{green}{to achieve better predictions of future interactions over all the selected datasets.}
-    %to obtain better results for the prediction  of future interactions on all the datasets used. 
-    \textcolor{green}{JODIE outperforms six %6 
-    models with an improvement of at least 20\% \href{https://github.com/ComplexNetTSP/JODIE}{Github}.  and 14\%  in terms of Mean Reciprocal Rank (MRR) and Recall@10, respectively.} %of 20\% in minimum Mean Reciprocal Rank (MRR) and 14\% in minimum Recall@10.
-    \item \textbf{More accurate state change performance}. \textcolor{green}{The authors claim that JODIE outperforms five models regarding the user state change over all the selected datasets with an average improvement of 12.63\% for the Area Under the Curve (AUC) metric.}%By using the JODIE model, the authors claim to obtain better results for the change of state of a user on all the data sets used. JODIE outperforms 5 models with an average improvement of 12.63\% in Area Under the Curve (AUC).
-    \item \textbf{\textbf{Shorter learning time}}. Thanks to the new t-batch algorithm, \textcolor{green}{the} learning \textcolor{green} {phase} is 9.2 times faster than other models comparable to JODIE, i.e. with a model with two Recurrent Neural Networks (RNNs).
-    \item \textbf{Robustness of the model to the proportion of the training set}. \textcolor{green}{Regardless of the training data percentage, JODIE outperforms all the compared models.}%Whatever the percentage of data used for the training data, JODIE outperforms all other models.
-    \item \textbf{Robustness of the model to the embedding size}. \textcolor{green}{The size of the embeddings does not have much impact on the performance of JODIE.}%Whatever the embedding size used, JODIE has no change performance.
+    \item \textbf{More accurate recommendation performance}. By using the JODIE model, the authors claim xto achieve better predictions of future interactions over all the selected datasets. JODIE outperforms six models with an improvement of at least 20\% \href{https://github.com/ComplexNetTSP/JODIE}{Github}.  and 14\%  in terms of Mean Reciprocal Rank (MRR) and Recall@10, respectively.
+    \item \textbf{More accurate state change performance}. The authors claim that JODIE outperforms five models regarding the user state change over all the selected datasets with an average improvement of 12.63\% for the Area Under the Curve (AUC) metric.
+    \item \textbf{Shorter learning time}. Thanks to the new t-batch algorithm, the learning phase is 9.2 times faster than other models comparable to JODIE, i.e. with a model with two Recurrent Neural Networks (RNNs).
+    \item \textbf{Robustness of the model to the proportion of the training set}. Regardless of the training data percentage, JODIE outperforms all the compared models.
+    \item \textbf{Robustness of the model to the embedding size}. The size of the embeddings does not have much impact on the performance of JODIE.
 \end{itemize}
-\textcolor{green}{We have implemented the JODIE model using a more recent version of the Pytorch library aiming at reproducing the results stated by the authors:} 
+We have implemented the JODIE model using a more recent version of the Pytorch library aiming at reproducing the results stated by the authors:
 \begin{itemize}
-    \item \textcolor{green}{We explored which embedding size is the most effective for predicting state change and future interaction.}
+    \item We explored which embedding size is the most effective for predicting state change and future interaction.
     \item We also replicated the experiments that concern the robustness of the JODIE model to the percentage of training data.
-    \item \textcolor{green}{To measure the robustness to dynamic embedding size, the authors measured the performance of JODIE with embedding sizes from 32 to 256 on solely the LastFM dataset. We extended this experiment by adding three embedding sizes, 8, 16, and 32, on the LastFM and Wikipedia datasets and calculating the MRR and Recall@10.}
+    \item To measure the robustness to dynamic embedding size, the authors measured the performance of JODIE with embedding sizes from 32 to 256 on solely the LastFM dataset. We extended this experiment by adding three embedding sizes, 8, 16, and 32, on the LastFM and Wikipedia datasets and calculating the MRR and Recall@10.
 \end{itemize}
 In addition to reproducing the results presented in the paper, we perform novel experiment that test the impact of the hyperparameter \texttt{split}. We varied \texttt{split} by 5, 500 and 50000 on the MOOC dataset, which will increase the number of back-propagation, and we calculate the performance in AUC. \textcolor{red}{The main issue we encountered during our code replication of the original model~\cite{kumar2019predicting} was the lack of understanding of the \texttt{t-batch} algorithm which where not provided in the original paper and not referenced, but previously publish by the same authors as a \textit{preprint} in \cite{kumar18}}.
 To conclude, we have reproduced the results present in the original paper by extending an experiment on the robustness of the size of dynamic embeddings and by bringing an additional experiment on the choice of an hyper-parameter.
