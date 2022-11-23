@@ -248,7 +248,8 @@ We detail the learning steps and the specificity of JODIE model we provide.
 \begin{enumerate}
     \item We use a function called \textbf{preprocess} which is in the file \textbf{preprocessing.py} to make a pre-processing of the data to extract information necessary during the training. Information like the sequence of users, items, time, features or previous items that will be used during the learning step.
     \item We initialize the embeddings in a unique and same way, i.e. by using a uniform law $\mathcal{U}([0,1[)$.
-    \item To begin, we will define two terms: \texttt{split} and period. \texttt{Split} is an integer used to separate time into several intervals. Period is a time interval. The JODIE model has a particularity in the way the \texttt{t-batch} is formed. Usualy, to batches, we split teh observations the dataset within a givent number of batches. But when we have a dataset ha s temporal dependencies the operation can not be done the same way. Tha why apply the \texttt{t-batch} algorithm is applied. But, Instead of applying directly the algorithm on the whole dataset, the authors decided to apply independently the \texttt{t-batch} algorithm on each subset of the data as described int the figure \ref{pipeline_t-batch}. From the temporal bipartite graph, we will separate the edges and classify them in an increasing temporal order. Then, we will take the time interval where the interactions occur and we will divide this time by a hyper-parameter called \texttt{split} (in the original papaer \texttt{split} is set to to 500). Finally, we will apply the \texttt{t-batch} algorithm on each period. Once all the t-batches are processed, we can back-propagate the error for one period.
+    \item To begin, we will define two terms: \texttt{split} and period. \texttt{Split} is an integer used to separate time into several intervals. Period is a time interval. The JODIE model has a particularity in the way the \texttt{t-batch} is formed. Usualy we split the observations the dataset within a givent number of batches. But when we have a dataset has a temporal dependencies the operation can not be done the same way. That why  
+    the \texttt{t-batch} algorithm is applied. But, Instead of applying directly the algorithm on the whole dataset, the authors decided to apply independently the \texttt{t-batch} algorithm on each subset of the data as described int the figure \ref{pipeline_t-batch}. From the temporal bipartite graph, we will separate the edges and classify them in an increasing temporal order. Then, we will take the time interval where the interactions occur and we will divide this time by a hyper-parameter called \texttt{split} (in the original papaer \texttt{split} is set to to 500). Finally, we will apply the \texttt{t-batch} algorithm on each period. Once all the t-batches are processed, we can back-propagate the error for one period.
     \item The \texttt{t-batch} algorithm is used to make temporal batches. We use another approach than the authors. Instead of taking a period, applying the \texttt{t-batch} and using the t-batches to learn, we do all the t-batches at once with the function \textbf{t\_batch} in the file \textbf{preprocessing.py} before the learning step and loop over the periods.
     \item During the learning stage, in the function \textbf{train\_ray} in the file \textbf{train.py}, we use the function \textbf{projection} from the file \textbf{model.py} to project the user's embedding in a future time. We also use the function \textbf{predict\_embedding\_item} in the file \textbf{model.py} to make a prediction of the next embedding of the item. And finally, we calculate the Mean Square Error (MSE) of the predicted embedding and the real embedding.
     \item We update the embeddings of users and items using the functions \textbf{update\_rnn\_user} and \textbf{update\_rnn\_item} respectively in the file \textbf{model.py}.
@@ -261,170 +262,16 @@ Once the learning stage is over, the evaluation is carried out.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{image/pipeline_t-batch.pdf}
+    \includegraphics[width=.7\textwidth]{image/pipeline_t-batch.pdf}
     \caption{Pipeline of the \texttt{t-batch} algorithm}
     \label{pipeline_t-batch}
 \end{figure}
-
-\begin{comment}
-\begin{algorithm}[H]
-    \caption{JODIE}
-    \begin{algorithmic} 
-        \STATE \textbf{Input}: Sequence of interactions ordered by time S : $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
-        \STATE \quad \hspace{0.73cm}Initial user embedding $u_t$
-        \STATE \quad \hspace{0.73cm}Initial item embedding $i_t$
-        \STATE \quad \hspace{0.73cm}Current model parameters: $\Theta_{proj}$, $\Theta_{pred}$, $\Theta_{state}$, \textbf{RNN}$_U$, \textbf{RNN}$_I$
-        \STATE \quad \hspace{0.73cm}Proportion\_train, split
-        \STATE \textbf{Output}: Dynamic user and item embeddings, updated model parameters
-        \STATE \textbf{Initialize}: loss\_tbatch $\leftarrow 0$, loss\_total $\leftarrow 0$
-        \STATE \quad \hspace{1.2cm} prev $\leftarrow$ $\{\}$, prev$_{state}$ $\leftarrow$ $\{\}$
-        \STATE \quad \hspace{1.2cm} [user\_id, id\_user\_seq, $\Delta_u$, previous\_item\_seq, item\_id, id\_item\_seq, $\Delta_i$,\\
-        \quad \hspace{1.2cm} timestamp\_seq, feature\_seq, y\_true\_labels] = \textbf{preprocessing}(S)
-        \STATE \quad \hspace{1.2cm} [tbatch\_split, time\_tbatch\_seq] = \textbf{tbatch}(user\_id, id\_user\_seq, $\Delta_u$,\\
-        \quad \hspace{1.2cm} previous\_item\_seq, item\_id, id\_item\_seq, $\Delta_i$, timestamp\_seq, feature\_seq,\\
-        \quad \hspace{1.2cm} y\_true\_labels, proportion\_train, split)
-        \FOR{$time$ in time\_tbatch\_seq}
-            \FOR{$j$ in tbatch\_split[$time$]}
-                \STATE $\widehat u_t$ $\; \leftarrow \; \Theta_{proj}(u_t^-, \, \Delta_u)$
-                \STATE $i^- \leftarrow$ prev[$u_t$]
-                \STATE $\overset{\sim}{i_t} \leftarrow \Theta_{pred}(\widehat u_t, \, \Bar{u}, \, i^-_t, \,\Bar{i})$
-                \STATE loss\_tbatch $\leftarrow$ loss\_tbatch + $\| \overset{\sim}{i_t} - [ \Bar{i}, \, i_t^-] \|_2$
-                \STATE $u_t \leftarrow \textbf{RNN}_U(u_t^-,\,i_t^-,\,\Delta_u,\,f)$
-                \STATE $i_t \leftarrow \textbf{RNN}_I(i_t^-,\,u_t^-,\,\Delta_i,\,f)$
-                \STATE prev[$u_t$] $\leftarrow i$
-                \STATE loss\_tbatch $\leftarrow$ loss\_tbatch + $\lambda_u \| u_t - u_t^- \|_2 + \lambda_i \| i_t - i_t^- \|_2$
-                \IF{State \textbf{True}}
-                    \STATE  prev$_{state}[j]$ $\leftarrow$ $u_t$
-                    \STATE $\widehat u_{pred} \leftarrow \Theta_{state}(\text{prev}_{state})$
-                    \STATE loss\_tbatch $\leftarrow$ loss\_tbatch + $CE(u_{true},\,\widehat u_{pred})$
-                \ENDIF\\
-            \ENDFOR\\
-            loss\_total $\leftarrow$ loss\_total + loss\_tbatch\\
-            loss\_tbatch $\leftarrow$ 0\\
-            Back-propagation loss and update model parameters
-        \ENDFOR
-        \RETURN $u_t$, $i_t$, model: $\Theta_{proj}$, $\Theta_{pred}$, $\Theta_{state}$, \textbf{RNN}$_U$, \textbf{RNN}$_I$
-    \end{algorithmic}
-\end{algorithm}
-\end{comment}
 
 \subsubsection{Evaluate JODIE model}
 
 The prediction and evaluation stage are just as special as the learning stage. In the evaluation, there is still a "learning" because during the predictions, the model will update itself respecting the time of the periods defined by \texttt{split}. This evaluation is done thanks to the function \textbf{evaluate} of the file \textbf{evaluate.py}. During the evaluation, we do not apply the \texttt{t-batch} algorithm on the remaining interactions, but we will treat them one after the other (figure \ref{pipeline_t-batch} not t-batch but interaction just before the back-propagation).
 
-
 From a temporal bipartite graph, we proceed in the same way as for learning, we separate the edges in temporal order. Then, we will separate the data into periods and we will process the interactions one after the other. The periods are defined with the hyper-parameter \texttt{split} as for the periods of the \texttt{t-batch}. In addition to all the learning steps in the evaluation, we add a prediction step. According to the prediction task, we will predict a probability of a user's state change using the function \textbf{predict\_state} in the file \textbf{model.py}. Otherwise we will predict an embedding and look for the item which has its closest embedding in terms of Euclidean distance. Finally, we will calculate the metrics to obtain the validation and generalization error.
-
-\begin{comment}
-\begin{algorithm}[H]
-    \caption{Evaluation of future interaction prediction}
-    \begin{algorithmic} 
-        \STATE \textbf{Input}: hyperparameters: embedding\_size, split, $\lambda_u$, $\lambda_i$
-        \STATE \quad \hspace{0.73cm}Sequence of interactions ordered by time S : $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
-        \STATE \quad \hspace{0.73cm}State $\leftarrow$ False 
-        \STATE \quad \hspace{0.73cm}Proportion\_train
-        \STATE \textbf{Output}: perf\_val, perf\_test
-        \STATE \textbf{Initialize}: [user\_id, id\_user\_seq, $\Delta_u$, previous\_item\_seq, item\_id, id\_item\_seq, $\Delta_i$,\\
-        \quad \hspace{1.2cm} timestamp\_seq, feature\_seq, y\_true\_labels] = \textbf{preprocessing}(S)
-        \STATE \quad \hspace{1.2cm} $u_t$, $i_t$, $\Theta_{proj}$, $\Theta_{pred}$, $\Theta_{state}$, \textbf{RNN}$_U$, \textbf{RNN}$_I$ = \textbf{load\_model}(hyperparameters)
-        \STATE \quad \hspace{1.2cm} tbatch\_timespan $\leftarrow \frac{\text{timestamp\_seq}_{\text{end}} - \text{timestamp\_seq}_{\text{start}}}{\text{split}}$
-        \STATE \quad \hspace{1.2cm} idx\_train = Card(S) * (proportion\_train)
-        \STATE \quad \hspace{1.2cm} idx\_val = Card(S) * (proportion\_train + ($\frac{1 - \text{proportion\_train}}{2}$))
-        \STATE \quad \hspace{1.2cm} idx\_test = Card(S)
-        \STATE \quad \hspace{1.2cm} tbatch\_time $\leftarrow$ \textbf{None}
-        \STATE \quad \hspace{1.2cm} loss $\leftarrow$ 0
-        \STATE \quad \hspace{1.2cm} val\_rank $\leftarrow$ [], test\_rank $\leftarrow$ []
-        \FOR{$j$ in (idx\_train : idx\_test)}
-            \STATE Extraction $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
-            \IF{tbatch\_time is \textbf{None}}
-                \STATE tbatch\_time $\leftarrow$ $t_j$
-            \ENDIF
-            \STATE $\widehat u_j$ $\; \leftarrow \; \Theta_{proj}(u_j^-, \, \Delta_u)$
-            %\STATE $i^- \leftarrow$ prev[$u_j$]
-            \STATE $\overset{\sim}{i_j} \leftarrow \Theta_{pred}(\widehat u_j, \, \Bar{u}, \, i^-_j, \,\Bar{i})$
-            \STATE loss $\leftarrow$ loss + $\| \overset{\sim}{i_j} - [ \Bar{i}, \, i_j^-] \|_2$
-            \STATE euclidean\_dist $\leftarrow$ \textbf{Dist}($\overset{\sim}{i_j}$, all\_embeddings\_items)
-            \STATE euclidean\_dist\_smaller $\leftarrow$ (euclidean\_dist < euclidean\_dist[$i_j$])
-            \STATE true\_item\_rank $\leftarrow$ \textbf{sum}(euclidean\_dist\_smaller) + 1
-            \IF{$j$ < idx\_val}
-                \STATE val\_rank $\leftarrow$ [true\_item\_rank]
-            \ELSE
-                \STATE test\_rank $\leftarrow$ [true\_item\_rank]
-            \ENDIF
-            \STATE $u_j \leftarrow \textbf{RNN}_U(u_j^-,\,i_j^-,\,\Delta_u,\,f_j)$
-            \STATE $i_j \leftarrow \textbf{RNN}_I(i_j^-,\,u_j^-,\,\Delta_i,\,f_j)$
-            %\STATE prev[$u_t$] $\leftarrow i$
-            \STATE loss $\leftarrow$ loss + $\lambda_u \| u_j - u_j^- \|_2 + \lambda_i \| i_j - i_j^- \|_2$
-            \IF{$t_j - \text{tbatch\_time}$ > tbatch\_timespan}
-                \STATE tbatch\_time $\leftarrow$ $t_j$
-                \STATE Back-propagation loss and update model parameters
-                \STATE loss $\leftarrow$ 0
-            \ENDIF
-        \ENDFOR\\
-        \STATE mrr\_val = \textbf{mean}($\frac{1}{r}$, for $r$ in val\_rank)
-        \STATE recall10\_val = $\frac{\textbf{sum}(\text{val\_rank} \leq 10)}{\text{len(val\_rank)}}$
-        \STATE mrr\_test = \textbf{mean}($\frac{1}{r}$, for $r$ in test\_rank)
-        \STATE recall10\_test = $\frac{\textbf{sum}(\text{test\_rank} \leq 10)}{\text{len(test\_rank)}}$
-        \STATE perf\_val $\leftarrow$ [mrr\_val, recall10\_val]
-        \STATE perf\_test $\leftarrow$ [mrr\_test, recall10\_test]
-        \RETURN perf\_val, perf\_test
-    \end{algorithmic}
-\end{algorithm}
-\end{comment}
-
-\begin{comment}
-\begin{algorithm}[H]
-    \caption{Evaluation of user state change prediction}
-    \begin{algorithmic} 
-        \STATE \textbf{Input}: hyperparameters: embedding\_size, split, $\lambda_u$, $\lambda_i$
-        \STATE \quad \hspace{0.73cm}Sequence of interactions ordered by time S : $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
-        \STATE \quad \hspace{0.73cm}State $\leftarrow$ True
-        \STATE \quad \hspace{0.73cm}Proportion\_train
-        \STATE \textbf{Output}: perf\_val, perf\_test
-        \STATE \textbf{Initialize}: [user\_id, id\_user\_seq, $\Delta_u$, previous\_item\_seq, item\_id, id\_item\_seq, $\Delta_i$,\\
-        \quad \hspace{1.2cm} timestamp\_seq, feature\_seq, y\_true\_labels] = \textbf{preprocessing}(S)
-        \STATE \quad \hspace{1.2cm} $u_t$, $i_t$, $\Theta_{proj}$, $\Theta_{pred}$, $\Theta_{state}$, \textbf{RNN}$_U$, \textbf{RNN}$_I$ = \textbf{load\_model}(hyperparameters)
-        \STATE \quad \hspace{1.2cm} tbatch\_timespan $\leftarrow \frac{\text{timestamp\_seq}_{\text{end}} - \text{timestamp\_seq}_{\text{start}}}{\text{split}}$
-        \STATE \quad \hspace{1.2cm} idx\_val = Card(S) * (proportion\_train)
-        \STATE \quad \hspace{1.2cm} idx\_val = Card(S) * (proportion\_train + ($\frac{1 - \text{proportion\_train}}{2}$))
-        \STATE \quad \hspace{1.2cm} idx\_test = Card(S)
-        \STATE \quad \hspace{1.2cm} tbatch\_time $\leftarrow$ \textbf{None}
-        \STATE \quad \hspace{1.2cm} loss $\leftarrow$ 0
-        \STATE \quad \hspace{1.2cm} val\_pred $\leftarrow$ [], val\_true $\leftarrow$ [], test\_pred $\leftarrow$ [], test\_true $\leftarrow$ []
-        \FOR{$j$ in (idx\_train : idx\_test)}
-            \STATE Extraction $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
-            \IF{tbatch\_time is \textbf{None}}
-                \STATE tbatch\_time $\leftarrow$ $t_j$
-            \ENDIF
-            \STATE $\widehat u_j$ $\; \leftarrow \; \Theta_{proj}(u_j^-, \, \Delta_u)$
-            \STATE $\overset{\sim}{i_j} \leftarrow \Theta_{pred}(\widehat u_j, \, \Bar{u}, \, i^-_j, \,\Bar{i})$
-            \STATE loss $\leftarrow$ loss + $\| \overset{\sim}{i_j} - [ \Bar{i}, \, i_j^-] \|_2$
-            \STATE $u_j \leftarrow \textbf{RNN}_U(u_j^-,\,i_j^-,\,\Delta_u,\,f_j)$
-            \STATE $i_j \leftarrow \textbf{RNN}_I(i_j^-,\,u_j^-,\,\Delta_i,\,f_j)$
-            \STATE loss $\leftarrow$ loss + $\lambda_u \| u_j - u_j^- \|_2 + \lambda_i \| i_j - i_j^- \|_2$
-            \STATE  prev$_{state}[j]$ $\leftarrow$ $u_j$
-            \STATE $\widehat u_{pred} \leftarrow \Theta_{state}(\text{prev}_{state})$
-            \STATE loss $\leftarrow$ loss + $CE(u_{true},\,\widehat u_{pred})$
-            \IF{$t_j - \text{tbatch\_time}$ > tbatch\_timespan}
-                \STATE tbatch\_time $\leftarrow$ $t_j$
-                \STATE Back-propagation loss and update model parameters
-                \STATE loss $\leftarrow$ 0
-            \ENDIF
-            \STATE proba $\leftarrow$ \textbf{MLP}($u_j$)
-            \IF{$j$ < idx\_val}
-                \STATE val\_pred $\leftarrow$ [proba]
-                \STATE val\_true $\leftarrow$ [y\_true\_labels[$j$]]
-            \ELSE
-                \STATE test\_pred $\leftarrow$ [proba]
-                \STATE test\_true $\leftarrow$ [y\_true\_labels[$j$]]
-            \ENDIF
-        \ENDFOR\\
-        \STATE perf\_val $\leftarrow$ [AUC(val\_true, val\_pred)]
-        \STATE perf\_test $\leftarrow$ [AUC(test\_true, test\_pred)]
-        \RETURN perf\_val, perf\_test
-    \end{algorithmic}
-\end{algorithm}
-\end{comment}
 
 \subsection*{Datasets}
  % dire que les données sont données par les auteurs mais qu'elles ont un format bizarre et qu'il a fallu traiter les données.
