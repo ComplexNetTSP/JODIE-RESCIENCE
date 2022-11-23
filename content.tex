@@ -326,22 +326,6 @@ As described in the model descriptions section, the model has several hyperparam
     \item \texttt{Split}: $500$
 \end{itemize}
 
-\begin{comment}
-\begin{table}[H]
-    \centering
-    \begin{tabular}{|c|c|c|c|c|}
-        \cline{2-5} \multicolumn{1}{c|}{} & \multicolumn{4}{c|}{JODIE}\\
-        \cline{2-5} \multicolumn{1}{c|}{} & Reddit & Wikipedia & LastFM & MOOC \\\hline
-        Epochs & 50 & 50 & 50 & 50 \\\hline
-        Dynamic embedding size & 128 & 128 & 128 & 128 \\\hline
-        Learning rate & 0.001 & 0.001 & 0.001 & 0.001 \\\hline
-        Split & 500 & 500 & 500 & 500 \\\hline
-        $\lambda_U$ & 1 & 1 & 1 & 1 \\\hline
-        $\lambda_I$ & 1 & 1 & 1 & 1 \\\hline
-    \end{tabular}
-    \caption{Hyperparameters details on all datasets}
-\end{table}
-\end{comment}
 Only the size of the dynamic embeddings have been studied and chosen using a grid search. The other hyperparameters are just given without any justification.
 
 \subsection*{Extended experiments}
@@ -413,8 +397,6 @@ To go further in the replication and reproduction, we will also reproduce two fi
     \caption{Robustness of JODIE replication: the figure on the right compare the MRR of JODIE replication with baselines on interaction prediction task, by varying the training data size. The figure on the left shows the AUC of user state change prediction task by varying the training data size.}
     \label{fig:my_label}
 \end{figure}
-
-
 
 We can see on the first figure that shows an increasing curve. The larger the training set is, the better is the model in the prediction of future interaction. This is because the test set is reduced each time. If we were to compare the curve obtained by the authors of the paper and ours, we could say that the general shape is similar.
 For the second figure, the curve is decreasing. The larger the training set is, the more the model is wrong. In state prediction, there is very few change of state so the model will tend to predict more the majority class when the training set is smaller and does not contains enough changing state cases. This is even more pronounced when the training set get even smaller.
