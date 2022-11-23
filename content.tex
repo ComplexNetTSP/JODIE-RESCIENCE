@@ -108,7 +108,7 @@ By organizing the work in this way, it allows to have a modular, easily reusable
 % enlever les we
 % forme active
 
-The authors will introduce the update operator. The update operator takes the form of two mutually recursive neural networks shown in Figure \ref{recursive RNNs}. The RNN$_U$ is used to update the dynamic user embeddings and the RNN$_I$ updates the dynamic item embeddings. In this case, the embeddings are considered as the hidden state of the classical RNNs respectively. At time $t=0$, the embeddings are initialized randomly according to uniform distribution $\mathcal{U}[0;1[$ followed by a normalization and are noted $u_0$ and $i_0$. As input, there is the embeddings at time $t=0$ but also $\Delta$ the time elapsed between an entity and the previous interaction and $f$ a feature vector which characterizes the link of the interaction. A specificity of these RNNs is that they take four inputs instead of two as usual. In order to narrow down to just two inputs, we concatenate the embedding of the other entity, $\Delta$ and $f$. In Figure \ref{recursive RNNs}, we denote the concatenation by [.,.]. More formally, we use the following formulas to update the embeddings:
+The update operator takes the form of two mutually recursive neural networks shown in Figure \ref{recursive RNNs}. The RNN$_U$ is used to update the dynamic user embeddings and the RNN$_I$ updates the dynamic item embeddings. In this case, the embeddings are considered as the hidden state of the classical RNNs respectively. At time $t=0$, the embeddings are initialized randomly according to uniform distribution $\mathcal{U}[0;1[$ followed by a normalization and are noted $u_0$ and $i_0$. As input, there is the embeddings at time $t=0$ but also $\Delta$ the time elapsed between an entity and the previous interaction and $f$ a feature vector which characterizes the link of the interaction. A specificity of these RNNs is that they take four inputs instead of two as usual. In order to narrow down to just two inputs, we concatenate the embedding of the other entity, $\Delta$ and $f$. In Figure \ref{recursive RNNs}, we denote the concatenation by [.,.]. More formally, we use the following formulas to update the embeddings:
 $$
 u^+ = \sigma \left ( W_1^u u^- + W_2^u i^- + W_3^u f + W_4^u \Delta_u \right )
 $$
@@ -126,16 +126,7 @@ Where the matrices $W_1^e, ..., W_4^e$ are the parameters of the RNN$_e$ and $\s
 
 \subsubsection{Projection operation}
 
-This operation consists in projecting the user's embedding to a future time. Indeed, it is assumed that user's interest changes with time, for example in winter and in summer, hence the need to model this variation as a linear projection. To make the explanation more clear, the authors present a figure %\ref{Projection} 
-to better understand (cf figure 3 in~\cite{kumar2019predicting}).\\
-
-%\begin{figure}[H]
-%    \centering
-%    \includegraphics[scale = 0.4]{image/projection_operation.png}
-%    \caption{Projection operation}
-%   \label{Projection}
-%\end{figure}
-
+This operation consists in projecting the user's embedding to a future time. Indeed, it is assumed that user's interest changes with time, for example in winter and in summer, hence the need to model this variation as a linear projection. To a more deeper understanding please refer to the orginal figure provide by the authors themself in figure 3 in~\cite{kumar2019predicting}).
 
 We notice that over a very short time interval, the projected embedding of the user changes slightly, but as time goes, the projected embedding will be further away from its original embedding. To perform this operation, we must first convert $\Delta$ into a vector $w \in \mathbb{R}^n$ using a linear layer represented by its weights vector $W_p$. We have $w = W_p \Delta$. We initialize $W_p$ by a Gaussian of zero mean. We obtain the projected embedding by computing Hadamard product, denoted $*$, of $1+w$ and $u_t$. The authors use the following formula.
 $$
