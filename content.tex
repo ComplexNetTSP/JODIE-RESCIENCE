@@ -163,47 +163,6 @@ The \texttt{t-batch} algorithm is a linear algorithm that split temporal data in
     \end{algorithm}
 
 
-%\begin{algorithm}[H]
-%    \caption{t-Batch}
-%    \label{t-batch2}
-%    \begin{algorithmic} 
-%        \STATE \textbf{Input} :  [user\_id, id\_user\_seq, $\Delta_u$, previous\_item\_seq, item\_id, id\_item\_seq, $\Delta_i$,\\
-%        \hspace{1.2cm}timestamp\_seq, feature\_seq, y\_true\_labels] = preprocessing(S)\\
-%        \hspace{1.1cm} proportion\_train\\
-%        \hspace{1.1cm} split
-%        \STATE \textbf{Output} : tbatch\_split[${t_1}$] = \{B$_{t_1,1}$, ..., B$_{t_1,n_1}$\} \\
-%        \hspace{3.55cm} $\vdots$\\
-%        \hspace{1.3cm} tbatch\_split[${t_k}$] = \{B$_{t_k,1}$, ..., B$_{t_k,n_n}$\}\\
-%        \hspace{1.3cm} time\_tbatch\_seq = \{$t_1,_,\hdots,\,t_k$\}
-%        \STATE \textbf{Initialize} : 
-%        \STATE \quad $\text{tbatch\_split}$ $\leftarrow$ \{\}
-%        \STATE \quad time\_tbatch\_seq $\leftarrow$ []
-%        \STATE \quad $\text{tbatch\_id\_u[u]} \leftarrow 0 \; \forall \; u \in \mathcal{U}$
-%        \STATE \quad $\text{tbatch\_id\_i[i]} \leftarrow 0 \; \forall \; i \in \mathcal{I}$
-%        \STATE \quad $B_{i,k} \leftarrow \{ \},\; \forall i \in [t_1,\;t_k]\text{ and }\forall \; k \in [1,\;\text{Card}(S)]$
-%        \STATE \quad $C \leftarrow 0$
-%        \STATE \quad tbatch\_time $\leftarrow$ \textbf{None}
-%        \STATE \quad tbatch\_timespan $\leftarrow \frac{\text{timestamp\_seq}_{\text{end}} - \text{timestamp\_seq}_{\text{start}}}{\text{split}}$
-%        \FOR{$j \in$ 1 à Card$(S)$}
-%            \STATE Extraction $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
-%            \STATE idx $\leftarrow$ $\max$(tbatch\_id\_u[$u_j$], tbatch\_id\_i[$i_j$]) + 1
-%            \STATE $B_\text{idx} \leftarrow B_\text{idx} \cup \{ S_j \}$
-%            \STATE tbatch\_id\_u[$u_j$] = idx
-%            \STATE tbatch\_id\_i[$i_j$] = idx
-%            \STATE $C \leftarrow \max(C,\,$idx)
-%            \IF{tbatch\_time is \textbf{None}}
-%            \STATE tbatch\_time $\leftarrow \; t_j$
-%            \ENDIF\\
-%            \IF{$t_j -$ tbatch\_time > tbatch\_timespan}
-%            \STATE tbatch\_split[$t_j$] $\leftarrow$ \{B$_{t_j,1}$, ..., B$_{t_j,C}$\}
-%            \STATE time\_tbatch\_seq $\leftarrow$ [$t_j$]
-%            \STATE $C \leftarrow 0$
-%            \ENDIF
-%        \ENDFOR
-%        \RETURN tbatch\_split, time\_tbatch\_seq
-%    \end{algorithmic}
-%\end{algorithm}
-
 % \begin{equation}
 % \text{idx} = \max \left ( \text{maxBatch}(u, \,r-1), \,\text{maxBatch}(i, \,r-1) \right ) + 1
 % \label{eq:1}
