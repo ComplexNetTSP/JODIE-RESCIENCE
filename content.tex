@@ -389,15 +389,16 @@ We decided extend our analysis of the original model by testing the impact of th
 \section*{Conclusion}
 We are able to successfully replicate the original code provided by the authors and reproduce the results obtained in original JODIE publication. 
 
-Even if our reproduction more or less match the result provided in the orginal study, we found some sligh difference in the result compare with the orginal paper. This can be explained by a variation due to the initialization. However, for LastFM dataset our result clearly outperform those claim in the original study, we are suspecting some reporting error in the original study.
+Even if our reproduction more or less match the result provided in the orginal study, we have found some sligh difference compare with the result in the orginal paper. This can be explained by a variation due to the initialization. However, for LastFM case our reproduction result clearly outperform claimed in the original study, we are suspecting some reporting error in the original study.
 
-About the impact of the embedding size on the overall result, despict the claim made by the author, we show that it has a slight an impact with respect of the metric used. 
+Secondly, we have show that the impact of the embedding size has a slight impact on the result if we are using different evalution metric tah thos porpose in the original paper.  This fact balance the claim made by the authors stating the embedding size has no impact on the overall performance of their model.  
 
-Finally, the split has a strong impact on the overall performance, This hyper-parameter must be adjusted taking into account a complexity-performance trade-off.\\
-
-As explained in the previous section, some of our results differ slightly from those in the paper. This can be explained by a variation due to the initialization but also by the evaluation of the last epoch for the replication while the authors of the paper evaluated each epoch and chose the best performance on the validation. We can say that the JODIE model outperforms the state of the art methods.\\
-Our replication allowed to make a more readable code, easily reusable and easily adjustable for all the hyper-parameters combinations.\\
-We also tested the importance of the hyper-parameter \texttt{split}. It was concluded that it is important to choose well to obtain better results. The highest performance was obtained with the largest value but a learning time that is longer. This hyper-parameter must be adjusted taking into account a complexity-performance trade-off.\\
-
+Finally, we have found that the split has a strong impact on the overall performance, This hyper-parameter must be adjusted taking into account a complexity-performance trade-off of the model.
 
 In terms of perspectives, it would be interesting to use the focal loss~\cite{https://doi.org/10.48550/arxiv.1708.02002}. We use this loss in cases of unbalanced class. This loss allowed to have better results in these cases.
+
+%As explained in the previous section, some of our results differ slightly from those in the paper. This can be explained by a variation due to the initialization but also by the evaluation of the last epoch for the replication while the authors of the paper evaluated each epoch and chose the best performance on the validation. We can say that the JODIE model outperforms the state of the art methods.\\
+%Our replication allowed to make a more readable code, easily reusable and easily adjustable for all the hyper-parameters combinations.\\
+%We also tested the importance of the hyper-parameter \texttt{split}. It was concluded that it is important to choose well to obtain better results. The highest performance was obtained with the largest value but a learning time that is longer. This hyper-parameter must be adjusted taking into account a complexity-performance trade-off.\\
+
+
