@@ -356,11 +356,11 @@ To go further in the replication and reproduction, we will also reproduce two fi
     \label{percentage-train}
 \end{figure}
 
-For state change prediction in figure \ref{percentage-train} A) shows that due to class imbalance, the larger the training is, less the model is accurate in predicting state change. 
+For the state changes prediction in figure \ref{percentage-train} A) shows that due to class imbalances, the larger the training is, less the model is accurate in predicting state change. 
 
-As opposite with the interaction prediction in figure \ref{percentage-train} B) we show that larger the training set is, the better is the model will be able to predicting the future interactions. This describe the classical behavior, where the more tranning data will lead to better results (similar observation were made in the orignal paper).
+On the contrary with the interaction prediction as shown in the figure \ref{percentage-train} B), larger the training set is, the better is the model will be able to predicting the future interactions. This describes the classical behavior, where the more training data will lead to better results (similar observation was made in the original paper).
 
-Additionally, we tested the impact of of the embeddings size on the the model. In figure \ref{emb-size} A)  shows the MRR results of predicting future interactions for the datasets LastFM and Wikipedia and in the \ref{emb-size} B), we show the same results but with the recall@10. Despict the authors claim tthat the performa of their model doesn't depend of teh embedding size, we show that depending of the metric of interest (i.e.: MMR or Recall@10) the embedding size has an impact on the overall performance of teh model. 
+Additionally, we tested the impact of the embedding size on the model. In figure \ref{emb-size} A)  shows the MRR results of predicting future interactions for the datasets LastFM and Wikipedia and in the \ref{emb-size} B), we show the same results but with the recall@10. Despite the authors claim that the overall performance doesn't depend on the embedding size, in figure \ref{emb-size},  we show that depending on the metric of interest (i.e.: MMR or Recall@10) the embedding size has an impact on the overall performance of the model. 
 
 %In the original paper, the authors performed this experiment for embedding sizes of 32, 64, 128 and 256 on LastFM. Here , we proposed to do the same experiment but with two additional embedding sizes 8 and 16 but also to add a dataset which is Wikipedia, to test if the claiming of the original paper is generalizable. We see that whatever the size of the embeddings, we obtain stable MRR performances for both datasets. To go further, we decide to draw the same curves but for the recall@10. On this figure, we can see that there is indeed an increase in performance. As we can see the robustness of the model is depending on the metric choice.
 
