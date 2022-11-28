@@ -59,7 +59,7 @@ their results and validate their conclusions. Our code is available at \href{htt
 
 In this paper, we investigate the following claims from the original paper:
 \begin{itemize}
-    \item \textbf{More accurate recommendation performance}. By using the JODIE model, the authors claim xto achieve better predictions of future interactions over all the selected datasets. JODIE outperforms six models with an improvement of at least 20\% \href{https://github.com/ComplexNetTSP/JODIE}{Github}.  and 14\%  in terms of Mean Reciprocal Rank (MRR) and Recall@10, respectively.
+    \item \textbf{More accurate recommendation performance}. By using the JODIE model, the authors claim to achieve better predictions of future interactions over all the selected datasets. JODIE outperforms six models with an improvement of at least 20\% and 14\%  in terms of Mean Reciprocal Rank (MRR) and Recall@10, respectively.
     \item \textbf{More accurate state changes performance}. The authors claim that JODIE outperforms five models regarding the user state change over all the selected datasets with an average improvement of 12.63\% for the Area Under the Curve (AUC) metric.
     \item \textbf{Shorter learning time}. Thanks to the new t-batch algorithm, the learning phase is 9.2 times faster than other models comparable to JODIE, i.e., with a model with two Recurrent Neural Networks (RNNs).
     \item \textbf{Robustness of the model to the proportion of the training set}. Regardless of the training data percentage, JODIE outperforms all the compared models.
@@ -78,7 +78,7 @@ To conclude, we have reproduced the results present in the original paper by ext
 JODIE is a model that learns dynamic embeddings of users $u_t \in \mathbb{R}^n$, $\forall u \in \mathcal{U}$ and items $i_t \in \mathbb{R}^n$, $\forall i \in \mathcal{I}$ over time t, $\forall t \in [0; T]$, where $\mathcal{U}$ and $\mathcal{I}$ are the sets of users and items and $T$ the final time. Moreover, the interactions are ordered in time, i.e., an interaction between a user $u_r$ and an item $i_r$ at time $t_r$ characterized by $f_r$, noted $S_r = (u_r, \, i_r, \, t_r, \, f_r)$, cannot be before the interaction $S_{r-1}$. Figure \ref{Pipeline} shows the structure of JODIE. The model is composed of two main components: the update operator which, with the help of two RNNs, updates embeddings and the projection operator which allows to make a projection of an embedding in a future time represented in purple on the figure. Then, the model uses the different outputs to make the prediction of the future interaction or change of state.
 
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \begin{center}
         \includegraphics[width=1.0\textwidth]{image/pipeline.pdf}
     \end{center}
@@ -98,7 +98,8 @@ Our source code is organized as follows:
     \item \textbf{train.py} is used to train the model.
     \item \textbf{evaluate.py} is used to evaluate the model after training.
 \end{itemize}
-By organizing the work in this way, it allows to have a modular, easily reusable and understandable code.
+By organizing the work in this way, it allows to have a modular, easily reusable and understandable code. 
+To run the model, it's necessary to create an environment with the packages dedicated and run the command following : $\textit{sbatch slurm\_wikipedia.sh}$ for example. All instructions are explain on \href{https://github.com/ComplexNetTSP/JODIE}{Github}.
 \textcolor{red}{HOW TO run the Model ....... !!!!!!!!!!!}
 \subsection*{Model descriptions}
 
@@ -115,7 +116,7 @@ i^+ = \sigma \left ( W_1^i i^- + W_2^i u^- + W_3^i f + W_4^i \Delta_i \right )
 $$
 Where the matrices $W_1^e, ..., W_4^e$ are the parameters of the RNN$_e$ and $\sigma$ an activation function (here hyperbolic tangent). We note by $u^-$ and $i^-$ the embeddings before update and by $u^+$ and $i^+$ the embeddings after update. Once this step is finished, we can proceed to the second operation, the projection operation.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
    \centering
     \includegraphics[width=1.0\textwidth]{image/rnn_jodie.pdf}
     \caption{RNN mutually recursive}
@@ -138,27 +139,27 @@ These two operators consist in the learning of the model. One limitation cited b
 
 The \texttt{t-batch} algorithm is a linear algorithm that split temporal data into batches. This algorithm is a key point of the method that allows to speed up the learning time considerably. The \texttt{t-batch} algorithm is explained in the original article only by a few lines. Regarding the code, the algorithm was difficult to identify since it was mixed with other parts of code in the learning loop. To facilitate the understanding of the \texttt{t-batch} we propose the following algorithm \ref{t-batch}. To summarize the \ref{t-batch} algorithm, given a list of timestamped events, it dispatches the event into a batch according to the following constrains first it ensures that the same batch cannot contain the same entity multiple times. Secondly, it ensures to retain temporal dependencies inside batches and between batches, i.e., we process interactions in order. By meeting these two conditions, we guarantee that batches are independent (and parallelizable). Finally, in line 9. of Alg. \ref{t-batch} we compute the index of the batch $B_{idx}$ where the interaction $\mathcal{S}_r \in \mathcal{S}$ will be put in. Let $\text{maxBatch}(e, \,r-1)$ be the function that gives the index of the batch at time $r-1$ containing the entity $e$. 
 
-    \begin{algorithm}[H]
-        \caption{t-Batch}
-        \label{t-batch}
-        \begin{algorithmic}[1]
-            \STATE \textbf{Input} : Sequence of interactions ordered by time $S$ : $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
-            \STATE \textbf{Output} : Sequence of batches $B$ : $B_k = \{S_{k,1},\,...,\,S_{k,n} \}$
-            \STATE \textbf{Initialize} : 
-            \STATE \quad $\text{tbatch\_id\_u[u]} \leftarrow 0 \; \forall \; u \in \mathcal{U}$, \quad $\text{tbatch\_id\_i[i]} \leftarrow 0 \; \forall \; i \in \mathcal{I}$
-            \STATE \quad $B_k \leftarrow \{ \},\; \forall \; k \in$ [\![$1,\;\text{Card}(S)$]\!]
-            \STATE \quad $C \leftarrow 0$
-            \FOR{$S_j \in S$}
-                \STATE Extraction $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
-                \STATE idx $\leftarrow$ $\max$(tbatch\_id\_u[$u_j$], tbatch\_id\_i[$i_j$]) + 1
-                \STATE $B_\text{idx} \leftarrow B_\text{idx} \cup \{ S_j \}$
-                \STATE tbatch\_id\_u[$u_j$] = idx
-                \STATE tbatch\_id\_i[$i_j$] = idx
-                \STATE $C \leftarrow \max(C,\,$idx)
-            \ENDFOR
-            \RETURN $\{ B_1,\,...,\,B_C \}$
-        \end{algorithmic}
-    \end{algorithm}
+\begin{algorithm}[htbp]
+    \caption{t-Batch}
+    \label{t-batch}
+    \begin{algorithmic}[1]
+        \STATE \textbf{Input} : Sequence of interactions ordered by time $S$ : $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
+        \STATE \textbf{Output} : Sequence of batches $B$ : $B_k = \{S_{k,1},\,...,\,S_{k,n} \}$
+        \STATE \textbf{Initialize} : 
+        \STATE \quad $\text{tbatch\_id\_u[u]} \leftarrow 0 \; \forall \; u \in \mathcal{U}$, \quad $\text{tbatch\_id\_i[i]} \leftarrow 0 \; \forall \; i \in \mathcal{I}$
+        \STATE \quad $B_k \leftarrow \{ \},\; \forall \; k \in$ [\![$1,\;\text{Card}(S)$]\!]
+        \STATE \quad $C \leftarrow 0$
+        \FOR{$S_j \in S$}
+            \STATE Extraction $S_j = (u_j,\,i_j,\,t_j,\,f_j)$
+            \STATE idx $\leftarrow$ $\max$(tbatch\_id\_u[$u_j$], tbatch\_id\_i[$i_j$]) + 1
+            \STATE $B_\text{idx} \leftarrow B_\text{idx} \cup \{ S_j \}$
+            \STATE tbatch\_id\_u[$u_j$] = idx
+            \STATE tbatch\_id\_i[$i_j$] = idx
+            \STATE $C \leftarrow \max(C,\,$idx)
+        \ENDFOR
+        \RETURN $\{ B_1,\,...,\,B_C \}$
+    \end{algorithmic}
+\end{algorithm}
 
 
 % \begin{equation}
@@ -215,8 +216,7 @@ We detail the learning steps and the specificity of JODIE model we provide.
 \end{enumerate}
 Once the learning stage is over, the evaluation is carried out.
 
-
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width=.7\textwidth]{image/pipeline_t-batch.pdf}
     \caption{Pipeline of the \texttt{t-batch} algorithm}
@@ -242,7 +242,7 @@ The data sets that were used in the original article were also used in this work
 \textbf{MOOC~\cite{mooc} student drop-out}: this public dataset consists of actions done by students on a MOOC online course. This dataset consists of 7047 users interacting with 98 items. There are 4066 drop-out events (=0.98\%). All datasets and their details are shown in table \ref{description data}. \\
 
 \setlength\tabcolsep{0.12cm} % changer l'écart entre les colonnes pour faire rentrer sur la bonne largeur.
-\begin{table}[H]
+\begin{table}[htbp]
     \centering
     \ra{1.3}
     \begin{tabular}{@{}lrrrrcc@{}}
@@ -298,7 +298,7 @@ In this section, we will present the results obtained with replication. First, w
 \subsection*{Core replication results}
 The first part of the results concerns the prediction of the user's state change. The model has for hyperparameters a \texttt{split} of $500$, $\lambda_U = \lambda_I = 1$ as those in the original paper and the embedding size varies. We present the results obtained for embeddings of size $32$, $128$ and $256$ as well as the results of the original paper in the table~\ref{result-state}.
 
-\begin{table}[H]
+\begin{table}[htbp]
     \centering
     \ra{1.3}
     \begin{tabular}{@{}lcrrrr@{}}
@@ -321,7 +321,7 @@ We can see that if we increase the size of the embeddings to 256, the results de
 
 For the prediction of future interaction, we used the same hyperparameters as for the state prediction. We present the obtained results and the results of the original paper in the table~\ref{result-interaction}
 
-\begin{table}[H]
+\begin{table}[htbp]
     \centering
     \ra{1.3}
     \begin{tabular}{@{}lccccc@{}}
@@ -345,22 +345,24 @@ For the prediction of future interaction, we used the same hyperparameters as fo
     \label{result-interaction}
 \end{table}
 
-We notice that only the results on the Reddit dataset are slightly lower than in the original paper. On these data, we obtained 0.719 in MRR and 0.830 in Recall@10. However, these results remain close to those obtained by the authors with 0.726 in MRR and 0.852 in Recall@10. For the Wikipedia and LastFM datasets, we can see that our results outperformed the authors' results with 0.764 in MRR and 0.833 in Recall@10 and 0.313 in MRR and 0.483 in Recall@10 respectively. These differences can be explained by the choice to evaluate the last epoch and not to choose the best performance on the validation, nonetheless these differences remain small. 
+We notice that only the results on the Reddit dataset are slightly lower than in the original paper. On these data, we obtained 0.719 in MRR and 0.830 in Recall@10. However, these results remain close to those obtained by the authors with 0.726 in MRR and 0.852 in Recall@10. For the Wikipedia and LastFM datasets, we can see that our results outperformed the authors' results with 0.764 in MRR and 0.833 in Recall@10 and 0.313 in MRR and 0.483 in Recall@10 respectively. These differences can be explained by the choice to evaluate the last epoch and not to choose the best performance on the validation, nonetheless these differences remain small.\\
 
-To go further in the replication and reproduction, we will also reproduce two figures that show that the robustness of JODIE model (see fig~\ref{percentage-train}. The first figure will concern the prediction of future interaction on the Wikipedia dataset by plotting the MRR. For this figure, we varied the percentage of the training set from 10\% to 80\% with 10\% step. The second figure will be on the same dataset but for the prediction of user state change. For this, we varied the percentage of the training set from 20\% to 60\% in 10\% steps.
+To go further in the replication and reproduction, we will also reproduce two figures that show that the robustness of JODIE model (see fig~\ref{percentage-train}). The first figure will concern the prediction of future interaction on the Wikipedia dataset by plotting the MRR. For this figure, we varied the percentage of the training set from 10\% to 80\% with 10\% step. The second figure will be on the same dataset but for the prediction of user state change. For this, we varied the percentage of the training set from 20\% to 60\% in 10\% steps.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width = \textwidth]{image/percentage_train.pdf}
     \caption{Robustness of JODIE replication: the figure on the right compare the MRR of JODIE replication with baselines on interaction prediction task, by varying the training data size. The figure on the left shows the AUC of user state change prediction task by varying the training data size.}
     \label{percentage-train}
 \end{figure}
 
+\textcolor{red}{For the figure on left, the larger the training set is the more the model predicted classes are wrong. This can be explained by the big imbalance in the dataset. There is only few examples of state change in the datasets. Learning on a small training set will lead the model to only characterize the majority class. The model will then over-predict this class. Knowing that the test set will contain a majority of this class, the accuracy will be high despite some few examples of the minority class that is not enough seen during the learning task to be correctly predicted. When the training set is getting larger, the model start also characterizing the minority class which is now more represented but still not enough. This causes more confusion during the prediction which leads to lower accuracy. The figure on right shows us that larger the training set is, the better is the model in the predicting the future interactions. This describe the classical behavior of models, the more data the see the higher the results are. If we were to compare the curves obtained by the authors of the paper and ours, we could say that the general shapes are similar.}
+
 \textcolor{red}{Je ne comprend pas tres bien se que tu veux dire}
 We can see on the first figure that shows an increasing curve. The larger the training set is, the better is the model in the prediction of future interaction. If we were to compare the curve obtained by the authors of the paper and ours, we could say that the general shape is similar. For the second [figure which one], the curve is decreasing. The larger the training set is, the more the model is wrong. In state prediction, there is very few change of state so the model will tend to predict more the majority class when the training set is smaller and does not contains enough changing state cases. This is even more pronounced when the training set get even smaller.\\
 
 Additionally, we test the robustness of the model for variations in the size of the embeddings (see fig~\ref{emb-size}). The figure on the left shows the MRR results of predicting future interactions for the datasets LastFM and Wikipedia and the figure on the right shows the same results but in recall@10.
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width = \textwidth]{image/lastFM-wiki.pdf}
     \caption{Robustness of JODIE replication}
@@ -372,9 +374,9 @@ We can say that their model outperforms the existing models on these 4 datasets 
 
 \subsection*{Additional result not present in the original paper}
 
-To go further, we decided to test the impact of the \texttt{split} hyper-parameter. As a reminder, the original study does not consider \texttt{split} as a hyper-parameter but as a fixed value of 500. The following figures show the importance of choosing this hyper-parameter. To do so, we predict the user state change on MOOC dataset with several embedding sizes 8, 16 and 32 and different \texttt{split} 5, 500 and 50000. We can see in figure~\ref{split}, for any embedding size, that the performance is increasing when the \texttt{split} values is high. By increasing this \texttt{split} value from 5 to 500, we have increased the performance by 0.14 in AUC for the different sizes of embedding. Going from 500 to 50000, increased the performance by 0.08. We can say that the choice of this hyper-parameter is important to have better performance. We can explain this improvement by the fact that the model will do back-propagation after each time step defined by \texttt{split}. So if we increase the \texttt{split} number, we increase the number of back-propagation. This suggest that higher values of this parameter allows to enhance the performance but the choice of it must been done considering the running time and the complexity which are increasing significantly when the \texttt{split} get larger.
+To go further, we decided to test the impact of the \texttt{split} hyper-parameter. As a reminder, the original study does not consider \texttt{split} as a hyper-parameter but as a fixed value of 500. The figures~\ref{split} show the importance of choosing this hyper-parameter. To do so, we predict the user state change on MOOC dataset with several embedding sizes 8, 16 and 32 and different \texttt{split} 5, 500 and 50000. We can see in figure~\ref{split}, for any embedding size, that the performance is increasing when the \texttt{split} values is high. By increasing this \texttt{split} value from 5 to 500, we have increased the performance by 0.14 in AUC for the different sizes of embedding. Going from 500 to 50000, increased the performance by 0.08. We can say that the choice of this hyper-parameter is important to have better performance. We can explain this improvement by the fact that the model will do back-propagation after each time step defined by \texttt{split}. So if we increase the \texttt{split} number, we increase the number of back-propagation. This suggest that higher values of this parameter allows to enhance the performance but the choice of it must been done considering the running time and the complexity which are increasing significantly when the \texttt{split} get larger.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \includegraphics[width = \textwidth]{image/split.pdf}
     \caption{Comparison the robustness of the JODIE model as a function of the hyper-parameter \texttt{split}.}
