@@ -362,9 +362,11 @@ On the contrary with the interaction prediction as shown in the figure \ref{perc
 
 Additionally, we tested the impact of the embedding size on the model. In figure \ref{emb-size} A)  shows the MRR results of predicting future interactions for the datasets LastFM and Wikipedia and in the figure \ref{emb-size} B), we show the same results but with the recall@10. Despite the authors claim that the overall performance doesn't depend on the embedding size, in figure \ref{emb-size},  we show that depending on the metric of interest (i.e.: MRR or Recall@10) the embedding size has an impact on the overall performance of the model. 
 
+As conclusion, after having reproduced their results we also claim that their model outperforms the existing models on these 4 datasets and that the replication and reproduction are validated.
+
 %In the original paper, the authors performed this experiment for embedding sizes of 32, 64, 128 and 256 on LastFM. Here , we proposed to do the same experiment but with two additional embedding sizes 8 and 16 but also to add a dataset which is Wikipedia, to test if the claiming of the original paper is generalizable. We see that whatever the size of the embeddings, we obtain stable MRR performances for both datasets. To go further, we decide to draw the same curves but for the recall@10. On this figure, we can see that there is indeed an increase in performance. As we can see the robustness of the model is depending on the metric choice.
 
-As conclusion, after having reproduced their results we also claim that their model outperforms the existing models on these 4 datasets and that the replication and reproduction are validated.
+
 
 \begin{figure}[htbp]
     \centering
@@ -375,7 +377,7 @@ As conclusion, after having reproduced their results we also claim that their mo
 
 \subsection*{Additional result}
 
-We decided extend our analysis of the original model by testing the impact of the \texttt{split} (see sec. \nameref{sec:trainning}) on the performance of the JODIE model, as a reminder, the original study doesn't consider \texttt{split} as a hyper-parameter but as was constant fixed at 500. In the figures~\ref{split}, we show that this paramater has a strong importance on the overall results. We can see in figure~\ref{split}, for any embedding size, that the performance is always increasing when the \texttt{split} values is higher. By increasing this \texttt{split} value from 5 to 500, we have increased the performance by 0.14 in AUC for the different sizes of embedding. Going from 500 to 50000, increased the performance by 0.08. We can explain this improvement by the fact that the model will do back-propagation after each time step defined by \texttt{split}. So by increasing the \texttt{split} number, we will increase the number of back-propagation. This suggest that higher values of this parameter allows to enhance the performance but the choice of it must been done considering the running time and the complexity which are increasing significantly when the \texttt{split} get larger.
+We decided extend our analysis of the original model by testing the impact of the \texttt{split} (see sec. \nameref{sec:trainning}) on the performance of the JODIE model, as a reminder, the original study doesn't consider \texttt{split} as a hyper-parameter but as was a constant fixed at 500. In the figures~\ref{split}, we show that this parameter has a strong importance on the overall results. We can see in figure~\ref{split}, for any embedding size, that the performance is always increasing when the \texttt{split} value is higher. By increasing this \texttt{split} value from 5 to 500, we have increased the performance by 0.14 in AUC for the different sizes of embedding. Going from 500 to 50000, increased the performance by 0.08. We can explain this improvement by the fact that the model will do back-propagation after each time step defined by \texttt{split}. So by increasing the \texttt{split} number, we will increase the number of back-propagation. This suggests that higher values of this parameter allow to enhance the performance but the choice of it must be done considering the running time and the complexity which are increasing significantly when the \texttt{split} get larger.
 
 \begin{figure}[htbp]
     \centering
@@ -385,7 +387,17 @@ We decided extend our analysis of the original model by testing the impact of th
 \end{figure}
 
 \section*{Conclusion}
-With our work we are able to successfully reproduce the results obtained by the authors of the original paper. As explained in the previous section, some of our results differ slightly from those in the paper. This can be explained by a variation due to the initialization but also by the evaluation of the last epoch for the replication while the authors of the paper evaluated each epoch and chose the best performance on the validation. We can say that the JODIE model outperforms the state of the art methods.\\
+We are able to successfully replicate the original code provided by the authors and reproduce the results obtained in original JODIE publication. 
+
+Even if our reproduction more or less match the result provided in the orginal study, we found some sligh difference in the result compare with the orginal paper. This can be explained by a variation due to the initialization. However, for LastFM dataset our result clearly outperform those claim in the original study, we are suspecting some reporting error in the original study.
+
+About the impact of the embedding size on the overall result, despict the claim made by the author, we show that it has a slight an impact with respect of the metric used. 
+
+Finally, the split has a strong impact on the overall performance, This hyper-parameter must be adjusted taking into account a complexity-performance trade-off.\\
+
+As explained in the previous section, some of our results differ slightly from those in the paper. This can be explained by a variation due to the initialization but also by the evaluation of the last epoch for the replication while the authors of the paper evaluated each epoch and chose the best performance on the validation. We can say that the JODIE model outperforms the state of the art methods.\\
 Our replication allowed to make a more readable code, easily reusable and easily adjustable for all the hyper-parameters combinations.\\
 We also tested the importance of the hyper-parameter \texttt{split}. It was concluded that it is important to choose well to obtain better results. The highest performance was obtained with the largest value but a learning time that is longer. This hyper-parameter must be adjusted taking into account a complexity-performance trade-off.\\
+
+
 In terms of perspectives, it would be interesting to use the focal loss~\cite{https://doi.org/10.48550/arxiv.1708.02002}. We use this loss in cases of unbalanced class. This loss allowed to have better results in these cases.
