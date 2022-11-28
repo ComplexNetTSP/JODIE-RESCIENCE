@@ -356,21 +356,22 @@ To go further in the replication and reproduction, we will also reproduce two fi
     \label{percentage-train}
 \end{figure}
 
-\textcolor{red}{For the figure on left, the larger the training set is the more the model predicted classes are wrong. This can be explained by the big imbalance in the dataset. There is only few examples of state change in the datasets. Learning on a small training set will lead the model to only characterize the majority class. The model will then over-predict this class. Knowing that the test set will contain a majority of this class, the accuracy will be high despite some few examples of the minority class that is not enough seen during the learning task to be correctly predicted. When the training set is getting larger, the model start also characterizing the minority class which is now more represented but still not enough. This causes more confusion during the prediction which leads to lower accuracy. The figure on right shows us that larger the training set is, the better is the model in the predicting the future interactions. This describe the classical behavior of models, the more data the see the higher the results are. If we were to compare the curves obtained by the authors of the paper and ours, we could say that the general shapes are similar.}
+For state change prediction in figure \ref{percentage-train} A) shows that due to class imbalance, the larger the training is, less the model is accurate in predicting state change. 
 
-\textcolor{red}{Je ne comprend pas tres bien se que tu veux dire}
-We can see on the first figure that shows an increasing curve. The larger the training set is, the better is the model in the prediction of future interaction. If we were to compare the curve obtained by the authors of the paper and ours, we could say that the general shape is similar. For the second [figure which one], the curve is decreasing. The larger the training set is, the more the model is wrong. In state prediction, there is very few change of state so the model will tend to predict more the majority class when the training set is smaller and does not contains enough changing state cases. This is even more pronounced when the training set get even smaller.\\
+As opposite with the interaction prediction in figure \ref{percentage-train} B) we show that larger the training set is, the better is the model will be able to predicting the future interactions. This describe the classical behavior, where the more tranning data will lead to better results (similar observation were made in the orignal paper).
 
-Additionally, we test the robustness of the model for variations in the size of the embeddings (see fig~\ref{emb-size}). The figure on the left shows the MRR results of predicting future interactions for the datasets LastFM and Wikipedia and the figure on the right shows the same results but in recall@10.
+Additionally, we tested the impact of of the embeddings size on the the model. In figure \ref{emb-size} A)  shows the MRR results of predicting future interactions for the datasets LastFM and Wikipedia and in the \ref{emb-size} B), we show the same results but with the recall@10. Despict the authors claim tthat the performa of their model doesn't depend of teh embedding size, we show that depending of the metric of interest (i.e.: MMR or Recall@10) the embedding size has an impact on the overall performance of teh model. 
+
+%In the original paper, the authors performed this experiment for embedding sizes of 32, 64, 128 and 256 on LastFM. Here , we proposed to do the same experiment but with two additional embedding sizes 8 and 16 but also to add a dataset which is Wikipedia, to test if the claiming of the original paper is generalizable. We see that whatever the size of the embeddings, we obtain stable MRR performances for both datasets. To go further, we decide to draw the same curves but for the recall@10. On this figure, we can see that there is indeed an increase in performance. As we can see the robustness of the model is depending on the metric choice.
+
+As conclusion, after having reproduced their results we also claim that their model outperforms the existing models on these 4 datasets and that the replication and reproduction are validated.
+
 \begin{figure}[htbp]
     \centering
     \includegraphics[width = \textwidth]{image/lastFM-wiki.pdf}
     \caption{Robustness of JODIE replication}
     \label{emb-size}
 \end{figure}
-In the original paper, the authors performed this experiment for embedding sizes of 32, 64, 128 and 256 on LastFM. Here , we proposed to do the same experiment but with two additional embedding sizes 8 and 16 but also to add a dataset which is Wikipedia, to test if the claiming of the original paper is generalizable. We see that whatever the size of the embeddings, we obtain stable MRR performances for both datasets. To go further, we decide to draw the same curves but for the recall@10. On this figure, we can see that there is indeed an increase in performance. As we can see the robustness of the model is depending on the metric choice.
-
-We can say that their model outperforms the existing models on these 4 datasets and replication and reproduction are validated.
 
 \subsection*{Additional result not present in the original paper}
 
