@@ -19,7 +19,7 @@ We mainly reach the same results with our own code compared to the original pape
 
 \subsubsection{What was easy}
 
-The authors had made their code available and all the necessary information at the following  address \href{https://github.com/srijankr/jodie}{GitHub}. Their original code has considerably simplified our replication task.
+The authors had made their code available and all the necessary information at the following address \url{https://github.com/srijankr/jodie}. Their original code has considerably simplified our replication task.
 
 \subsubsection{What was difficult}
 
@@ -39,7 +39,7 @@ and a dynamic embedding representing the time‐varying property. These embeddin
 The authors claim to outperform some of the state-of-the-art recommender systems such as Time-LSTM~\cite{Zhu17}, LatentCross~\cite{Beutel18}, Interaction Graph Embedding (IGE)~\cite{Zhang17}, Recurrent Recommender Networks~\cite{Wu17} and the Continuous-Time Dynamic Network Embeddings(CTDNE)~\cite{Nguyen18} in predicting future interactions  at least 20\% better, and user state change predictions 12\% better on average.
 This paper describes our efforts to replicate the JODIE model designed by Srijan Kumar et al~\cite{kumar2019predicting}. 
 We use the publicly available code provided by the authors to reproduce
-their results and validate their conclusions. Our code is available at \href{https://github.com/ComplexNetTSP/JODIE}{Github}.
+their results and validate their conclusions. Our code is available at \url{https://github.com/ComplexNetTSP/JODIE}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -61,9 +61,10 @@ In this paper, we investigate the following claims from the original paper:
 \begin{itemize}
     \item \textbf{More accurate recommendation performance}. By using the JODIE model, the authors claim to achieve better predictions of future interactions over all the selected datasets. JODIE outperforms six models with an improvement of at least 20\% and 14\%  in terms of Mean Reciprocal Rank (MRR) and Recall@10, respectively.
     \item \textbf{More accurate state changes performance}. The authors claim that JODIE outperforms five models regarding the user state change over all the selected datasets with an average improvement of 12.63\% for the Area Under the Curve (AUC) metric.
-    \item \textbf{Shorter learning time}. Thanks to the new t-batch algorithm, the learning phase is 9.2 times faster than other models comparable to JODIE, i.e., with a model with two Recurrent Neural Networks (RNNs).
+    \item \textbf{Shorter learning time}. Thanks to the new t-batch algorithm, the learning phase is 9.2 times faster than other models comparable to JODIE, i.e., with a model \textcolor{blue}{composed of two Recurrent Neural Networks (RNNs).} %with two Recurrent Neural Networks (RNNs).
     \item \textbf{Robustness of the model to the proportion of the training set}. Regardless of the training data percentage, JODIE outperforms all the compared models.
-    \item \textbf{Robustness of the model to the embedding size}. The size of embeddings does not have much impact on the performance of JODIE.
+    \item \textbf{Robustness of the model to the embedding size}. \textcolor{blue}{The embedding size}%The size of embeddings 
+    does not have much impact on the performance of JODIE.
 \end{itemize}
 We have implemented the JODIE model using a more recent version of the Pytorch library aiming at reproducing the results stated by the authors:
 \begin{itemize}
@@ -75,7 +76,7 @@ In addition to reproducing the results presented in the paper, we perform novel 
 To conclude, we have reproduced the results present in the original paper by extending an experiment on the robustness of the size of dynamic embeddings and by bringing an additional experiment on the choice of hyperparameters.
 
 \section*{Methodology}
-JODIE is a model that learns dynamic embeddings of users $u_t \in \mathbb{R}^n$, $\forall u \in \mathcal{U}$ and items $i_t \in \mathbb{R}^n$, $\forall i \in \mathcal{I}$ over time t, $\forall t \in [0; T]$, where $\mathcal{U}$ and $\mathcal{I}$ are the sets of users and items and $T$ the final time. Moreover, the interactions are ordered in time, i.e., an interaction between a user $u_r$ and an item $i_r$ at time $t_r$ characterized by $f_r$, noted $S_r = (u_r, \, i_r, \, t_r, \, f_r)$, cannot be before the interaction $S_{r-1}$. Figure \ref{Pipeline} shows the structure of JODIE. The model is composed of two main components: the update operator which, with the help of two RNNs, updates embeddings and the projection operator which allows to make a projection of an embedding in a future time represented in purple on the figure. Then, the model uses the different outputs to make the prediction of the future interaction or change of state.
+JODIE is a model that learns dynamic embeddings of users $u_t \in \mathbb{R}^n$, $\forall u \in \mathcal{U}$ and items $i_t \in \mathbb{R}^n$, $\forall i \in \mathcal{I}$ over time t, $\forall t \in [0; T]$, where $\mathcal{U}$ and $\mathcal{I}$ are the sets of users and items and $T$ the final time. Moreover, the interactions are ordered in time, i.e., an interaction between a user $u_r$ and an item $i_r$ at time $t_r$ characterized by $f_r$ feature vector, noted $S_r = (u_r, \, i_r, \, t_r, \, f_r)$. Figure \ref{Pipeline} shows the structure of JODIE. The model is composed of two main components: the update operator which, with the help of two RNNs, updates embeddings and the projection operator which allows to make a projection of an embedding in a future time represented in purple on the figure. Then, the model uses the different outputs to make the prediction of the future interaction or change of state.
 
 
 \begin{figure}[htbp]
@@ -137,7 +138,7 @@ These two operators consist in the learning of the model. One limitation cited b
 
 \subsubsection{t-Batch algorithm}
 
-The \texttt{t-batch} algorithm is a linear algorithm that split temporal data into batches. This algorithm is a key point of the method that allows to speed up the learning time considerably. The \texttt{t-batch} algorithm is explained in the original article only by a few lines. Regarding the code, the algorithm was difficult to identify since it was mixed with other parts of code in the learning loop. To facilitate the understanding of the \texttt{t-batch} we propose the algorithm \ref{t-batch}. To summarize the \ref{t-batch} algorithm, given a list of timestamped events, it dispatches the event into a batch according to the following constrains first it ensures that the same batch cannot contain the same entity multiple times. Secondly, it ensures to retain temporal dependencies inside batches and between batches, i.e., we process interactions in order. By meeting these two conditions, we guarantee that batches are independent (and parallelizable). Finally, in line 9. of Alg. \ref{t-batch} we compute the index of the batch $B_{idx}$ where the interaction $\mathcal{S}_r \in \mathcal{S}$ will be put in. Let $\text{maxBatch}(e, \,r-1)$ be the function that gives the index of the batch at time $r-1$ containing the entity $e$. 
+The \texttt{t-batch} algorithm is a linear algorithm that split temporal data into batches (see fig.~\ref{pipeline_t-batch}). This algorithm is a key point of the method that allows to speed up the learning time considerably. The \texttt{t-batch} algorithm is explained in the original article only by a few lines. Regarding the code, the algorithm was difficult to identify since it was mixed with other parts of code in the learning loop. To facilitate the understanding of the \texttt{t-batch} we propose the algorithm \ref{t-batch}. To summarize the \ref{t-batch} algorithm, given a list of timestamped events, it dispatches the event into a batch according to the following constrains first it ensures that the same batch cannot contain the same entity multiple times. Secondly, it ensures to retain temporal dependencies inside batches and between batches, i.e., we process interactions in order. By meeting these two conditions, we guarantee that batches are independent (and parallelizable). Finally, in line 9. of Alg. \ref{t-batch} we compute the index of the batch $B_{idx}$ where the interaction $\mathcal{S}_r \in \mathcal{S}$ will be put in. Let $\text{maxBatch}(e, \,r-1)$ be the function that gives the index of the batch at time $r-1$ containing the entity $e$. 
 
 \begin{algorithm}[htbp]
     \caption{t-Batch}
