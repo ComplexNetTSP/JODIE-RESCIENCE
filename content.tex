@@ -17,12 +17,7 @@ We reimplement the JODIE model of Kumar et al~\cite{kumar2019predicting}. To tes
 
 \subsubsection{Result}
 
-We have validated some results of the original paper despite some differences that may be due to the initialization. By adding an experiment, we contradict an assertion of the paper concerning the robustness of the model to the size of the embeddings. An additional result, on the impact of our hyperparameter \texttt{split}, shows its importance on the final performance.
-
-%We have validated some of the authors' claims through the experiments given in the original article and invalidated other claims through some additional experiments of our own. Overall, we found that many experiments gave results with marginal differences. The additional experiments had to verify that for any size of embedding, the performance did not change.
-
-
-%We mainly reach the same results with our own code compared to the original paper, with a notable difference with the prediction of future interaction task (with the LastFM dataset) where we achieve a result twice better than the one publish in the paper. Moreover, we showed that the number of split during the learning phase (the number of times the back propagation is performed) has a strong impact on the final results (cf. Fig. \ref{split}). This fact was not highlighted in the original paper.
+After replication of the model and we validated most of the results found in the original paper, we have found only marginal difference between the replication and the original study. However, our extended experimentation about the robustness of embeddings size has lead us toward slightly different conclusion than those define in the original study. Additionally, we extended the original study by making some new experimentation about the impact of the \texttt{split} on the performance of the model, we have found that the \texttt{split}  has a real impact on the overall performance. 
 
 \subsubsection{What was easy}
 
