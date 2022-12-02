@@ -111,9 +111,6 @@ More informations are available in README file in the repositoritory of our code
 \subsection*{Model descriptions}
 
 \subsubsection{Update operator}
-% enlever les we
-% forme active
-
 The update operator takes the form of two mutually recursive neural networks shown in Figure \ref{recursive RNNs}. The RNN$_U$ is used to update the dynamic user embeddings and the RNN$_I$ updates the dynamic item embeddings. In this case, the embeddings are considered as the hidden state of the classical RNNs respectively. At time $t=0$, the embeddings are initialized randomly according to uniform distribution $\mathcal{U}[0;1[$ followed by a normalization and are noted $u_0$ and $i_0$. As input, there is the embeddings at time $t=0$ but also $\Delta$ the time elapsed between an entity and the previous interaction and $f$ a feature vector which characterizes the link of the interaction. A specificity of these RNNs is that they take four inputs instead of two as usual. In order to narrow down to just two inputs, we concatenate the embedding of the other entity, $\Delta$ and $f$. In Figure \ref{recursive RNNs}, we denote the concatenation by [.,.]. More formally, we use the following formulas to update the embeddings:
 $$
 u^+ = \sigma \left ( W_1^u u^- + W_2^u i^- + W_3^u f + W_4^u \Delta_u \right )
@@ -168,12 +165,6 @@ The \texttt{t-batch} algorithm is a linear algorithm that split temporal data in
     \end{algorithmic}
 \end{algorithm}
 
-
-% \begin{equation}
-% \text{idx} = \max \left ( \text{maxBatch}(u, \,r-1), \,\text{maxBatch}(i, \,r-1) \right ) + 1
-% \label{eq:1}
-% \end{equation}
-
 \subsubsection{Next item embedding and state change losses}
 
 The JODIE model has been designed to give directly an embedding of an item, which is time saving. Indeed, the existing models predict a probability for each item. This can be very long if the dataset contains many items. JODIE will produce an embedding and the suggested item will be the one whose embedding will be the closest to the one of the prediction. To make this prediction, we use a neural network that will have as input the projected embedding of the user at time $t+\Delta$ noted $\widehat u(t+\Delta)$ and the embedding of the previous item of the user before time $t+\Delta$ noted $i(t+\Delta^-)$. This embedding is important because item can interact with other users between time $t$ and $t+\Delta$, which means that it contains more recent information. JODIE uses both static and dynamic embeddings, denoted respectively $\Bar{e}$ and $e$, to make the prediction of a static and dynamic embedding $\overset{\sim}{i}$. The prediction is done with a fully connected linear layer.
@@ -207,7 +198,6 @@ Where $u_{true}$ is the real class of the user and $\widehat u_{pred}$ his predi
 
 \subsubsection{Training JODIE model} 
 \label{sec:trainning}
-% bien définir une période et le split dans l'étape 3 pour rendre les choses bien clair et facilité la compréhension.
 
 We detail the learning steps and the specificity of JODIE model we provide. 
 \begin{enumerate}
@@ -371,10 +361,6 @@ Additionally, we tested the impact of the embedding size on the model. In figure
 
 As conclusion, after having reproduced their results we also claim that their model outperforms the existing models on these 4 datasets and that the replication and reproduction are validated.
 
-%In the original paper, the authors performed this experiment for embedding sizes of 32, 64, 128 and 256 on LastFM. Here , we proposed to do the same experiment but with two additional embedding sizes 8 and 16 but also to add a dataset which is Wikipedia, to test if the claiming of the original paper is generalizable. We see that whatever the size of the embeddings, we obtain stable MRR performances for both datasets. To go further, we decide to draw the same curves but for the recall@10. On this figure, we can see that there is indeed an increase in performance. As we can see the robustness of the model is depending on the metric choice.
-
-
-
 \begin{figure}[htbp]
     \centering
     \includegraphics[width = \textwidth]{image/lastFM-wiki.pdf}
@@ -395,9 +381,5 @@ We decided extend our analysis of the original model by testing the impact of th
 
 \section*{Conclusion}
 We are able to successfully replicate the original code provided by the authors and reproduce the results obtained in original JODIE publication. Even if our reproduction more or less match the result provided in the original study, we have found some sligh difference compare with the result in the original paper. This can be explained by a variation due to the initialization. However, for LastFM case our reproduction result clearly outperform those claimed in the original study, we are suspecting some reporting error in the original study. Secondly, we have show that the impact of the embedding size has a slight impact on the result if a different evaluation metric than the one proposed in the original paper was used. This fact balance the claim made by the authors stating the embedding size has no impact on the overall performance of their model. Finally, we have found that the split has a strong impact on the overall performance, This hyper-parameter unexplored in the original paper must be adjusted taking into account a complexity-performance trade-off of the model. As perspective, we think it would be interesting to use the focal loss~\cite{https://doi.org/10.48550/arxiv.1708.02002} instead of the standard cross entropy loss in the JODIE model in order to alleviate the issue we have met with unbalanced class. 
-
-%As explained in the previous section, some of our results differ slightly from those in the paper. This can be explained by a variation due to the initialization but also by the evaluation of the last epoch for the replication while the authors of the paper evaluated each epoch and chose the best performance on the validation. We can say that the JODIE model outperforms the state of the art methods.\\
-%Our replication allowed to make a more readable code, easily reusable and easily adjustable for all the hyper-parameters combinations.\\
-%We also tested the importance of the hyper-parameter \texttt{split}. It was concluded that it is important to choose well to obtain better results. The highest performance was obtained with the largest value but a learning time that is longer. This hyper-parameter must be adjusted taking into account a complexity-performance trade-off.\\
 
 
