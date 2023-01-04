@@ -233,8 +233,7 @@ Once the learning stage is over, the evaluation is carried out.
 \end{figure}
 
 \subsubsection{Prediction and evaluation JODIE model}
-\textcolor{red}{The prediction phase is a particular learning phase. Indeed during the prediction phase, the interactions are processed one after the other (in t-batch in the learning phase) and the same learning steps (steps 1, 4-8) are performed. Depending on the prediction task, the model will predict a state change probability with \textbf{predict\_state} function in the \textbf{model.py} file or either we generate an embedding of the item to be recommended using the \textbf{predict\_embedding\_item} function in the \textbf{model.py} file. After considering all the interactions and making all the predictions, we can proceed to the calculation of the evaluation metrics (MRR, Recall@10 or AUC).}
-
+During the prediction task as oppose to the trainning task we will  process the interactions one at the time. The prediction task is share the step 4-8 with the trainning task. Depending of which prediction task we want to perform (either predict a state change or predict the next item embedding), we will use either the \textbf{predict\_state} function in the \textbf{model.py} file or the \textbf{predict\_embedding\_item} function in the \textbf{model.py} file.
 
 \subsection{Datasets}
  
