@@ -120,23 +120,13 @@ where the matrices $W_1^e, ..., W_4^e$ are the parameters of the RNN$_e$\textcol
 
 \subsubsection{Projection operation}
 
-This operation consists in projecting the user's embeddings to a future time. %Indeed, it is assumed that user's interests change with time, for example in winter and in summer, hence the need to model this variation as a linear projection. To a more deeper understanding please refer to the original figure provide by the authors themself in figure 3 in~\cite{kumar2019predicting}).
-Indeed, as users' interests evolve over time, modeling this variation as a linear projection is particularly appropriate. \textcolor{green}{For} %To 
-a deeper understanding, please refer to the original figure provided by the authors in Figure~\ref{recursive RNNs}.
-We notice that over a very short time interval, the projected embedding of the user changes slightly, but as time goes \textcolor{green}{by}, the projected embedding will be further away from its original embedding. To perform this operation, %we must first convert 
-$\Delta$ \textcolor{green}{is converted} into a vector $w \in \mathbb{R}^n$ using a linear layer represented by its weights vector $W_p$. We have $w = W_p \Delta$.  We initialize $W_p$ by a Gaussian of zero mean. 
-We obtain the projected embedding by computing \textcolor{green}{the} Hadamard product, denoted $*$, of $1+w$ and $u_t$. The authors use the following formula.
+This operation consists in projecting the user's embeddings to a future time. Indeed, as users' interests evolve over time, modeling this variation as a linear projection is particularly appropriate. For a deeper understanding, please refer to the original figure provided by the authors in Figure~\ref{recursive RNNs}. We notice that over a very short time interval, the projected embedding of the user changes slightly, but as time goes by, the projected embedding will be further away from its original embedding. To perform this operation, $\Delta$ is converted into a vector $w \in \mathbb{R}^n$ using a linear layer represented by its weights vector $W_p$. We have $w = W_p \Delta$.  We initialize $W_p$ by a Gaussian of zero mean. We obtain the projected embedding by computing the Hadamard product, denoted $*$, of $1+w$ and $u_t$. The authors use the following formula.
+
 $$
 \widehat u_{t+\Delta} = (1+w) * u_t
 $$
-We can see that if $\Delta = 0$, then $w=0$ and the projected embedding is the same as the initial embedding. We can consider this operation as a simple linear transformation.
 
-\textcolor{green}{Both operators are used to learn the model.}
-%These two operators consist in the learning of the model. 
-One limitation cited by the authors is the learning time. Indeed, the existing models process each interaction one after the other, which takes a considerable amount of time. The authors have \textcolor{green}{proposed} %invented 
-an algorithm \textcolor{green}{called \texttt{t-batch}, that splits} %allows to separate 
-temporal data into batches, \textcolor{green}{which considerably speeds up} %and thus to accelerate t
-the learning time. %This algorithm is called \texttt{t-batch}.
+We can see that if $\Delta = 0$, then $w=0$ and the projected embedding is the same as the initial embedding. We can consider this operation as a simple linear transformation. Both operators are used to learn the model. One limitation cited by the authors is the learning time. Indeed, the existing models process each interaction one after the other, which takes a considerable amount of time. The authors have proposed an algorithm called \texttt{t-batch}, that splitsctemporal data into batches, which considerably speeds up the learning time.
 
 \subsubsection{t-Batch algorithm}
 
