@@ -6,35 +6,23 @@
 
 
 \subsubsection{Scope of Reproducibility}
-
-In this work, the article Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks~\cite{kumar2019predicting} is evaluated through a replication study. Replication results examine whether the claims made by \textcolor{green}{the} authors are valid. Our goal is to replicate the experiments and achieve the same results as the authors.
+In this work, the article Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks~\cite{kumar2019predicting} is evaluated through a replication study. Replication results examine whether the claims made by the authors are valid. Our goal is to replicate the experiments and achieve the same results as the authors.
 
 \subsubsection{Methodology}
-
 We reimplement the JODIE model of Kumar et al~\cite{kumar2019predicting}. To test the authors' claims, we used the same architecture and made several modifications to the hyperparameters. We reproduce tables 3-4 for the authors' model of the original paper, excluding results from models in other papers. We extend the results of Figure~\ref{emb-size} and the choice of embedding size from the original article.
 
-%We reimplement the method of Kumar et al.~\cite{kumar2019predicting} for recommender systems using their new algorithm that allows batch learning on temporal data, improves their codes, and extends their work. Our improvements consist of using the last versions of Python and  Pytorch, and having a more readable code. Our extension includes impacting hyperparameters by varying it. The codes are available at \href{https://github.com/ComplexNetTSP/JODIE}{GitHub}. 
 
 \subsubsection{Result}
-
-%After replication of the model and we validated most of the results found in the original paper, we have found only marginal difference between the replication and the original study. 
-\textcolor{green}{After replicating the model and validating most of the results found in the original paper, we found only a marginal difference between the replication and the original study. However, our extensive experiment regarding the robustness of embedding size led us to slightly different conclusions than those of the authors. In addition, we extended the original study by conducting new experiments on the impact of the \texttt{split} on the model's performance. As a result, we found that the \texttt{split} has a real impact on the overall performance. 
-}
-%However, our extended experimentation about the robustness of embeddings size has lead us toward slightly different conclusion than those define in the original study. 
-%Additionally, we extended the original study by making some new experimentation about the impact of the \texttt{split} on the performance of the model, we have found that the \texttt{split}  has a real impact on the overall performance. 
+After replicating the model and validating most of the results found in the original paper, we found only a marginal difference between the replication and the original study. However, our extensive experiment regarding the robustness of embedding size led us to slightly different conclusions than those of the authors. In addition, we extended the original study by conducting new experiments on the impact of the \texttt{split} on the model's performance. As a result, we found that the \texttt{split} has a real impact on the overall performance. 
 
 \subsubsection{What was easy}
-
 The authors had made their code available and all the necessary information at the following address \url{https://github.com/srijankr/jodie}. Their original code has considerably simplified our replication task.
 
 \subsubsection{What was difficult}
+Although the code is available, some technical aspects hindered our complete understanding of the model. We solved them by investigating the code provided by the authors.
 
-%Although the code is available. However some technical aspects have hindered our complete understanding of the model. We solved them by studying the code made available by the authors.
-\textcolor{green}{Although the code is available, some technical aspects hindered our complete understanding of the model. We solved them by investigating the code provided by the authors.}
 \subsubsection{Communication with original authors}
-We contacted the authors for clarification about which aggregation method used to fit the inputs constraints of the RNN gate.
-
-\textcolor{green}{We contacted the authors, asking them what aggregation method they used to meet the RNN gate input constraints.}
+We contacted the authors, asking them what aggregation method they used to meet the RNN gate input constraints.
 
 \newpage
 
@@ -93,55 +81,35 @@ Figure~\ref{Pipeline}. Then, the model uses the different outputs to predict the
 
 \subsection{Code}
 We re-implemented the JODIE model using a newer version of Pytorch~\cite{NEURIPS2019_bdbca288} (version 1.10 and python 3.8 ) independently of the original code provided by the authors\footnote{\url{https://github.com/srijankr/jodie}}.
-Our code \textcolor{green}{and trained models are publicly available at \url{https://github.com/ComplexNetTSP/JODIE.}} %is available at the following address: \url{https://github.com/ComplexNetTSP/JODIE}.
-We want to point out that we have used the \textit{tanh} function as the activation function at the output of the RNNs (see Figure \ref{Pipeline}) to build our model in accordance with the original code but in contrast to what the authors wrote in the original paper.
-% We want to highlight the fact that we used the \textit{tanh} function  as %the activation function at the output of the RNNs (see fig.~\ref{Pipeline}) to build our model, in accordance with %to the authors' original code but contrary to what's written in the original paper. 
-Our source code is organized as follows:
+Our code \and trained models are publicly available at \url{https://github.com/ComplexNetTSP/JODIE.}
+We want to point out that we have used the \textit{tanh} function as the activation function at the output of the RNNs (see Figure \ref{Pipeline}) to build our model in accordance with the original code but in contrast to what the authors wrote in the original paper. Our source code is organized as follows:
 \begin{itemize}
-    \item \textbf{preprocessing.py} %where everything about the data preprocessing and the t-batch algorithm.
-    includes data preprocessing and the t-batch code.
+    \item \textbf{preprocessing.py} includes data preprocessing and the t-batch code.
     \item \textbf{model.py} contains the model as described in Figure \ref{Pipeline}.
     \item \textbf{train.py} is used to train the model.
     \item \textbf{evaluate.py} is used to evaluate the model after the training.
 \end{itemize}
-%By organizing the work in this way, it allows to have a modular, easily reusable and understandable code. 
-Organizing the code this way makes it meaningful and easier to reuse and considerably reduces the effort for code reviews and tests. 
-%To run the model, it's necessary to create an environment with the required packages and run one of the following python scripts in order to lauch the training/evaluation of the JODIE model on one of available dataset:
-Before running the model, it is necessary to create an environment with the required packages and run one of the following python scripts to launch the training/evaluation of the JODIE model on one of the available datasets:
+
+Organizing the code this way makes it meaningful and easier to reuse and considerably reduces the effort for code reviews and tests. Before running the model, it is necessary to create an environment with the required packages and run one of the following python scripts to launch the training/evaluation of the JODIE model on one of the available datasets:
 \begin{itemize}
     \item \textit{train\_evaluate\_wikipedia.py, train\_evaluate\_lastfm.py, train\_evaluate\_reddit.py}
     \item \textit{train\_evaluate\_reddit\_state.py, train\_evaluate\_wikipedia\_state.py, train\_evaluate\_mooc\_state.py}
 \end{itemize}
-\textcolor{green}{Further information is available in the GitHub README file.\footnote{\url{https://github.com/ComplexNetTSP/JODIE}}}
-%More informations are available in README file in the repository of our code\footnote{\url{https://github.com/ComplexNetTSP/JODIE}}.
+Further information is available in the GitHub README file.\footnote{\url{https://github.com/ComplexNetTSP/JODIE}}
 
-\subsection{Model description}%descriptions}
+\subsection{Model description}
 
 \subsubsection{Update operator}
-The update operator takes the form of two mutually recursive neural networks as depicted %shown 
-in Figure \ref{recursive RNNs}. %The RNN$_U$ is used to update the dynamic user embeddings and the RNN$_I$ updates the dynamic item embeddings.
-RNN$_U$ updates users' dynamic embeddings, whereas RNN$_I$ updates those of the items. The embeddings are thus considered as the hidden states of the classical RNNs.%In this case, the embeddings are considered as the hidden state of the classical RNNs respectively. 
+The update operator takes the form of two mutually recursive neural networks as depicted in Figure \ref{recursive RNNs}. RNN$_U$ updates users' dynamic embeddings, whereas RNN$_I$ updates those of the items. The embeddings are thus considered as the hidden states of the classical RNNs. At time $t=0$, the embeddings (noted $u_0$ and $i_0$) are initialized randomly according to a uniform distribution $\mathcal{U}[0;1[$ followed by a normalization. In addition to the embeddings at time $t=0$, the RNNs take as input $\Delta$, the time elapsed between an entity and the previous interaction, and $f$ a feature vector which characterizes the link of the interaction. As we can observe, the specificity of these RNNs is that they take four inputs instead of the standard two. In order to narrow down to just two entries, the embeddings of the other entity $\Delta$ and $f$ are concatenated. In Figure \ref{recursive RNNs}, $[.,.]$ is used to denote the concatenation. More formally, the embeddings are updated with the following formulas:
 
-At time $t=0$, the embeddings (noted $u_0$ and $i_0$) are initialized randomly according to a uniform distribution $\mathcal{U}[0;1[$ followed by a normalization. %,  and are noted $u_0$ and $i_0$. 
-In addition to the embeddings at time $t=0$, the RNNs take as input $\Delta$, the time elapsed between an entity and the previous interaction, and $f$ a feature vector which characterizes the link of the interaction.
-%As input, there is the embeddings at time $t=0$ but also $\Delta$ the time elapsed between an entity and the previous interaction and $f$ a feature vector which characterizes the link of the interaction. 
-As we can observe, the %A
-specificity of these RNNs is that they take four inputs instead of the standard two. %as usual. 
-In order to narrow down to just two entries,%inputs, 
-the embeddings of the other entity $\Delta$ and $f$ are concatenated.
-%we concatenate the embedding of the other entity, $\Delta$ and $f$. 
-In Figure \ref{recursive RNNs},
-\textcolor{red}{[.,.] is used to denote the concatenation. More formally, the embeddings are updated with the following formulas:}%we denote the concatenation by [.,.]. More formally, we use the following formulas to update the embeddings:
 $$
 u^+ = \sigma \left ( W_1^u u^- + W_2^u i^- + W_3^u f + W_4^u \Delta_u \right )
 $$
 $$
 i^+ = \sigma \left ( W_1^i i^- + W_2^i u^- + W_3^i f + W_4^i \Delta_i \right )
 $$
-where the matrices $W_1^e, ..., W_4^e$ are the parameters of the RNN$_e$\textcolor{green}{?} and $\sigma$ an activation function (here hyperbolic tangent). \textcolor{red}{$u^-$ and $i^-$ \textcolor{green}{represent} %represents 
-the embeddings before updating and $u^+$ and $i^+$ \textcolor{green}{represent} %represents 
-the embeddings after updating. Once this step is finished, the \textcolor{green}{next} %second 
-operation, \textcolor{green}{called the projection operation,} can be \textcolor{green}{launched} %used, %it's called the projection operation.} %We note by $u^-$ and $i^-$ the embeddings before update and by $u^+$ and $i^+$ the embeddings after update. Once this step is finished, we can proceed to the second operation, the projection operation.
+
+where the matrices $W_1^e, ..., W_4^e$ are the parameters of the RNN$_e$\textcolor{green}{?} and $\sigma$ an activation function (here hyperbolic tangent). $u^-$ and $i^-$ represent the embeddings before updating and $u^+$ and $i^+$ represent the embeddings after updating. Once this step is finished, the next operation, called the projection operation, can be launched.
 
 \begin{figure}[htbp]
    \centering
@@ -176,19 +144,7 @@ the learning time. %This algorithm is called \texttt{t-batch}.
 %\texttt{t-Batch} %algorithm 
 it is a linear algorithm, %that
 \textcolor{green}{and its general idea is to split} temporal data into batches 
-(see Figure~\ref{pipeline_t-batch}). \textcolor{green}{However, it is not easy to figure out the details of its functionality simply after reading the article or studying the source code.
-Indeed, the original paper presents the algorithm in only a few sentences. Moreover, the code is embedded with other pieces of code in the learning loop, making it challenging to grasp its behavior. } %This algorithm is a key point of the method that allows to speed up the learning time considerably. 
-%The \texttt{t-batch} algorithm is explained in the original article only by a few lines. Regarding the code, the algorithm was difficult to identify since it was mixed with other parts of code in the learning loop. 
-
-
-
-To facilitate the understanding of the \texttt{t-batch} we propose the algorithm \ref{t-batch}. To summarize the \ref{t-batch} algorithm, given a list of timestamped events, it dispatches the event into a batch according to the following constrains first it ensures that the same batch cannot contain the same entity multiple times. Secondly, it ensures to retain temporal dependencies inside batches and between batches, i.e., we process interactions in order. By meeting these two conditions, we guarantee that batches are independent (and parallelizable). Finally, in line 9. of Algorithm~\ref{t-batch} we compute the index of the batch $B_{idx}$ where the interaction $\mathcal{S}_r \in \mathcal{S}$ will be put in. Let $\text{maxBatch}(e, \,r-1)$ be the function that gives the index of the batch at time $r-1$ containing the entity $e$. 
-
-\textcolor{green}{To shed light on this algorithm which is the cornerstone of the authors' contribution, we propose the algorithm \ref{t-batch}. It takes as input a list of time-stamped events and distributes them in a batch according to the following two constraints: first, it ensures that the same batch cannot contain the same entity several times. Secondly, it ensures that temporal dependencies within and between batches are preserved. In other words, the interactions are processed in sequence. These two requirements guarantee that the batches are independent (and parallelizable). The computation of the batch index, $B_{idx}$, in which the interaction $\mathcal{S}_r \in \mathcal{S}$ will be placed, is done in line 9 of the algorithm. }
-
-\textcolor{red}{Consider maxBatch(e, r - 1) as the function that
-gives the index of the batch at time r - 1 containing the entity e.}
-
+(see Figure~\ref{pipeline_t-batch}).However, it is not easy to figure out the details of its functionality simply after reading the article or studying the source code. Indeed, the original paper presents the algorithm in only a few sentences. Moreover, the code is embedded with other pieces of code in the learning loop, making it challenging to grasp its behavior.To shed light on this algorithm which is the cornerstone of the authors' contribution, we propose the algorithm \ref{t-batch}. It takes as input a list of time-stamped events and distributes them in a batch according to the following two constraints: first, it ensures that the same batch cannot contain the same entity several times. Secondly, it ensures that temporal dependencies within and between batches are preserved. In other words, the interactions are processed in sequence. These two requirements guarantee that the batches are independent (and parallelizable). The computation of the batch index, $B_{idx}$, in which the interaction $\mathcal{S}_r \in \mathcal{S}$ will be placed, is done in line 9 of the algorithm. 
 
 \begin{algorithm}[htbp]
     \caption{t-Batch}
@@ -231,21 +187,18 @@ JODIE is trained to minimize the L2 distance between the predicted embedding and
     \textit{Loss} = \sum_{(u,\,i,\,t,\,f) \in S} \| \overset{\sim}{i}_t - [\Bar{i},\,i_t^-] \|_2 + \lambda_U \|u_t - u_t^-\|_2 + \lambda_I \|i_t - i_t^-\|_2
 \end{equation}
 
-The first term minimizes the error of the predicted embedding. The next \textcolor{green}{two}  %twos 
-terms regulate the loss function, and \textcolor{green}{ensure  that  } %allow 
-the dynamic embeddings of users and items %to 
-\textcolor{green}{do} not vary too much. $\lambda_U$ and $\lambda_I$ are the regularization terms that penalize the two terms. In the original paper, the authors fixed the values of $\lambda_U$ and $\lambda_I$ as $\lambda_U = \lambda_I = 1$, without much justification. \textcolor{geen}{But it is unclear whether this is the best value or } %is not clear if this is the best value or 
-if another value would be more appropriate. \\
+The first term minimizes the error of the predicted embedding. The next two terms regulate the loss function, and ensure that  
+the dynamic embeddings of users and items do not vary too much. $\lambda_U$ and $\lambda_I$ are the regularization terms that penalize the two terms. In the original paper, the authors fixed the values of $\lambda_U$ and $\lambda_I$ as $\lambda_U = \lambda_I = 1$, without much justification. But it is unclear whether this is the best value or if another value would be more appropriate. 
 
 When we want to predict the change of state of a user, we use the same loss function with an additional term which is the cross-entropy. To do this, we have to make sure that the classes are binary. In this case, it is possible to train the model using an additional loss term function that will make it able to predict the labels using the user's embedding after an interaction. The additional loss function term, for predicting a user's state change, is a weighted cross-entropy expressed in the following equation:
 
-\textcolor{green}{When it comes to predicting the change of state of a user, we use the same loss function with an additional term, cross-entropy. To do so, we need to guarantee that the classes are binary. In this case, it is possible to train the model using an additional loss function that makes it capable of predicting labels utilizing the user's embedding after an interaction. The loss function  term for predicting a user's state change is a weighted cross-entropy expressed in the following equation:}
+When it comes to predicting the change of state of a user, we use the same loss function with an additional term, cross-entropy. To do so, we need to guarantee that the classes are binary. In this case, it is possible to train the model using an additional loss function that makes it capable of predicting labels utilizing the user's embedding after an interaction. The loss function  term for predicting a user's state change is a weighted cross-entropy expressed in the following equation:
 
 \begin{equation}
     \ell(x,y) = \sum_{n=1}^N \frac{l_n}{\sum_{n=1}^N w_{y_n}} \; \text{ with } \;
     l_n = -w_{y_n} \log \left ( \frac{\exp(x_{n,y_n})}{\sum_{c=1}^C \exp(x_{n,c})} \right )
 \end{equation}
-%rite the corresponding paper using the proposed LaTeX template or your own t
+
 Where $x$ is the input, $y$ is the target, $w$ is the weight, $C$ is the number of classes (here two) and $N$ is the batch size. The loss function becomes:
 
 \begin{equation}
@@ -262,10 +215,7 @@ We detail \textcolor{green}{here} the learning steps and the code simplification
 \begin{enumerate}
     \item We use a function called \textbf{preprocess} which is in the file \textbf{preprocessing.py} to make a pre-processing of the data to extract information necessary during the training. Information like the sequence of users, items, time, features, or previous items that will be used during the learning step.
     \item We initialize each embedding randomly $\mathcal{U}([0,1[)$.
-    \item %During the training phase we usually we split the observations from the original dataset within a given number of batches ($K$ times periods, see fig. \ref{pipeline_t-batch} for more detail). But when we have a dataset has a temporal dependency, we cannot operate under the same assumption, that why in the JODIE model they created the \texttt{t-batch} algorithm. First, we split evenly the dataset into ordered batch of data secondly, we apply the \texttt{t-batch} algorithm independently on each subset of the data as described in the figure \ref{pipeline_t-batch}. Our implementation of the \texttt{t-batch} differ from what was originally defined in \cite{kumar18}, in our implementation do all the t-batches at once with the function \textbf{t\_batch} in the file \textbf{preprocessing.py} before the learning step and loop over the periods.
-    During the training phase, the observations are usually split from the original dataset into a given number of batches (K times periods, see Figure \ref{pipeline_t-batch} for more details). To overcome this issue, JODIE uniformly splits the data into ordered batches, and then, the \texttt{t-batch} algorithm is applied independently on each subset of the data as described in Figure \ref{pipeline_t-batch}. 
-It is worth noting that our implementation of the t-batch algorithm differs from
-what was originally defined in \cite{kumar18}. Instead of applying the \texttt{t-batch} function at each run, we perform all the t-batches in a single run with the  function \textbf{t\_batch} in the \textbf{preprocessing.py} file before the learning step, looping over the periods.
+    \item During the training phase, the observations are usually split from the original dataset into a given number of batches (K times periods, see Figure \ref{pipeline_t-batch} for more details). To overcome this issue, JODIE uniformly splits the data into ordered batches, and then, the \texttt{t-batch} algorithm is applied independently on each subset of the data as described in Figure \ref{pipeline_t-batch}.  It is worth noting that our implementation of the t-batch algorithm differs from what was originally defined in \cite{kumar18}. Instead of applying the \texttt{t-batch} function at each run, we perform all the t-batches in a single run with the  function \textbf{t\_batch} in the \textbf{preprocessing.py} file before the learning step, looping over the periods.
     \item During the learning stage, in the function \textbf{train\_ray} in the file \textbf{train.py}, we use the function \textbf{projection} from the file \textbf{model.py} to project users' embedding in a future time. We also use the function \textbf{predict\_embedding\_item} in the file \textbf{model.py} to make a prediction of the next embedding of the item. And finally, we calculate the Mean Square Error (MSE) of the predicted embedding and the real embedding.
     \item We update embeddings of users and items using the functions \textbf{update\_rnn\_user} and \textbf{update\_rnn\_item} respectively in the file \textbf{model.py}.
     \item We compute the two regularization terms using the function \textbf{regularizer} of the file \textbf{preprocessing.py}. This function uses the hyperparameter $\lambda_e$.
@@ -282,17 +232,11 @@ Once the learning stage is over, the evaluation is carried out.
     \label{pipeline_t-batch}
 \end{figure}
 
-%\subsubsection{Evaluate JODIE model}
-%The prediction and evaluation stage are just as special as the learning stage. In the evaluation, there is still a "learning" \textcolor{green}{stage} because during the predictions, the model will update itself respecting the time of the periods defined by \textcolor{green}{the} \texttt{split} \textcolor{green}{algorithm??? hyper-parameter???}. This evaluation is done thanks to the function \textbf{evaluate} of the file \textbf{evaluate.py}. During the evaluation, we do not apply the \texttt{t-batch} algorithm on the remaining interactions, but we will treat them one after the other (Figure \ref{pipeline_t-batch} not t-batch but interaction just before the back-propagation).
-
-%From a temporal bipartite graph, we proceed in the same way as for learning, we separate the edges in temporal order. Then, we will separate the data into periods and we will process the interactions one after the other. The periods are defined with the hyper-parameter \texttt{split} as for the periods of the \texttt{t-batch}. In addition to all the learning steps in the evaluation, we add a prediction step. According to the prediction task, we will predict a probability of a user's state change using the function \textbf{predict\_state} in the file \textbf{model.py}. Otherwise we will predict an embedding and look for the item which has its closest embedding in terms of Euclidean distance. Finally, we will calculate the metrics to obtain the validation and generalization error.
-
 \subsubsection{Prediction and evaluation JODIE model}
 \textcolor{red}{The prediction phase is a particular learning phase. Indeed during the prediction phase, the interactions are processed one after the other (in t-batch in the learning phase) and the same learning steps (steps 1, 4-8) are performed. Depending on the prediction task, the model will predict a state change probability with \textbf{predict\_state} function in the \textbf{model.py} file or either we generate an embedding of the item to be recommended using the \textbf{predict\_embedding\_item} function in the \textbf{model.py} file. After considering all the interactions and making all the predictions, we can proceed to the calculation of the evaluation metrics (MRR, Recall@10 or AUC).}
 
 
 \subsection{Datasets}
- % dire que les données sont données par les auteurs mais qu'elles ont un format bizarre et qu'il a fallu traiter les données.
  
 The data sets that were used in the original article were also used in this work. The authors of the article give the datasets. \\
 
@@ -324,7 +268,7 @@ Count~\cite{pennebaker01LIWC} (LIWC) categories.\\
     \caption{Description of the datasets that were used in this project}
     \label{description data}
 \end{table}
-\setlength\tabcolsep{6pt} % default value: 6pt
+\setlength\tabcolsep{6pt} 
 
 The authors of the original paper created their own datasets. Thus, a dataset has the following format :
 \begin{itemize}
@@ -474,12 +418,8 @@ reciprocal rank (MRR) as the training data size is increased. We varied the perc
 \end{figure}
 
 \subsection{Additional result}
-
-%We decided extend our analysis of the original model by testing the impact of the \texttt{split} (see sec. \nameref{sec:trainning}) on the performance of the JODIE model, as a reminder, the original study doesn't consider \texttt{split} as a hyper-parameter but as was a constant fixed at 500. In the Figures~\ref{split}, we show that this parameter has a strong importance on the overall results. We can see in Figure~\ref{split}, for any embedding size, that the performance is always increasing when the \texttt{split} value is higher. By increasing this \texttt{split} value from 5 to 500, we have increased the performance by 0.14 in AUC for the different sizes of embedding. Going from 500 to 50000, increased the performance by 0.08. We can explain this improvement by the fact that the model will do back-propagation after each time step defined by \texttt{split}. So by increasing the \texttt{split} number, we will increase the number of back-propagation. This suggests that higher values of this parameter allow to enhance the performance but the choice of it must be done considering the running time and the complexity which are increasing significantly when the \texttt{split} get larger.
-
-\textcolor{green}{We decided to extend our analysis by testing the impact of the \texttt{split} (see Section \nameref{sec:trainning}) on the performance of the JODIE model. As a reminder, the original study doesn't consider \texttt{split} as a hyper-parameter but as a constant fixed to 500. 
-Figure ~\ref{split} illustrates the significant impact of this parameter on the overall results. Regardless of the embedding size, as the value of \texttt{split} increases, so does the performance. By augmenting the \texttt{split} value from 5 to 500, the performance increases by 0.14 in AUC for the different embedding sizes. Then, scaling up from 500 to 50000, the performance increases by a further 0.08. We can explain this gain by the fact that the model performs back-propagation after each time step defined by \texttt{split}. Thus, by increasing the number of \texttt{split}, we increase the number of back-propagations.
-This result suggests that higher values of \texttt{split} may improve the performance, but its choice must be made by considering the execution time and complexity, which increase significantly with larger \texttt{split}.}
+We decided to extend our analysis by testing the impact of the \texttt{split} (see Section \nameref{sec:trainning}) on the performance of the JODIE model. As a reminder, the original study doesn't consider \texttt{split} as a hyper-parameter but as a constant fixed to 500. 
+Figure ~\ref{split} illustrates the significant impact of this parameter on the overall results. Regardless of the embedding size, as the value of \texttt{split} increases, so does the performance. By augmenting the \texttt{split} value from 5 to 500, the performance increases by 0.14 in AUC for the different embedding sizes. Then, scaling up from 500 to 50000, the performance increases by a further 0.08. We can explain this gain by the fact that the model performs back-propagation after each time step defined by \texttt{split}. Thus, by increasing the number of \texttt{split}, we increase the number of back-propagations. This result suggests that higher values of \texttt{split} may improve the performance, but its choice must be made by considering the execution time and complexity, which increase significantly with larger \texttt{split}.
 
 \begin{figure}[htbp]
     \centering
@@ -489,8 +429,4 @@ This result suggests that higher values of \texttt{split} may improve the perfor
 \end{figure}
 
 \section{Conclusion}
-%We are able to successfully replicate the original code provided by the authors and reproduce the results obtained in \textcolor{green}{the} original JODIE publication. Even if our reproduction more or less match the result provided in the original study, we have found some sligh difference compare with the result in the original paper. This can be explained by a variation due to the initialization. However, for LastFM case our reproduction result clearly outperform those claimed in the original study, we are suspecting some reporting error in the original study. Secondly, we have show that the impact of the embedding size has a slight impact on the result if a different evaluation metric than the one proposed in the original paper was used. This fact balance the claim made by the authors stating the embedding size has no impact on the overall performance of their model. Finally, we have found that the split has a strong impact on the overall performance, This hyper-parameter unexplored in the original paper must be adjusted taking into account a complexity-performance trade-off of the model. As perspective, we think it would be interesting to use the focal loss~\cite{https://doi.org/10.48550/arxiv.1708.02002} instead of the standard cross entropy loss in the JODIE model in order to alleviate the issue we have met with unbalanced class. 
-
-\textcolor{green}{We successfully replicated the original code provided by the authors and reproduced their results. Even though our replication more or less matches the results, we found some slight differences compared to them. This can be explained by a variation due to the initialization. However, for the LastFM dataset, our reproduction results clearly outperform those claimed in the original study. We suspect some reporting errors in the paper. We have also shown that the embedding size slightly impacts the result if a different evaluation metric than the one proposed in the original article is used. This fact mitigates the author's claim that the embedding size has no impact on the overall performance of their model. Finally, we have found that the split parameter strongly affects the overall performance. This hyper-parameter, unexplored in the original paper, must be tuned according to a complexity-performance trade-off of the model. As a perspective, we think it would be beneficial to use the focal loss~\cite{https://doi.org/10.48550/arxiv.1708.02002} instead of the standard cross entropy loss in the JODIE model to alleviate the issue we have met with unbalanced classes. }
-
-
+We successfully replicated the original code provided by the authors and reproduced their results. Even though our replication more or less matches the results, we found some slight differences compared to them. This can be explained by a variation due to the initialization. However, for the LastFM dataset, our reproduction results clearly outperform those claimed in the original study. We suspect some reporting errors in the paper. We have also shown that the embedding size slightly impacts the result if a different evaluation metric than the one proposed in the original article is used. This fact mitigates the author's claim that the embedding size has no impact on the overall performance of their model. Finally, we have found that the split parameter strongly affects the overall performance. This hyper-parameter, unexplored in the original paper, must be tuned according to a complexity-performance trade-off of the model. As a perspective, we think it would be beneficial to use the focal loss~\cite{https://doi.org/10.48550/arxiv.1708.02002} instead of the standard cross entropy loss in the JODIE model to alleviate the issue we have met with unbalanced classes.
