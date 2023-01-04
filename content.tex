@@ -109,7 +109,7 @@ $$
 i^+ = \sigma \left ( W_1^i i^- + W_2^i u^- + W_3^i f + W_4^i \Delta_i \right )
 $$
 
-where the matrices $W_1^e, ..., W_4^e$ are the parameters of the RNN$_e$\textcolor{green}{?} and $\sigma$ an activation function (here hyperbolic tangent). $u^-$ and $i^-$ represent the embeddings before updating and $u^+$ and $i^+$ represent the embeddings after updating. Once this step is finished, the next operation, called the projection operation, can be launched.
+where the matrices $W_1^e, ..., W_4^e$ are the parameters of the RNN$_U$ and RNN$_I$ and $\sigma$ an activation function (here hyperbolic tangent). $u^-$ and $i^-$ represent the embeddings before updating and $u^+$ and $i^+$ represent the embeddings after updating. Once this step is finished, the next operation, called the projection operation, can be launched.
 
 \begin{figure}[htbp]
    \centering
@@ -211,7 +211,7 @@ regularization terms are MSE. The authors wanted the embeddings not to vary heav
 \subsubsection{Training JODIE model} 
 \label{sec:trainning}
 
-We detail \textcolor{green}{here} the learning steps and the code simplification of JODIE model we provide like the use of functions (steps 1, 3-7) or the t-bach computation?? (in step 3). 
+We detail \textcolor{green}{here} the learning steps and the code simplification of JODIE model we provide like the use of functions (steps 1, 3-7) or the t-batch computation?? (in step 3). 
 \begin{enumerate}
     \item We use a function called \textbf{preprocess} which is in the file \textbf{preprocessing.py} to make a pre-processing of the data to extract information necessary during the training. Information like the sequence of users, items, time, features, or previous items that will be used during the learning step.
     \item We initialize each embedding randomly $\mathcal{U}([0,1[)$.
