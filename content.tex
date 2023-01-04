@@ -307,11 +307,11 @@ To test this hyper-parameter, we set the other hyper-parameters \textcolor{green
 $50$ epoch, $\lambda_U = \lambda_I = 1$, learning rate = $1e-3$, and the size of the embeddings to $128$. \textcolor{green}{We then assign the following values to \texttt{split}: $5$, $500$ and $50000$}
 
 %, and we test these $5$, $500$ and $50000$ for the value of \texttt{split}. 
-We define \texttt{split} as follows:
-\texttt{split} is used to split the dataset for a specific period of time\textcolor{green}{???}. 
+%We define \texttt{split} as follows:
+%\texttt{split} is used to split the dataset for a specific period of time\textcolor{green}{???}. 
 
 
-The authors use it as follows : $\frac{\text{time}_{\text{end}} - \text{time}_{\text{start}}}{\text{\texttt{split}}}$\textcolor{green}{???}. 
+%The authors use it as follows : $\frac{\text{time}_{\text{end}} - \text{time}_{\text{start}}}{\text{\texttt{split}}}$\textcolor{green}{???}. 
 
 \section{\textcolor{green}{Computational requirements}}
 \textcolor{green}{The experiments were reproduced on ... ?cores ? RAM ...? processor...}
@@ -381,7 +381,7 @@ For the prediction of future interaction, we used the same hyperparameters as fo
 
 We notice that only the results on the Reddit dataset are slightly lower than in the original paper. On these data, we obtained 0.719 in MRR and 0.830 in Recall@10. However, these results remain close to those obtained by the authors with 0.726 in MRR and 0.852 in Recall@10. For the Wikipedia and LastFM datasets, we can see that our results outperformed the authors' results with 0.764 in MRR and 0.833 in Recall@10 and 0.313 in MRR and 0.483 in Recall@10 respectively. These differences can be explained by the choice to evaluate the last epoch and not to choose the best performance on the validation, nonetheless these differences remain small.\\
 
-To go further in the replication and reproduction, we  will also reproduce two figures that show that the robustness of JODIE model (see fig~\ref{percentage-train})\textcolor{green}{????}. 
+To go further in the replication and reproduction, we  will also reproduce two figures that show that the robustness of JODIE model (see Figure~\ref{percentage-train})\textcolor{green}{????}. 
 
 
 \textcolor{green}{To go further in the replication and reproduction, we plot in Figure ~\ref{percentage-train} the performances of JODIE for both state change and  interaction prediction (Figure ~\ref{percentage-train} B) tasks on Wikipedia dataset. \\
