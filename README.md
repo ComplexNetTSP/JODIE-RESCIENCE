@@ -1,30 +1,8 @@
-### [ReScience C](https://rescience.github.io/) article template
+# [Re] Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks
+## Romain Haton, Rayane Ait Ali Yahia, Vincent Gauthier and Amel Bouzeghoub 
+## SAMOVAR, Télécom SudParis, Institut Polytechnique de Paris, Palaiseau, France
 
-This repository contains the Latex (optional) template for writing a ReScience
-C article and the (mandatory) YAML metadata file. For the actual article,
-you're free to use any software you like as long as you enforce the proposed
-PDF style. A tool is available for the latex template that produces latex
-definitions from the metadata file. If you use another software, make sure that
-metadata and PDF are always synced.
+In this work, the article Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks [1] is evaluated through a replication study. Replication results examine whether the claims made by the authors are valid. Our goal is to replicate the experiments and achieve the same results as the authors. Our code used for the replication is available at the following address: \url{https://github.com/ComplexNetTSP/JODIE}.
 
-You can also use overleaf with the [provided template](https://www.overleaf.com/read/kfrwdmygjyqw) but in this case, you'll have to enter `metadata.tex` manually.
-
-#### Usage
-
-For a submission, fill in information in
-[metadata.yaml](./metadata.yaml), modify [content.tex](content.tex)
-and type:
-
-```bash
-$ make 
-```
-
-This will produce an `article.pdf` using xelatex and provided font.
-
-
-After acceptance, you'll need to complete [metadata.yaml](./metadata.yaml) with information provided by the editor and type again:
-
-```bash
-$ make
-```
-
+### References
+[1] S. Kumar, X. Zhang, and J. Leskovec. “Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks.” In: Proceedings of the 25th ACM SIGKDD international conference on Knowledge discovery and data mining. ACM. 2019.
